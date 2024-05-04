@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import LockIcon from '@mui/icons-material/Lock';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+
 import "./course_page.css";
 
 export default function UI() {
@@ -118,7 +120,7 @@ export default function UI() {
         {
           querycourse.chapters?.map((value, index) => (
             <div key={index} className="chapter_option" onClick={() => handleChapterChange(index)}>     
-              <p className="chapter_name" style={{color:currentChapter===index?'black':'lightgray'}}>{!chaptersavailable[index]?<LockIcon></LockIcon>:<PlayCircleIcon></PlayCircleIcon>}{" "}{value.name}</p>
+              <p className="chapter_name" style={{color:currentChapter===index?'black':chaptersdone.includes(index)?'green':'lightgray'}}>{!chaptersavailable[index]?<LockIcon></LockIcon>:chaptersdone.includes(index)?<CheckCircleOutlinedIcon></CheckCircleOutlinedIcon>:<PlayCircleIcon></PlayCircleIcon>}{" "}{value.name}</p>
             </div>
           ))
         }
@@ -137,6 +139,10 @@ export default function UI() {
           <div className="chaptervideo">
             <div className="videobox">
               <div className="lockedvideo" style={{display:chaptersavailable[currentChapter]?'none':'flex'}}><LockIcon></LockIcon></div>
+              <video controls muted autoPlay width="100%" height="100%" style={{display:!chaptersavailable[currentChapter]?'none':'flex'}}>
+        <source src='./pics/sample_video.mp4' type="mp4" />
+        Your browser does not support the video tag.
+      </video>
             </div>
             <div className="enrollmentbutton" style={{display:!chaptersavailable.includes(0)?'none':'flex'}} onClick={()=>handleenroll(courseId)}>Enroll for ${querycourse["course_cost"]}</div>
             <div className="markascompletebutton" style={{display:!chaptersavailable.includes(0)&&!chaptersdone.includes(currentChapter)?'flex':'none'}} onClick={()=>completeChapter(username,courseId,currentChapter)}>Mark as Complete</div>

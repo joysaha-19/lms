@@ -146,12 +146,14 @@ body {
 .videobox{
     height: 450px;
     width: 900px;
-    background-color: black;
+    background-color: gray;
     position: absolute;
     top: 0%;
     left: 50%;
     transform: translate(-50%,0%);
     position: relative;
+    margin-top: 10px;
+    
 }
 .lockedvideo{
     position: absolute;

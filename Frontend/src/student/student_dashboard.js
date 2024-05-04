@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./student_dashboard.css";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 
 export default function UI() {
-  const navigate=useNavigate(null);
+  const navigate = useNavigate(null);
   const [courses, setCourses] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [filters, setFilters] = useState([]);
@@ -16,8 +18,9 @@ export default function UI() {
   const [textDashboard, setTextDashboard] = useState("rgb(10, 124, 166)");
   const [textBrowser, setTextBrowser] = useState("gray");
   const [scroller, setScroller] = useState(50);
-  const [search,setSearch]=useState("");
-  
+  const [search, setSearch] = useState("");
+  const [pendingcourses, setpendingcourses] = useState(0);
+  const [completecourses, setcompletecourses] = useState(0);
   function handlenavigate(a) {
     // Use template literals to dynamically create the path
     console.log(a);
@@ -31,6 +34,8 @@ export default function UI() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      let pending = 0;
+      let complete = 0;
       const data = await response.json();
       const fetchedCourses = [];
       const courseIds = [];
@@ -38,7 +43,14 @@ export default function UI() {
         if (data.hasOwnProperty(key)) {
           const value = data[key];
           courseIds.push(key);
-          const progress = parseInt(Math.ceil((value.chaptersDone.length / value.chapters.length) * 100));
+          if (value.chaptersDone.length === value.chapters.length)
+            complete = complete + 1;
+          else pending = pending + 1;
+
+          const progress = parseInt(
+            Math.ceil((value.chaptersDone.length / value.chapters.length) * 100)
+          );
+
           fetchedCourses.push({
             title: value.course_name,
             tag: value.tag,
@@ -48,6 +60,8 @@ export default function UI() {
           });
         }
       }
+      setpendingcourses(pending);
+      setcompletecourses(complete);
       setCourses(fetchedCourses);
       setUserCourseIds(courseIds);
     } catch (error) {
@@ -66,20 +80,19 @@ export default function UI() {
       const fetchedCourses = [];
       const options = [];
       for (const i in data) {
-      
-          const value = data[i];
-          if (!options.includes(value.tag)) {
-            options.push(value.tag);
-          }
-          fetchedCourses.push({
-            title: value.course_name,
-            tag: value.tag,
-            chapters: value.chapters.length,
-            courseid: value._id,
-            course_cost:value.course_cost.toString()
-          });
+        const value = data[i];
+        if (!options.includes(value.tag)) {
+          options.push(value.tag);
         }
-      
+        fetchedCourses.push({
+          title: value.course_name,
+          tag: value.tag,
+          chapters: value.chapters.length,
+          courseid: value._id,
+          course_cost: value.course_cost.toString(),
+        });
+      }
+
       setAllCourses(fetchedCourses);
       setTagOptions(options);
       setFilterColor(Array(options.length).fill(0));
@@ -130,10 +143,13 @@ export default function UI() {
 
   function CourseCard({ title, tag, chapters, progress, courseid }) {
     return (
-      <div className="cardParent" onClick={(e) => {
-        e.stopPropagation();  // Stop the click event from bubbling up
-        handlenavigate(courseid);
-    }}>
+      <div
+        className="cardParent"
+        onClick={(e) => {
+          e.stopPropagation(); // Stop the click event from bubbling up
+          handlenavigate(courseid);
+        }}
+      >
         <div className="cardImageArea">
           <img alt="Course logo" src={`url-to-course-logo/${courseid}`}></img>
         </div>
@@ -149,24 +165,37 @@ export default function UI() {
             <div
               className="progressBar"
               style={{
-                background: `linear-gradient(90deg, rgb(29, 153, 202) 0% ${progress}%, white ${progress + 1}% 100%)`,
+                background:
+                  progress < 100
+                    ? `linear-gradient(90deg, rgb(29, 153, 202) 0% ${progress}%, white ${
+                        progress + 0.1
+                      }% 100%)`
+                    : `linear-gradient(90deg, green 0% 100%)`,
               }}
             ></div>
           </div>
           <div className="progressValueArea">
-            <p className="cardProgress">{progress}% Complete</p>
+            <p
+              className="cardProgress"
+              style={{ color: progress < 100 ? "rgb(29, 153, 202)" : "green" }}
+            >
+              {progress}% Complete
+            </p>
           </div>
         </div>
       </div>
     );
   }
 
-  function GeneralCourseCard({ title, tag, chapters, courseid ,course_cost}) {
+  function GeneralCourseCard({ title, tag, chapters, courseid, course_cost }) {
     return (
-      <div className="cardParent" onClick={(e) => {
-        e.stopPropagation();  // Stop the click event from bubbling up
-        handlenavigate(courseid);
-    }}>
+      <div
+        className="cardParent"
+        onClick={(e) => {
+          e.stopPropagation(); // Stop the click event from bubbling up
+          handlenavigate(courseid);
+        }}
+      >
         <div className="cardImageArea">
           <img alt="Course logo" src={`url-to-course-logo/${courseid}`}></img>
         </div>
@@ -178,8 +207,19 @@ export default function UI() {
           <p className="cardChapters">{chapters} chapters</p>
         </div>
         <div className="EnrollmentStatus">
-          <div className="EnrollButton" style={{backgroundColor:!userCourseIds.includes(courseid)?'green':'lightgrey'}}>
-          <p>{!userCourseIds.includes(courseid) ? `$${course_cost}` : "Enrolled"}</p>
+          <div
+            className="EnrollButton"
+            style={{
+              backgroundColor: !userCourseIds.includes(courseid)
+                ? "green"
+                : "lightgrey",
+            }}
+          >
+            <p>
+              {!userCourseIds.includes(courseid)
+                ? `$${course_cost}`
+                : "Enrolled"}
+            </p>
           </div>
         </div>
       </div>
@@ -187,21 +227,24 @@ export default function UI() {
   }
   const handleInputChange = (event) => {
     setSearch(event.target.value);
-};
+  };
 
   return (
     <div className="student_dashboard_parent">
       <div className="logobox">{/* Logo can be placed here */}</div>
       <div className="appbar">
-        <div className="searchbox">
-        <input
-                type="text"
-                id="myTextbox"
-                placeholder="Eg: Advanced Algorithms"
-                className="searchtextbox"
-                value={search}
-                onChange={handleInputChange}
-            />
+        <div
+          className="searchbox"
+          style={{ display: activeMenu ? "none" : "flex" }}
+        >
+          <input
+            type="text"
+            id="myTextbox"
+            placeholder="Eg: Advanced Algorithms"
+            className="searchtextbox"
+            value={search}
+            onChange={handleInputChange}
+          />
         </div>
       </div>
       <div className="studentmenu">
@@ -219,15 +262,24 @@ export default function UI() {
         >
           <p>Dashboard</p>
         </div>
-        <div className="scroller" style={{ transform: `translateY(${scroller}px)` }}></div>
+        <div
+          className="scroller"
+          style={{ transform: `translateY(${scroller}px)` }}
+        ></div>
       </div>
       <div className="maincontent">
-        <div className="tagmenu">
+        <div
+          className="tagmenu"
+          style={{ display: activeMenu ? "none" : "flex" }}
+        >
           <div className="tagoption_empty"></div>
           {tagOptions.map((value, index) => (
             <div
               className="tagoption"
-              style={{ backgroundColor: filterColor[index] === 1 ? "rgba(75, 140, 186,0.5)" : "white" }}
+              style={{
+                backgroundColor:
+                  filterColor[index] === 1 ? "rgba(75, 140, 186,0.5)" : "white",
+              }}
               onClick={() => handleFilter(index)}
             >
               <p>{value}</p>
@@ -235,21 +287,52 @@ export default function UI() {
           ))}
           <div className="tagoption_empty"></div>
         </div>
+
+        <div
+          className="legend"
+          style={{ display: !activeMenu ? "none" : "flex" }}
+        >
+          <div className="greenbox">
+            <CheckCircleOutlinedIcon />
+            Completed:
+            <p>
+              &nbsp;{completecourses}
+              {" courses"}
+            </p>
+          </div>
+          <div className="bluebox">
+            <AccessTimeOutlinedIcon />
+            In Progress:
+            <p>
+              &nbsp;{pendingcourses}
+              {" courses"}
+            </p>
+          </div>
+        </div>
         <div className="coursecardsarea">
           <div className="cardscontainer">
             {activeMenu === 1
-              ? courses.filter(course => 
-                (filters.length === 0 || filters.includes(course.tag)) &&
-                (search === "" || course.title.includes(search))
-              ).map((course, index) => (
-                <CourseCard key={index} {...course}  />
-              ))
-              : allCourses.filter(course => 
-                (filters.length === 0 || filters.includes(course.tag)) &&
-                (search === "" || course.title.toLowerCase().includes(search.toLowerCase()))
-              ).map((course, index) => (
-                <GeneralCourseCard key={index} {...course}  />
-              ))}
+              ? courses
+                  .filter(
+                    (course) =>
+                      (filters.length === 0 || filters.includes(course.tag)) &&
+                      (search === "" || course.title.includes(search))
+                  )
+                  .map((course, index) => (
+                    <CourseCard key={index} {...course} />
+                  ))
+              : allCourses
+                  .filter(
+                    (course) =>
+                      (filters.length === 0 || filters.includes(course.tag)) &&
+                      (search === "" ||
+                        course.title
+                          .toLowerCase()
+                          .includes(search.toLowerCase()))
+                  )
+                  .map((course, index) => (
+                    <GeneralCourseCard key={index} {...course} />
+                  ))}
           </div>
         </div>
       </div>
