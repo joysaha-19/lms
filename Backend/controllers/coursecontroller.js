@@ -3,7 +3,11 @@ const asynchandler = require("express-async-handler");
 const Courses = require("../models/coursemodel");
 const Users = require("../models/usermodel");
 
-
+const getcourse=asynchandler(async(req,res)=>{
+   const courseid=req.query.courseid;
+   const course=await Courses.findById(courseid);
+   res.status(200).json(course);
+})
 const getallusercourses = asynchandler(async (req, res) => {
   // console.log(req.query.username)
 
@@ -127,4 +131,4 @@ const addcourse = asynchandler(async (req, res) => {
 });
 
 
-module.exports = { getallcourses, getallusercourses, seecourse, enrollincourse, addcourse };
+module.exports = {getcourse, getallcourses, getallusercourses, seecourse, enrollincourse, addcourse };

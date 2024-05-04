@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./student_dashboard.css";
 
 export default function UI() {
+  const navigate=useNavigate(null);
   const [courses, setCourses] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [filters, setFilters] = useState([]);
@@ -14,7 +16,13 @@ export default function UI() {
   const [textDashboard, setTextDashboard] = useState("rgb(10, 124, 166)");
   const [textBrowser, setTextBrowser] = useState("gray");
   const [scroller, setScroller] = useState(50);
-
+  const [search,setSearch]=useState("");
+  
+  function handlenavigate(a) {
+    // Use template literals to dynamically create the path
+    console.log(a);
+    navigate(`/student/course/${a}`);
+  }
   async function fetchCoursesForUser(username) {
     const encodedUsername = encodeURIComponent(username);
     const url = `http://localhost:5000/lms/courses/usercourses?username=${encodedUsername}`;
@@ -57,9 +65,9 @@ export default function UI() {
       const data = await response.json();
       const fetchedCourses = [];
       const options = [];
-      for (const key in data) {
-        if (data.hasOwnProperty(key)) {
-          const value = data[key];
+      for (const i in data) {
+      
+          const value = data[i];
           if (!options.includes(value.tag)) {
             options.push(value.tag);
           }
@@ -67,10 +75,11 @@ export default function UI() {
             title: value.course_name,
             tag: value.tag,
             chapters: value.chapters.length,
-            courseid: key,
+            courseid: value._id,
+            course_cost:value.course_cost.toString()
           });
         }
-      }
+      
       setAllCourses(fetchedCourses);
       setTagOptions(options);
       setFilterColor(Array(options.length).fill(0));
@@ -121,7 +130,10 @@ export default function UI() {
 
   function CourseCard({ title, tag, chapters, progress, courseid }) {
     return (
-      <div className="cardParent">
+      <div className="cardParent" onClick={(e) => {
+        e.stopPropagation();  // Stop the click event from bubbling up
+        handlenavigate(courseid);
+    }}>
         <div className="cardImageArea">
           <img alt="Course logo" src={`url-to-course-logo/${courseid}`}></img>
         </div>
@@ -149,9 +161,12 @@ export default function UI() {
     );
   }
 
-  function GeneralCourseCard({ title, tag, chapters, courseid }) {
+  function GeneralCourseCard({ title, tag, chapters, courseid ,course_cost}) {
     return (
-      <div className="cardParent">
+      <div className="cardParent" onClick={(e) => {
+        e.stopPropagation();  // Stop the click event from bubbling up
+        handlenavigate(courseid);
+    }}>
         <div className="cardImageArea">
           <img alt="Course logo" src={`url-to-course-logo/${courseid}`}></img>
         </div>
@@ -163,18 +178,30 @@ export default function UI() {
           <p className="cardChapters">{chapters} chapters</p>
         </div>
         <div className="EnrollmentStatus">
-          <p>{userCourseIds.includes(courseid) ? "Already Enrolled" : "Enroll"}</p>
+          <div className="EnrollButton" style={{backgroundColor:!userCourseIds.includes(courseid)?'green':'lightgrey'}}>
+          <p>{!userCourseIds.includes(courseid) ? `$${course_cost}` : "Enrolled"}</p>
+          </div>
         </div>
       </div>
     );
   }
+  const handleInputChange = (event) => {
+    setSearch(event.target.value);
+};
 
   return (
     <div className="student_dashboard_parent">
       <div className="logobox">{/* Logo can be placed here */}</div>
       <div className="appbar">
         <div className="searchbox">
-          <input type="text" id="myTextbox" placeholder="Eg: Advanced Algorithms" className="searchtextbox"></input>
+        <input
+                type="text"
+                id="myTextbox"
+                placeholder="Eg: Advanced Algorithms"
+                className="searchtextbox"
+                value={search}
+                onChange={handleInputChange}
+            />
         </div>
       </div>
       <div className="studentmenu">
@@ -211,11 +238,17 @@ export default function UI() {
         <div className="coursecardsarea">
           <div className="cardscontainer">
             {activeMenu === 1
-              ? courses.filter(course => filters.length === 0 || filters.includes(course.tag)).map((course, index) => (
-                <CourseCard key={index} {...course} />
+              ? courses.filter(course => 
+                (filters.length === 0 || filters.includes(course.tag)) &&
+                (search === "" || course.title.includes(search))
+              ).map((course, index) => (
+                <CourseCard key={index} {...course}  />
               ))
-              : allCourses.filter(course => filters.length === 0 || filters.includes(course.tag)).map((course, index) => (
-                <GeneralCourseCard key={index} {...course} />
+              : allCourses.filter(course => 
+                (filters.length === 0 || filters.includes(course.tag)) &&
+                (search === "" || course.title.toLowerCase().includes(search.toLowerCase()))
+              ).map((course, index) => (
+                <GeneralCourseCard key={index} {...course}  />
               ))}
           </div>
         </div>

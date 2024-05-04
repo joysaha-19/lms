@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
+  getcourse,
   getallcourses,
   getallusercourses,
   seecourse,
@@ -9,6 +10,7 @@ const {
 } = require("../controllers/coursecontroller");
 const validatetoken = require("../middleware/accesstokenhandler2");
 // Define your routes here, for example:
+router.get("/spcourse",  getcourse);
 router.get("/allcourses",  getallcourses);
 router.get("/usercourses",  getallusercourses);
 router.post("/enroll",  enrollincourse);
