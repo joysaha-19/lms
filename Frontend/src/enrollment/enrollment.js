@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./enrollment.css";
 
 export default function UI() {
-  const navigate=useNavigate(null);
-  const {courseId}= useParams();
+  const navigate = useNavigate();
+  const { courseId } = useParams();
   const [querycourse, setQueryCourse] = useState({});
+  const [cardNumber, setCardNumber] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [expDate, setExpDate] = useState('');
 
-  const username="Joydeep";
-  async function fetchCourse(username,courseId) {
+  const username = "Joydeep";
+
+  async function fetchCourse(username, courseId) {
     const encodedCourse = encodeURIComponent(courseId);
     const url = `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourse}`;
 
@@ -19,36 +23,70 @@ export default function UI() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-    //   const n = data["chapters"].length;
-    //   let arr = [];
-      
-    //   if (data["enrolled"].includes(username)) {
-    //       // If username is enrolled, fill the array with 1s
-    //       arr = new Array(n).fill(1);
-    //   } else {
-    //       // Only the first value is 1, rest are 0
-    //       arr = [1, ...new Array(n - 1).fill(0)];
-    //   }
       setQueryCourse(data);
     } catch (error) {
       console.error("Could not fetch course:", error);
     }
- }
- useEffect(() => {
+  }
+
+  useEffect(() => {
     if (courseId) {
-      fetchCourse(username,courseId);
+      fetchCourse(username, courseId);
     }
- }, [courseId]); // Dependency array includes courseId to refetch if it changes
+  }, [courseId]);  // Dependency array includes courseId to refetch if it changes
+
+  function handlePay(event) {
+    event.preventDefault(); // Prevent the form from being submitted
+
+    // Check if any of the fields are empty
+    if (!cardNumber || !cvv || !phoneNumber || !expDate) {
+      alert('Please fill all the fields.');
+      return;
+    }
+    
+    // If all fields are filled, handle the payment process
+    console.log('Processing payment...');
+    // Further processing would go here, such as submitting to a server
+  }
 
   return (
     <div className="enrollment_parent">
-        <div className="course_details_area">
-            <div className="course_details_box">
-                <div className="course_name">{querycourse["course_name"]}</div>
-                <div className="course_cost">US${querycourse["course_cost"]}</div>
-                <div className="course_instructor">Instructor:{" "}{querycourse["course_instructor"]}</div>
-            </div>
+      <div className="course_details_area">
+        <div className="course_details_box">
+          <div className="course_name">{querycourse["course_name"]}</div>
+          <div className="course_cost">US${querycourse["course_cost"]}</div>
+          <div className="course_instructor">Instructor: {querycourse["course_instructor"]}</div>
         </div>
       </div>
+      <section className="container">
+        <header>Payment Form</header>
+        <form action="#" className="form" onSubmit={handlePay}>
+          <div className="input-box">
+            <label>Credit/Card Number</label>
+            <input type="text" placeholder="Enter number" required value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} />
+          </div>
+          <div className="input-box">
+            <label>CVV</label>
+            <input type="text" placeholder="Enter CVV" required value={cvv} onChange={(e) => setCvv(e.target.value)} />
+          </div>
+          <div className="column">
+            <div className="input-box">
+              <label>Phone Number</label>
+              <input type="number" placeholder="Enter phone number" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+            </div>
+            <div className="input-box">
+              <label>Date of Expiration</label>
+              <input type="month" required value={expDate} onChange={(e) => setExpDate(e.target.value)} />
+            </div>
+            <div className="input-box">
+              <label>Customer Name</label>
+              <input type="text" value={username} readOnly />
+            </div>
+          </div>
+          
+          <button type="submit">Pay US${querycourse["course_cost"]}</button>
+        </form>
+      </section>
+    </div>
   );
-}
+}s
