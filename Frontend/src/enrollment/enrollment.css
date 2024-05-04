@@ -1,0 +1,51 @@
+.enrollment_parent{
+    display: grid;
+    background-color: white;
+    grid-template-columns: 0.7fr 1fr;
+    height: 100vh;
+}
+
+.course_details_area{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    color: black;
+}
+
+.course_details_box{
+    height: 350px;
+    width: 80%;
+    display: grid;
+    grid-template-rows: 2.2fr 3fr 2.2fr;
+    background-color: transparent;
+}
+
+.course_name{
+    grid-row:1/2;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: transparent;
+    font-size: 50px;
+    line-height: 50px;
+}
+
+.course_cost{
+    grid-row: 2/3;
+    font-size: 110px;
+    background-color: transparent;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.course_instructor{
+    grid-row: 3/4;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    font-size: 40px;
+    background-color: transparent;
+}

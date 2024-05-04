@@ -130,5 +130,47 @@ const addcourse = asynchandler(async (req, res) => {
   }
 });
 
+const completeChapter = asynchandler(async (req, res) => {
+  const { courseId, username, chapter_number } = req.body;
 
-module.exports = {getcourse, getallcourses, getallusercourses, seecourse, enrollincourse, addcourse };
+  try {
+      // Find the user with the given username
+      const user = await Users.findOne({ username: username });
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Check if the courseId is in the user's courses
+      if (!user.courses.includes(courseId)) {
+          return res.status(404).json({ message: 'Course not found in user\'s enrolled courses' });
+      }
+
+      // Access or initialize the progress for the specified course
+      const progress = user.progressReports.get(courseId.toString()) || {
+          lastAccessed: new Date(),
+          chaptersDone: []
+      };
+
+      // Add the chapter number if it's not already completed
+      if (!progress.chaptersDone.includes(chapter_number)) {
+          progress.chaptersDone.push(chapter_number);
+          // Update the last accessed date
+          progress.lastAccessed = new Date();
+
+          // Update the user's progressReports field
+          user.progressReports.set(courseId.toString(), progress);
+          await user.save();
+
+          res.status(200).json({ message: 'Chapter completed successfully', progress: progress });
+      } else {
+          res.status(400).json({ message: 'Chapter already completed' });
+      }
+  } catch (error) {
+      console.error('Error completing chapter:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+
+
+module.exports = {getcourse, getallcourses, getallusercourses, seecourse, enrollincourse, addcourse,completeChapter };

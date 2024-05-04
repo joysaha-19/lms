@@ -53,8 +53,8 @@ export default function UI() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const coursedata= data.courseId;
-      setchaptersdone(coursedata["chapters_done"]);
+      const coursedata= data[courseId.toString()];
+      setchaptersdone(coursedata["chaptersDone"]);
     } catch (error) {
       console.error("Could not fetch courses:", error);
     }
@@ -71,7 +71,46 @@ export default function UI() {
       setScroller(dist);
       setCurrentChapter(index);
    }
+   
+   function handleenroll(a)
+   {
+    nav(`/student/enroll/${a}`);
+   }
+   async function completeChapter ( username, courseId, chapter_number ) {
+  
+      // Construct the JSON data inside the function
+      console.log("here");
+      const postData = {
+        username: username,
+        courseId: courseId,
+        chapter_number: chapter_number,
+      };
+  
+      try {
+        const response = await fetch('http://localhost:5000/lms/courses/completechapter', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData),
+        });
+  
+        if (response.ok) {
+          console.log('Successful');
+          let abc=[...chaptersdone,currentChapter];
+          setchaptersdone(abc);
 
+          // Additional actions upon success can be handled here
+        } else {
+          throw new Error('Failed to complete chapter');
+        }
+      } catch (error) {
+        console.error('Error completing chapter:', error);
+      }
+    };
+   
+
+   
    return (
     <div className="course_page_parent">
       <div className="course_title_area"><p>{querycourse.course_name}</p></div>
@@ -96,10 +135,12 @@ export default function UI() {
 
         <div className="contentarea">
           <div className="chaptervideo">
-            <div className="videobox"></div>
-            <div className="enrollmentbutton" style={{display:!chaptersavailable.includes(0)?'none':'flex'}}>Enroll for ${querycourse["course_cost"]}</div>
-            <div className="markascompletebutton" style={{display:!chaptersavailable.includes(0)&&!chaptersdone.includes(currentChapter)?'flex':'none'}}>Mark as Complete</div>
-            <div className="markascompletebutton" style={{display:!chaptersavailable.includes(0)&&chaptersdone.includes(currentChapter)?'flex':'none'}}>Completed</div>
+            <div className="videobox">
+              <div className="lockedvideo" style={{display:chaptersavailable[currentChapter]?'none':'flex'}}><LockIcon></LockIcon></div>
+            </div>
+            <div className="enrollmentbutton" style={{display:!chaptersavailable.includes(0)?'none':'flex'}} onClick={()=>handleenroll(courseId)}>Enroll for ${querycourse["course_cost"]}</div>
+            <div className="markascompletebutton" style={{display:!chaptersavailable.includes(0)&&!chaptersdone.includes(currentChapter)?'flex':'none'}} onClick={()=>completeChapter(username,courseId,currentChapter)}>Mark as Complete</div>
+            <div className="completedbutton" style={{display:!chaptersavailable.includes(0)&&chaptersdone.includes(currentChapter)?'flex':'none'}}>Completed</div>
           </div>
         </div>
       </div>

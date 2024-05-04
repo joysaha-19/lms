@@ -38,7 +38,7 @@ export default function UI() {
         if (data.hasOwnProperty(key)) {
           const value = data[key];
           courseIds.push(key);
-          const progress = (value.chaptersDone.length / value.chapters.length) * 100;
+          const progress = parseInt(Math.ceil((value.chaptersDone.length / value.chapters.length) * 100));
           fetchedCourses.push({
             title: value.course_name,
             tag: value.tag,
