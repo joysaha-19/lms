@@ -272,7 +272,7 @@ export default function UI() {
           className="tagmenu"
           style={{ display: activeMenu ? "none" : "flex" }}
         >
-          <div className="tagoption_empty"></div>
+          {/* <div className="tagoption_empty"></div> */}
           {tagOptions.map((value, index) => (
             <div
               className="tagoption"
@@ -285,7 +285,7 @@ export default function UI() {
               <p>{value}</p>
             </div>
           ))}
-          <div className="tagoption_empty"></div>
+          {/* <div className="tagoption_empty"></div> */}
         </div>
 
         <div
