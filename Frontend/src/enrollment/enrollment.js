@@ -10,6 +10,7 @@ export default function UI() {
   const [cvv, setCvv] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [expDate, setExpDate] = useState('');
+  const [buttontext,setbuttontext]=useState('');
 
   const username = "Joydeep";
 
@@ -24,6 +25,7 @@ export default function UI() {
       }
       const data = await response.json();
       setQueryCourse(data);
+      setbuttontext(`Pay US$${data["course_cost"]}`)
     } catch (error) {
       console.error("Could not fetch course:", error);
     }
@@ -35,7 +37,7 @@ export default function UI() {
     }
   }, [courseId]);  // Dependency array includes courseId to refetch if it changes
 
-  function handlePay(event) {
+  async function handlePay(event) {
     event.preventDefault(); // Prevent the form from being submitted
 
     // Check if any of the fields are empty
@@ -44,10 +46,36 @@ export default function UI() {
       return;
     }
     
+
     // If all fields are filled, handle the payment process
-    console.log('Processing payment...');
-    // Further processing would go here, such as submitting to a server
+    setbuttontext('Processing payment...');
+    const url = `http://localhost:5000/lms/courses/enroll`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST', // Specify the method as POST
+        headers: {
+          'Content-Type': 'application/json' // Specify the content type in the headers
+        },
+        body: JSON.stringify({
+          username: username, // Include the username in the body
+          courseId: courseId  // Include the courseId in the body
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }    // Further processing would go here, such as submitting to a server
+      setbuttontext('Enrolled Succesfully');
+     const a= setTimeout(()=>{
+        navigate(`/student/course/${courseId}`);
+        return()=>clearTimeout(a);
+      },3000)
+
+  }catch (error) {
+    console.error("Could not fetch course:", error);
   }
+}
 
   return (
     <div className="enrollment_parent">
@@ -84,9 +112,9 @@ export default function UI() {
             </div>
           </div>
           
-          <button type="submit">Pay US${querycourse["course_cost"]}</button>
+          <button type="submit" >{buttontext}</button>
         </form>
       </section>
     </div>
   );
-}s
+}

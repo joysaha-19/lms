@@ -82,7 +82,7 @@ const seecourse = asynchandler(async (req, res) => {
 const enrollincourse = asynchandler(async (req, res) => {
 
 const username=req.body.username;
-const courseid=req.body.courseid;
+const courseid=req.body.courseId;
 try {
   const updatedCourse = await Courses.findByIdAndUpdate(
     courseid, // Ensure this variable is correctly defined or received from request
