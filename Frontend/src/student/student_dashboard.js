@@ -21,6 +21,7 @@ export default function UI() {
   const [search, setSearch] = useState("");
   const [pendingcourses, setpendingcourses] = useState(0);
   const [completecourses, setcompletecourses] = useState(0);
+  const [progressbars,setprogressbars]=useState({});
   function handlenavigate(a) {
     // Use template literals to dynamically create the path
     console.log(a);
@@ -39,6 +40,7 @@ export default function UI() {
       const data = await response.json();
       const fetchedCourses = [];
       const courseIds = [];
+      const obj1={};
       for (const key in data) {
         if (data.hasOwnProperty(key)) {
           const value = data[key];
@@ -46,11 +48,33 @@ export default function UI() {
           if (value.chaptersDone.length === value.chapters.length)
             complete = complete + 1;
           else pending = pending + 1;
-
+         
           const progress = parseInt(
             Math.ceil((value.chaptersDone.length / value.chapters.length) * 100)
           );
-
+          obj1[key]=  <div className="cardProgressArea">
+          <div className="progressBarArea">
+            <div
+              className="progressBar"
+              style={{
+                background:
+                  progress < 100
+                    ? `linear-gradient(90deg, rgb(29, 153, 202) 0% ${progress}%, white ${
+                        progress + 0.1
+                      }% 100%)`
+                    : `linear-gradient(90deg, green 0% 100%)`,
+              }}
+            ></div>
+          </div>
+          <div className="progressValueArea">
+            <p
+              className="cardProgress"
+              style={{ color: progress < 100 ? "rgb(29, 153, 202)" : "green" }}
+            >
+              {progress}% Complete
+            </p>
+          </div>
+        </div>
           fetchedCourses.push({
             title: value.course_name,
             tag: value.tag,
@@ -64,7 +88,9 @@ export default function UI() {
       setcompletecourses(complete);
       setCourses(fetchedCourses);
       setUserCourseIds(courseIds);
-    } catch (error) {
+      console.log("Progress bars set:", obj1);
+      setprogressbars(obj1);
+          } catch (error) {
       console.error("Could not fetch courses:", error);
     }
   }
@@ -190,39 +216,50 @@ export default function UI() {
   function GeneralCourseCard({ title, tag, chapters, courseid, course_cost }) {
     return (
       <div
-        className="cardParent"
-        onClick={(e) => {
-          e.stopPropagation(); // Stop the click event from bubbling up
-          handlenavigate(courseid);
+  className="cardParent"
+  onClick={(e) => {
+    e.stopPropagation(); // Stop the click event from bubbling up
+    handlenavigate(courseid);
+  }}
+>
+  <div className="cardImageArea">
+    <img alt="Course logo" src={`url-to-course-logo/${courseid}`}></img>
+  </div>
+  <div className="cardTitleArea">
+    <p className="cardTitle">{title}</p>
+    <p className="cardTag">{tag}</p>
+  </div>
+  <div className="cardChaptersArea">
+    <p className="cardChapters">{chapters} chapters</p>
+  </div>
+
+
+  {progressbars[courseid]!=null ? (
+   
+
+            progressbars[courseid]
+            
+   
+  ) : (
+    <div className="EnrollmentStatus">
+      <div
+        className="EnrollButton"
+        style={{
+          backgroundColor: !userCourseIds.includes(courseid)
+            ? "green"
+            : "lightgrey",
         }}
       >
-        <div className="cardImageArea">
-          <img alt="Course logo" src={`url-to-course-logo/${courseid}`}></img>
-        </div>
-        <div className="cardTitleArea">
-          <p className="cardTitle">{title}</p>
-          <p className="cardTag">{tag}</p>
-        </div>
-        <div className="cardChaptersArea">
-          <p className="cardChapters">{chapters} chapters</p>
-        </div>
-        <div className="EnrollmentStatus">
-          <div
-            className="EnrollButton"
-            style={{
-              backgroundColor: !userCourseIds.includes(courseid)
-                ? "green"
-                : "lightgrey",
-            }}
-          >
-            <p>
-              {!userCourseIds.includes(courseid)
-                ? `$${course_cost}`
-                : "Enrolled"}
-            </p>
-          </div>
-        </div>
+        <p>
+          {!userCourseIds.includes(courseid)
+            ? `$${course_cost}`
+            : "Enrolled"}
+        </p>
       </div>
+    </div>
+  )}
+</div>
+
     );
   }
   const handleInputChange = (event) => {
@@ -231,7 +268,11 @@ export default function UI() {
 
   return (
     <div className="student_dashboard_parent">
-      <div className="logobox">{/* Logo can be placed here */}</div>
+      <div className="logobox">
+        <div className="logoboxactual">
+        <img className="logoimage" src="./pics/logo.png" alt="logo"></img>
+        </div>
+      </div>
       <div className="appbar">
         <div
           className="searchbox"

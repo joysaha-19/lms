@@ -83,7 +83,7 @@ export default function UI() {
         <div className="course_details_box">
           <div className="course_name">{querycourse["course_name"]}</div>
           <div className="course_cost">US${querycourse["course_cost"]}</div>
-          <div className="course_instructor">Instructor: {querycourse["course_instructor"]}</div>
+          <div className="course_instructor">By{" "} {querycourse["course_instructor"]}</div>
         </div>
       </div>
       <section className="container">

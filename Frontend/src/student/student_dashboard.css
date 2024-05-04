@@ -32,7 +32,7 @@ body {
     width: 275px;
     background-color: rgb(255, 255, 255);
     border-radius: 10px;
-    border: 1px solid rgb(201, 194, 194);
+    border: 3px solid rgb(201, 194, 194);
 
     display: grid;
     grid-template-columns: 5px 1fr 5px;
@@ -166,12 +166,24 @@ grid-row: 1/2;
     border-bottom:1px solid rgb(201, 194, 194);
 
 }
-.logobox img{
+
+.logoboxactual{
+    height: 90%;
+    width: 60%;
+    background-color: transparent;
+}
+.logoboxactual img{
+    object-fit: contain;
+    aspect-ratio: 5/2;
+    /* height: 100%;
+    width: 100%; */
+}
+/* .logobox img{
     aspect-ratio: 2/1;
     object-fit: cover;
     height: 98%;
     width: 90%;
-}
+} */
 .appbar{
     grid-column: 2/3;
     grid-row: 1/2;
@@ -321,12 +333,11 @@ grid-row: 1/2;
 .tagoption{
     height: 40px;
     min-width: 130px;
-    background-color: white;
     border-radius: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid rgb(98, 96, 96);
+    border: 2px solid rgb(1, 198, 233);
    transition: background-color 0.3s ease;
    font-size: 12px;
    text-align: center;
@@ -334,7 +345,7 @@ grid-row: 1/2;
 }
 
 .tagoption:hover{
-    background-color: rgb(150, 201, 237);
+    background-color: rgb(67, 124, 164);
 }
 
 .coursecardsarea{

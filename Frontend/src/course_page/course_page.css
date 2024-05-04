@@ -114,7 +114,7 @@ body {
     grid-row: 2/3;
     background-color: white;
     display: grid;
-    grid-template-rows: 60px 1fr;
+    grid-template-rows: 40px 1fr;
 }
 
 .warningbox{
@@ -131,7 +131,7 @@ body {
     grid-row: 2/3;
     background-color: transparent;
     display: grid;
-    grid-template-rows: 500px 1fr;
+    grid-template-rows: 580px 1fr;
     overflow-y: scroll;
 
 }
