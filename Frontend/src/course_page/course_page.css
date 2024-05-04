@@ -55,17 +55,18 @@ body {
 }
 
 .chapter_option:hover{
-    background-color: rgb(206, 212, 214);
+    background-color: rgb(239, 243, 244);
 }
 
 .chapter_name{
     position: absolute;
     top: 50%;
-    left:50%;
-    transform: translate(-50%,-50%);
+    left:10%;
+    transform: translate(0%,-50%);
     text-align: center;
     font-size: 15px;
     white-space: nowrap;
+    font-weight: 600;
 }
 
 .course_scroller{
@@ -84,12 +85,114 @@ body {
     grid-row: 1/2;
     background-color: white;
     border-bottom: 2px solid black;
+    position: relative;
 
 }
-
+.exitbutton{
+    position: absolute;
+    top: 50%;
+    right: 3%;
+    transform: translate(0%,-50%);
+    height: 50px;
+    width: 90px;
+    background-color: rgb(199, 95, 95);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+.exitbutton:hover{
+    background-color: red;
+}
+.exitbutton p{
+    font-size: 18px;
+    color: white;
+}
 .course_content_area{
     grid-column: 2/3;
     grid-row: 2/3;
     background-color: white;
+    display: grid;
+    grid-template-rows: 60px 1fr;
 }
 
+.warningbox{
+    grid-row: 1/2;
+    background-color: rgb(241, 227, 173);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    color: chocolate;
+    font-weight: 900;
+}
+
+.contentarea{
+    grid-row: 2/3;
+    background-color: transparent;
+    display: grid;
+    grid-template-rows: 500px 1fr;
+    overflow-y: scroll;
+
+}
+
+.chaptervideo{
+    grid-row: 1/2;
+    background-color: transparent;
+    width: 100%;
+    position: relative;
+
+}
+.videobox{
+    height: 450px;
+    width: 900px;
+    background-color: black;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%,0%);
+}
+
+.enrollmentbutton{
+    position: absolute;
+    bottom: 0%;
+    right: 13.5%;
+    height: 35px;
+    width: 120px;
+    background-color: rgb(24, 80, 193);
+    color: white;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 9px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.enrollmentbutton:hover{
+
+    background-color: rgb(9, 51, 135);
+    
+}
+
+.markascompletebutton{
+    position: absolute;
+    bottom: 0%;
+    right: 13.5%;
+    height: 35px;
+    width: 120px;
+    background-color: rgb(24, 193, 106);
+    color: white;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 9px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.markascompletebutton:hover{
+
+    background-color: rgb(4, 83, 57);
+    
+}

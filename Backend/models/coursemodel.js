@@ -19,7 +19,6 @@ const studentcourseSchema = mongoose.Schema(
     }],
     chapters: [{
       name: { type: String },            // Name of the chapter
-      completeStatus: { type: Boolean }  // Completion status: true or false
     }],
     tag: { 
       type: String
