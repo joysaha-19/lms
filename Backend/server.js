@@ -12,6 +12,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/lms/courses", require("./routes/courseroutes"));
 app.use("/lms/users", require("./routes/userroutes"));
+app.use("/lms/teachers", require("./routes/teacherroutes"));
+
 app.use(errorhandler);
 
 app.listen(port, () => {

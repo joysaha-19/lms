@@ -2,6 +2,7 @@
 const asynchandler = require("express-async-handler");
 const Courses = require("../models/coursemodel");
 const Users = require("../models/usermodel");
+const Teachers = require("../models/teachermodel");
 
 const getcourse=asynchandler(async(req,res)=>{
    const courseid=req.query.courseid;
@@ -113,7 +114,7 @@ await user.save();
 
 const addcourse = asynchandler(async (req, res) => {
   try {
-    const { course_name, course_desc, course_instructor, course_cost, enrolled,chapters,tag } = req.body;
+    const { course_name, course_desc, course_instructor, course_cost, enrolled,chapters,tag ,teacherid} = req.body;
     const course = new Courses({
       course_name,
       course_desc,
@@ -124,11 +125,57 @@ const addcourse = asynchandler(async (req, res) => {
       tag
     });
     const savedCourse = await course.save();
+    const courseid=savedCourse._id.toString();
+   await Teachers.findByIdAndUpdate(
+      teacherid,
+      { $addToSet: { published_courses: courseid } },  // $addToSet ensures the courseId is only added if it's not already present
+      { new: true, runValidators: true }  // Options to return the updated document and run schema validation
+  ).then(updatedTeacher => {
+      console.log('Updated Teacher:', updatedTeacher);
+  }).catch(error => {
+      console.error('Error updating teacher:', error);
+  });    
+
     res.status(201).json({message:"course successfully added"});
   } catch (error) {
     res.status(400).json({message:"-1"});
   }
 });
+const deletepublishedcourse = asynchandler(async (req, res) => {
+  try {
+    const { courseid ,teacherid} = req.body;
+    const deletedCourse = await Courses.findByIdAndDelete(courseid);
+    await Teachers.findByIdAndUpdate(
+      teacherid,
+      { $pull:{ published_courses: courseid } },  // $pull removes the specified courseId from the array
+      { new: true, runValidators: true }  // Options to return the updated document and run schema validation
+  )
+
+    
+    res.status(201).json({message:"course successfully added"});
+  } catch (error) {
+    res.status(400).json({message:"-1"});
+  }
+});
+
+
+const deletedraftcourse = asynchandler(async (req, res) => {
+  try {
+    const { courseid ,teacherid} = req.body;
+    await Teachers.findByIdAndUpdate(
+      teacherid,
+      { $pull:{ draft_courses: courseid } },  // $pull removes the specified courseId from the array
+      { new: true, runValidators: true }  // Options to return the updated document and run schema validation
+  )
+
+    
+    res.status(201).json({message:"course successfully added"});
+  } catch (error) {
+    res.status(400).json({message:"-1"});
+  }
+});
+
+
 
 const completeChapter = asynchandler(async (req, res) => {
   const { courseId, username, chapter_number } = req.body;
@@ -173,4 +220,4 @@ const completeChapter = asynchandler(async (req, res) => {
 
 
 
-module.exports = {getcourse, getallcourses, getallusercourses, seecourse, enrollincourse, addcourse,completeChapter };
+module.exports = {getcourse, getallcourses, getallusercourses, seecourse, enrollincourse, addcourse,deletepublishedcourse, deletedraftcourse,completeChapter };
