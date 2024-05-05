@@ -22,6 +22,8 @@ export default function UI() {
   const [pendingcourses, setpendingcourses] = useState(0);
   const [completecourses, setcompletecourses] = useState(0);
   const [progressbars,setprogressbars]=useState({});
+  const [loading1,setLoading1]=useState(true);
+  const [loading2,setLoading2]=useState(true);
   function handlenavigate(a) {
     // Use template literals to dynamically create the path
     console.log(a);
@@ -93,6 +95,9 @@ export default function UI() {
           } catch (error) {
       console.error("Could not fetch courses:", error);
     }
+    finally{
+      setLoading1(false);
+    }
   }
 
   async function fetchAllCourses() {
@@ -124,6 +129,8 @@ export default function UI() {
       setFilterColor(Array(options.length).fill(0));
     } catch (error) {
       console.error("Could not fetch all courses:", error);
+    }finally{
+      setLoading2(false);
     }
   }
 
@@ -265,7 +272,9 @@ export default function UI() {
   const handleInputChange = (event) => {
     setSearch(event.target.value);
   };
-
+  if (loading1 || loading2) {
+    return <div className="loading">Loading course info...</div>;
+  }
   return (
     <div className="student_dashboard_parent">
       <div className="logobox">

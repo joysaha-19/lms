@@ -11,6 +11,7 @@ export default function UI() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [expDate, setExpDate] = useState('');
   const [buttontext,setbuttontext]=useState('');
+  const [loading1,setLoading1]=useState(true);
 
   const username = "Joydeep";
 
@@ -28,6 +29,8 @@ export default function UI() {
       setbuttontext(`Pay US$${data["course_cost"]}`)
     } catch (error) {
       console.error("Could not fetch course:", error);
+    }finally{
+      setLoading1(false);
     }
   }
 
@@ -76,7 +79,9 @@ export default function UI() {
     console.error("Could not fetch course:", error);
   }
 }
-
+if (loading1) {
+  return <div className="loading">Loading course info...</div>;
+}
   return (
     <div className="enrollment_parent">
       <div className="course_details_area">
