@@ -144,7 +144,7 @@ body {
 
 }
 .videobox{
-    height: 450px;
+    height: 500px;
     width: 900px;
     background-color: gray;
     position: absolute;
@@ -169,7 +169,7 @@ body {
 }
 .enrollmentbutton{
     position: absolute;
-    bottom: 0%;
+    bottom: 4%;
     right: 13.5%;
     height: 35px;
     width: 120px;
@@ -181,6 +181,7 @@ body {
     border-radius: 9px;
     font-size: 14px;
     transition: all 0.2s ease;
+    z-index: 10;
 }
 
 .enrollmentbutton:hover{
@@ -191,7 +192,7 @@ body {
 
 .markascompletebutton{
     position: absolute;
-    bottom: 0%;
+    bottom: 4%;
     right: 13.5%;
     height: 35px;
     width: 120px;
@@ -203,6 +204,8 @@ body {
     border-radius: 9px;
     font-size: 14px;
     transition: all 0.2s ease;
+    z-index: 10;
+
 }
 
 .markascompletebutton:hover{
@@ -213,7 +216,7 @@ body {
 
 .completedbutton{
     position: absolute;
-    bottom: 0%;
+    bottom: 4%;
     right: 13.5%;
     height: 35px;
     width: 120px;
@@ -225,5 +228,56 @@ body {
     border-radius: 9px;
     font-size: 14px;
     transition: all 0.2s ease;
+    z-index: 10;
+
 }
 
+.chapterdescription{
+    display: grid;
+    grid-row: 2/3;
+    min-height: 200px;
+    grid-template-rows: 70px 1fr;
+    background-color: white;
+    position: relative;
+}
+
+.objective{
+    grid-row: 1/2;
+    width: 100%;
+    font-size: 50px;
+    color: rgb(93, 91, 91);
+    position: absolute;
+    top: calc( 0% - 50px);
+    left: 1%;
+    line-height: 80px;
+    border-bottom: 3px solid lightgray;
+}
+
+.chapter_info{
+    grid-row: 1/2;
+    width: calc(100% - 20px);
+    font-size: 15px;
+    color: rgb(0, 0, 0);
+    position: relative;
+    min-height: 200px;
+
+}
+
+.chapter_info p{
+    position: absolute;
+    top: 30%;
+    margin-left: 20px;
+}
+
+.attachment_link{
+    grid-row: 2/3;
+    background-color: transparent;
+    position: relative;
+}
+
+.attachment_link p{
+    position: absolute;
+    bottom: 10%;
+    left: 20px;
+    transform: translate(0%,0%);
+}

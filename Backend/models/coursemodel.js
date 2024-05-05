@@ -19,6 +19,7 @@ const studentcourseSchema = mongoose.Schema(
     }],
     chapters: [{
       name: { type: String },            // Name of the chapter
+      description:{type: String}
     }],
     tag: { 
       type: String

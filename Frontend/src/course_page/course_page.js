@@ -1,10 +1,11 @@
-import React, { useEffect, useState ,useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import Video from "../assets/sample_video.mp4";
+import SamplePdf from "../assets/sample_assignment.pdf"
 
 import "./course_page.css";
 
@@ -16,8 +17,10 @@ export default function UI() {
   const [chaptersavailable, setChaptersAvailable] = useState([]);
   const [currentChapter, setCurrentChapter] = useState(0);
   const [chaptersdone, setchaptersdone] = useState([]);
-  const videoRef = useRef(null);  // Create a ref for the video element
+  const [loading1,setLoading1]=useState(true);
+  const [loading2,setLoading2]=useState(true);
 
+  const videoRef = useRef(null); // Create a ref for the video element
 
   // Extract the courseId parameter from the URL
   const { courseId } = useParams();
@@ -42,10 +45,13 @@ export default function UI() {
         // Only the first value is 1, rest are 0
         arr = [1, ...new Array(n - 1).fill(0)];
       }
+      console.log(data["chapters"])
       setChaptersAvailable(arr);
       setQueryCourse(data);
     } catch (error) {
       console.error("Could not fetch course:", error);
+    }finally{
+      setLoading1(false);
     }
   }
 
@@ -62,6 +68,8 @@ export default function UI() {
       setchaptersdone(coursedata["chaptersDone"]);
     } catch (error) {
       console.error("Could not fetch courses:", error);
+    }finally{
+      setLoading2(false);
     }
   }
   useEffect(() => {
@@ -120,12 +128,16 @@ export default function UI() {
       videoRef.current.currentTime = 0;
       videoRef.current.pause();
     }
-  }, [currentChapter]); 
+  }, [currentChapter]);
+
+  if (loading1 || loading2) {
+    return <div className="loading">Loading course info...</div>;
+  }
   return (
+    
     <div className="course_page_parent">
       <div className="course_title_area">
         <p>{querycourse.course_name}</p>
-        
       </div>
       <div className="course_chapters_area">
         {querycourse.chapters?.map((value, index) => (
@@ -190,7 +202,7 @@ export default function UI() {
                 <LockIcon></LockIcon>
               </div>
               <video
-              ref={videoRef} 
+                ref={videoRef}
                 controls
                 muted
                 width="100%"
@@ -198,7 +210,9 @@ export default function UI() {
                 style={{
                   display: !chaptersavailable[currentChapter] ? "none" : "flex",
                 }}
-                onEnded={()=>completeChapter(username, courseId, currentChapter)}
+                onEnded={() =>
+                  completeChapter(username, courseId, currentChapter)
+                }
               >
                 <source src={Video} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -239,6 +253,21 @@ export default function UI() {
               }}
             >
               Completed
+            </div>
+          </div>
+          <div className="chapterdescription">
+            <div className="objective">
+              <p>Objective</p>
+            </div>
+            <div className="chapter_info">
+            <div className="chapter_info">
+  <p>{querycourse.chapters?.[currentChapter]?.description || "Loading chapter description..."}</p>
+</div>
+            </div>
+            <div className="attachment_link" style={{display: chaptersavailable.includes(0) ? "none" : "flex"}}>
+              <p>Assignment: <a href={SamplePdf} download style={{ color: 'blue', textDecoration: 'underline' }}>
+      Download PDF
+    </a></p>
             </div>
           </div>
         </div>
