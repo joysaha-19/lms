@@ -2,82 +2,63 @@
 
 body {
     margin: 0;
-  }
-  body {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-  }
-  /* *{
-      scrollbar-width: 0;
-  } */
-  /* *::-webkit-scrollbar {
-    display: none;
-  } */
-.teacher_dashboard_parent{
+}
+
+.teacher_dashboard_parent {
     height: 100vh;
     width: 100vw;
     background-color: rgb(255, 255, 255);
     font-family: "IBM Plex Sans", sans-serif;
-    font-style: normal;
     display: grid;
     grid-template-columns: 1fr 6fr;
     grid-template-rows: 70px 1fr;
-
 }
 
-
-
-.logobox{
+.teacher_logobox {
     grid-column: 1/2;
     grid-row: 1/2;
     background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom:1px solid rgb(201, 194, 194);
-
+    border-bottom: 1px solid rgb(201, 194, 194);
 }
 
-.logoboxactual{
+.teacher_logoboxactual {
     height: 90%;
     width: 60%;
     background-color: transparent;
 }
-.logoboxactual img{
+
+.teacher_logoboxactual img {
     object-fit: contain;
     aspect-ratio: 5/2;
-    /* height: 100%;
-    width: 100%; */
 }
-/* .logobox img{
-    aspect-ratio: 2/1;
-    object-fit: cover;
-    height: 98%;
-    width: 90%;
-} */
-.appbar{
+
+.teacher_appbar {
     grid-column: 2/3;
     grid-row: 1/2;
     background-color: transparent;
     position: relative;
     border-bottom: 1px solid rgb(201, 194, 194);
-
 }
 
-.teachermenu{
+.teacher_teachermenu {
     grid-column: 1/2;
     grid-row: 2/3;
     background-color: white;
     border-right: 1px solid rgb(201, 194, 194);
     position: relative;
-
 }
-.scroller{
+
+.teacher_scroller {
     position: absolute;
     right: 0%;
-    top:0%;
+    top: 0%;
     height: 50px;
     width: 5px;
     background-color: rgb(10, 124, 166);
@@ -85,7 +66,7 @@ body {
     transition: all 0.0s ease;
 }
 
-.browseoption{
+.teacher_browseoption, .teacher_dashboardoption {
     width: 100%;
     height: 50px;
     display: flex;
@@ -94,131 +75,130 @@ body {
     transition: all 0.0s ease;
 }
 
-.browseoption p{
+.teacher_browseoption p, .teacher_dashboardoption p {
     margin-left: 10px;
     font-weight: 600;
-    transition: all 0.0s ease;
-
-
-}
-.dashboardoption{
-    width: 100%;
-    height: 50px;
-     display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    transition: all 0.0s ease;
-
 }
 
-
-.dashboardoption p{
-    margin-left: 10px;
-    font-weight: 600;
-    transition: all 0.0s ease;
-
-}
-
-.maincontent{
+.teacher_maincontent {
     grid-column: 2/3;
     grid-row: 2/3;
     background-color: transparent;
     display: grid;
-    grid-template-rows: 120px 10px 1fr;
+    grid-template-rows: 100px 10px 1fr;
+    position: relative;
 }
-.legend{
+
+.teacher_legend {
     grid-row: 1/2;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1%;
 }
-.greenbox{
+
+.teacher_greenbox, .teacher_bluebox {
     width: 40%;
     height: 90%;
     background-color: white;
     border: 1px solid lightgray;
-    border-radius: 10px ;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: green;
     font-weight: 700;
+}
+
+.teacher_greenbox {
+    color: green;
     background-color: aquamarine;
 }
-.bluebox{
-    width: 40%;
-    height: 90%;
-    background-color: white;
-    border: 1px solid lightgray;
-    border-radius: 10px ;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.teacher_bluebox {
     color: rgb(19, 113, 150);
-    font-weight: 700;
     background-color: rgba(0, 255, 255, 0.714);
 }
 
-.coursestableheader{
+.teacher_coursestableheader {
     grid-row: 1/2;
     background-color: transparent;
     position: relative;
 }
 
-.tableheader{
+.teacher_tableheader {
     width: 90%;
     position: absolute;
     bottom: 0%;
     left: 50%;
     transform: translate(-50%,0%);
     height: 50px;
-    /* background-color: rgb(38, 157, 157); */
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     color: gray;
     font-weight: 600;
-    
 }
-.tablerow{
+
+.teacher_tablerow {
     height: 50px;
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     border-top: 1px solid lightgray;
     font-weight: 500;
+}
+
+.teacher_header_coursename, .teacher_header_price, .teacher_header_status, .teacher_header_edit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.teacher_header_coursename {
+    justify-content: flex-start;
+}
+
+.teacher_filterbox{
+    position: absolute;
+    height: 40px;
+    width: 50%;
+    background-color: rgb(228, 224, 224);
+    top: 1%;
+    left: 3%;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
 }
-.header_coursename{
-    grid-column: 1/2;
-    /* border-right: 2px solid black; */
+.newcoursebutton{
+    position: absolute;
+    height: 40px;
+    width: 200px;
+    right: 3%;
+    top:1%;
+    background-color: rgb(8, 85, 59);
+    border-radius: 10px;
+    color: white;
+    font-weight: 800;
     display: flex;
-    justify-content: flex-start;
     align-items: center;
-}
-.header_price{
-    grid-column: 2/3;
-    /* border-right: 2px solid black; */
-    display: flex;
     justify-content: center;
-    align-items: center;
+    z-index: 5;
 }
 
-.header_status{
-    grid-column:3/4 ;
-    /* border-right: 2px solid black; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.newcoursebutton:hover{
+    background-color: rgb(23, 169, 121);
+}
+.teacher_filtertext{
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 95%;
+    height: 90%;
+    z-index: 3;
 }
 
-.header_edit{
-    grid-column: 4/5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.courselistarea{
+.teacher_courselistarea {
     grid-row: 3/4;
     background-color: transparent;
     display: flex;
@@ -226,10 +206,9 @@ body {
     align-items: center;
     overflow-y: scroll;
     z-index: 2;
-    padding-left: 0%;
 }
 
-.coursecontainer{
+.teacher_coursecontainer {
     width: 90%;
     height: 90%;
     padding-bottom: 10px;
@@ -239,15 +218,9 @@ body {
     align-items: center;
     flex-wrap: nowrap;
     background-color: transparent;
-    /* background-color: rgb(178, 172, 172); */
-    /* border: 2px solid grey; */
-    
-        /* scrollbar-width: 0; */
-
 }
 
-.chartcontainer{
-
+.teacher_chartcontainer {
     height: 70%;
     width: 90%;
     background-color: transparent;
@@ -258,21 +231,19 @@ body {
     align-items: flex-end;
     flex-wrap: nowrap;
     position: relative;
-    
-
 }
 
-.courselist{
+.teacher_courselist {
     width: 100%;
-    min-height: 1000px;
-    background-color: transparent;
     display: flex;
+    min-height: 500px;
     flex-direction: column;
-    justify-content: flex-start ;
+    justify-content: flex-start;
     align-items: center;
     gap: 10px;
 }
-.chartelement{
+
+.teacher_chartelement {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     position: relative;
@@ -280,7 +251,8 @@ body {
     background-color: rgb(12, 82, 139);
     min-height: 10px;
 }
-.charttag{
+
+.teacher_charttag {
     position: absolute;
     bottom: -30px;
     left: 50%;
@@ -294,11 +266,10 @@ body {
     align-items: center;
     font-size: 12px;
     font-weight: 600;
-    
+    text-align: center;
 }
 
-.yaxis{
-
+.teacher_yaxis {
     position: absolute;
     bottom: 0%;
     left: -50px;
@@ -308,14 +279,14 @@ body {
     display: flex;
 }
 
-.ylabel {
+.teacher_ylabel {
     width: 30px; /* Adjust width as needed */
     text-align: right; /* Align text to the right */
     color: gray;
     font-size: 12px;
-  }
+}
 
-  .statusbox{
+.teacher_statusbox {
     height: 30px;
     width: 100px;
     color: white;
@@ -323,14 +294,40 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 50px;
-  }
+}
 
-  .editbutton{
+.teacher_editbutton {
     border-radius: 50%;
     background-color: transparent;
-    transition: all 0.3s ease;
-  }
+    transition: all 0.0s ease;
+}
 
-  .editbutton:hover{
+.teacher_editbutton:hover {
     background-color: rgb(195, 188, 188);
-  }
+}
+
+.teacher_menu {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    min-width: 150px;
+    padding: 8px 0;
+    height: 100px;
+}
+
+.teacher_menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.teacher_menu li {
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.teacher_menu:hover {
+    background-color: #f5f5f5;
+}

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useRef} from "react";
 import { useNavigate } from "react-router-dom";
 import "./teacher_dashboard.css";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
-
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 export default function UI() {
   const navigate = useNavigate(null);
   const [publishedCourses, setPublishedCourses] = useState([]);
@@ -116,6 +116,10 @@ export default function UI() {
       setScroller(50);
     }
   }
+  
+  const [filterText, setFilterText] = useState('');
+
+  
 
   function generateYAxisLabels(max) {
     let labels = [];
@@ -124,89 +128,91 @@ export default function UI() {
     }
     return labels;
   }
-
+  function handleFilterChange(event) {
+    setFilterText(event.target.value);
+  }
+  
   if (loading1) {
     return <div className="loading">Loading course info...</div>;
   }
   return (
     <div className="teacher_dashboard_parent">
-      <div className="logobox">
-        <div className="logoboxactual">
-          <img className="logoimage" src="./pics/logo.png" alt="logo"></img>
+      <div className="teacher_logobox">
+        <div className="teacher_logoboxactual">
+          <img className="logoimage" src="./pics/logo.png" alt="logo" />
         </div>
       </div>
-      <div className="appbar"></div>
-      <div className="teachermenu">
+      <div className="teacher_appbar"></div>
+      <div className="teacher_teachermenu">
         <div
-          className="browseoption"
+          className="teacher_browseoption"
           style={{ backgroundColor: bgBrowser, color: textBrowser }}
           onClick={() => handleTeacherMenu(0)}
         >
           <p>Analytics</p>
         </div>
         <div
-          className="dashboardoption"
+          className="teacher_dashboardoption"
           style={{ backgroundColor: bgDashboard, color: textDashboard }}
           onClick={() => handleTeacherMenu(1)}
         >
           <p>Courses</p>
         </div>
         <div
-          className="scroller"
+          className="teacher_scroller"
           style={{ transform: `translateY(${scroller}px)` }}
         ></div>
       </div>
-      <div className="maincontent">
+      <div className="teacher_maincontent">
         <div
-          className="legend"
+          className="teacher_legend"
           style={{ display: activeMenu ? "none" : "flex" }}
         >
-          <div className="greenbox">
+          <div className="teacher_greenbox">
             Total Sales:&nbsp;{publishedCourses.length}
-            <p></p>
           </div>
-          <div className="bluebox">
+          <div className="teacher_bluebox">
             Total Revenue:
-            <p>
-              &nbsp;{totalrevenue}
-              {"$"}
-            </p>
+            <p>&nbsp;{totalrevenue}$</p>
           </div>
         </div>
+        <div className="teacher_filterbox" style={{ display: !activeMenu ? "none" : "flex" }}>
+        <input className="teacher_filtertext" type="text" value={filterText} onChange={handleFilterChange} placeholder="Filter courses..." />
+</div>
+<div className="newcoursebutton" style={{ display: !activeMenu ? "none" : "flex" }}><p>{<AddCircleOutlineOutlinedIcon></AddCircleOutlineOutlinedIcon>}{" New Course"}</p></div>
+
         <div
-          className="coursestableheader"
+          className="teacher_coursestableheader"
           style={{ display: !activeMenu ? "none" : "flex" }}
         >
-          <div className="tableheader">
-            <div className="header_coursename">Course</div>
-            <div className="header_price">Price</div>
-            <div className="header_status">Status</div>
-            <div className="header_edit"></div>
+          <div className="teacher_tableheader">
+            <div className="teacher_header_coursename">Course</div>
+            <div className="teacher_header_price">Price</div>
+            <div className="teacher_header_status">Status</div>
+            <div className="teacher_header_edit"></div>
           </div>
         </div>
 
-        <div className="courselistarea">
+        <div className="teacher_courselistarea">
           <div
-            className="coursecontainer"
+            className="teacher_coursecontainer"
             style={{ border: activeMenu ? "none" : "2px solid gray" }}
           >
             <div
-              className="chartcontainer"
+              className="teacher_chartcontainer"
               style={{ display: activeMenu ? "none" : "flex" }}
             >
               {chart.map((value, index) => {
                 if (value["status"] === "published") {
                   return (
                     <div
-                      className="chartelement"
+                      className="teacher_chartelement"
                       style={{
-                        height: `${
-                          (parseFloat(value["revenue"]) / parseFloat(max)) * 100
-                        }%`,
+                        height: `${(parseFloat(value["revenue"]) / parseFloat(max)) * 100}%`,
                         width: `${95 / chart.length}%`,
                       }}
                     >
-                      <div className="charttag">
+                      <div className="teacher_charttag">
                         <p>{value["course_name"]}</p>
                       </div>
                     </div>
@@ -216,10 +222,10 @@ export default function UI() {
                 }
               })}
 
-              <div className="yaxis">
+              <div className="teacher_yaxis">
                 {generateYAxisLabels(max).map((label) => (
                   <div
-                    className="ylabel"
+                    className="teacher_ylabel"
                     style={{
                       position: "absolute",
                       bottom: `${(label / max) * 100}%`,
@@ -232,16 +238,23 @@ export default function UI() {
             </div>
 
             <div
-              className="courselist"
+              className="teacher_courselist"
               style={{ display: !activeMenu ? "none" : "flex" }}
             >
-              {chart.map((value,index) => {
+              {chart.filter(course => course.course_name.toLowerCase().includes(filterText)).map((value, index) => {
                 return (
-                  <div className="tablerow">
-                    <div className="header_coursename">{value["course_name"]}</div>
-                    <div className="header_price">{value["cost"]}$</div>
-                    <div className="header_status"><div style={{background:value["status"]==="published"?"rgb(9, 161, 236)":"lightgrey"}} className="statusbox">{value["status"]}</div></div>
-                    <div className="header_edit"><MoreVertTwoToneIcon className="editbutton"></MoreVertTwoToneIcon></div>
+                  <div className="teacher_tablerow">
+                    <div className="teacher_header_coursename">{value["course_name"]}</div>
+                    <div className="teacher_header_price">{value["cost"]}$</div>
+                    <div className="teacher_header_status">
+                      <div style={{background: value["status"] === "published" ? "rgb(9, 161, 236)" : "lightgrey"}} className="teacher_statusbox">
+                        {value["status"]}
+                      </div>
+                    </div>
+                    <div className="teacher_header_edit">
+                      <EditOutlinedIcon  className="teacher_editbutton"  />
+                     
+                    </div>
                   </div>
                 );
               })}
