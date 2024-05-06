@@ -24,6 +24,7 @@ export default function UI() {
   const [totalrevenue, setTotalRevenue] = useState(0);
   const [chart, setchart] = useState([]);
   const [max, setmax] = useState(0);
+  const [max1,setmax1] =useState(99999999999999);
   function handlenavigate(a) {
     // Use template literals to dynamically create the path
     console.log(a);
@@ -88,6 +89,11 @@ export default function UI() {
       setTotalRevenue(s);
       setchart(a);
       setmax(localMax);
+      // setTimeout(()=>{
+      //   setmax1(localMax);
+      //   return()=>clearTimeout(a);
+      // },3000)
+      
     } catch (error) {
       console.error("Failed to fetch teacher data:", error);
     } finally {
@@ -97,7 +103,21 @@ export default function UI() {
 
   useEffect(() => {
     fetchTeacher(username);
+    
+
   }, []);
+  
+  useEffect(()=>{
+   if(activeMenu===1)
+    setmax1(999999999);
+  else{
+    const a=setTimeout(()=>{
+      setmax1(max);
+      return()=>clearTimeout(a);
+    },200);
+  
+  }
+  },[activeMenu])
 
   function handleTeacherMenu(index) {
     if (index === activeMenu) return;
@@ -208,7 +228,7 @@ export default function UI() {
                     <div
                       className="teacher_chartelement"
                       style={{
-                        height: `${(parseFloat(value["revenue"]) / parseFloat(max)) * 100}%`,
+                        height: `${(parseFloat(value["revenue"]) / parseFloat(max1)) * 100}%`,
                         width: `${95 / chart.length}%`,
                       }}
                     >

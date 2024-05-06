@@ -250,6 +250,7 @@ body {
     max-width: 200px;
     background-color: rgb(12, 82, 139);
     min-height: 10px;
+    transition: all 1s ease;
 }
 
 .teacher_charttag {

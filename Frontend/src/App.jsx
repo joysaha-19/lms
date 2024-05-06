@@ -3,6 +3,8 @@ import StdDash from './student/student_dashboard'
 import CoursePage from './course_page/course_page'
 import Enrollment from './enrollment/enrollment'
 import Teacher from './teacher/teacher_dashboard'
+import NewCourse from './newcourse/newcourse';
+
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         <Route path="/student/course/:courseId" element={<CoursePage />} />
         <Route path="/student/enroll/:courseId" element={<Enrollment />} />
         <Route path="/teacher" element={<Teacher />} />
+        <Route path="/teacher/addcourse" element={<NewCourse />} />
+
 
       </Routes>
     </BrowserRouter>
