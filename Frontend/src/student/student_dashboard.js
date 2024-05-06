@@ -296,6 +296,9 @@ export default function UI() {
             onChange={handleInputChange}
           />
         </div>
+        <div className="switchoption" onClick={()=>
+          navigate('/teacher')
+        }>Switch to Teacher Mode</div>
       </div>
       <div className="studentmenu">
         <div

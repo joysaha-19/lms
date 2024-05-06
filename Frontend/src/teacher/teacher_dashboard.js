@@ -162,7 +162,12 @@ export default function UI() {
           <img className="logoimage" src="./pics/logo.png" alt="logo" />
         </div>
       </div>
-      <div className="teacher_appbar"></div>
+      <div className="teacher_appbar">
+      <div className="switchoption" onClick={()=>
+          navigate('/student')
+        }>Switch to Student Mode
+      </div>
+      </div>
       <div className="teacher_teachermenu">
         <div
           className="teacher_browseoption"

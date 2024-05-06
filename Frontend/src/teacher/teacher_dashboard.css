@@ -174,9 +174,9 @@ body {
     position: absolute;
     height: 40px;
     width: 200px;
-    right: 3%;
+    right: 5%;
     top:1%;
-    background-color: rgb(8, 85, 59);
+    background-color: rgb(23, 169, 121);
     border-radius: 10px;
     color: white;
     font-weight: 800;
@@ -187,7 +187,8 @@ body {
 }
 
 .newcoursebutton:hover{
-    background-color: rgb(23, 169, 121);
+    background-color: rgb(8, 85, 59);
+
 }
 .teacher_filtertext{
     background-color: transparent;

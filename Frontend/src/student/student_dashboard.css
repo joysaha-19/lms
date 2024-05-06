@@ -191,6 +191,27 @@ grid-row: 1/2;
     position: relative;
     border-bottom: 1px solid rgb(201, 194, 194);
 
+
+}
+.switchoption{
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    transform: translate(0%,-50%);
+    height: 50px;
+    width: 300px;
+    background-color: cadetblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 800;
+    color: white;
+    border-radius: 10px;
+}
+
+.switchoption:hover{
+    background-color: rgb(47, 121, 217);
 }
 .cardParent:hover{
     transform: scale(1.05);
