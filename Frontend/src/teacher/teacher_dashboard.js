@@ -181,7 +181,7 @@ export default function UI() {
           style={{ backgroundColor: bgDashboard, color: textDashboard }}
           onClick={() => handleTeacherMenu(1)}
         >
-          <p>Courses</p>
+          <p>My Courses</p>
         </div>
         <div
           className="teacher_scroller"
@@ -204,7 +204,7 @@ export default function UI() {
         <div className="teacher_filterbox" style={{ display: !activeMenu ? "none" : "flex" }}>
         <input className="teacher_filtertext" type="text" value={filterText} onChange={handleFilterChange} placeholder="Filter courses..." />
 </div>
-<div className="newcoursebutton" style={{ display: !activeMenu ? "none" : "flex" }}><p>{<AddCircleOutlineOutlinedIcon></AddCircleOutlineOutlinedIcon>}{" New Course"}</p></div>
+<div className="newcoursebutton" style={{ display: !activeMenu ? "none" : "flex" }} onClick={()=>navigate('/teacher/addcourse')}><p>{<AddCircleOutlineOutlinedIcon></AddCircleOutlineOutlinedIcon>}{" New Course"}</p></div>
 
         <div
           className="teacher_coursestableheader"

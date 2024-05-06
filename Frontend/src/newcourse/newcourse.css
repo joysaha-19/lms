@@ -1,0 +1,178 @@
+.newcourse_parent{
+    height: 100vh;
+    width: 100vw;
+    background-color: lightblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.add_chapter_box{
+ 
+    height: 400px;
+    width: 700px;
+    background-color: rgb(248, 246, 246);
+    border-radius: 30px;
+    display: grid;
+    grid-template-columns: 2.5fr 3fr;
+
+}
+
+.added_chapters_area{
+    grid-column: 2/3;
+    background-color: aqua;
+    display: grid;
+}
+
+.add_chapter_area{
+    grid-column: 1/2;
+    background-color: beige;
+    grid-template-rows: 1fr 4fr;
+    display: grid;
+
+}
+
+.add_chapters_title{
+    grid-row: 1/2;
+    background-color: blueviolet;
+    position: relative;
+}
+
+.add_chapters_title p{
+    position: absolute;
+    top: 50%;
+    left: 2%;
+    transform: translate(0%,-50%);
+    color: black;
+    font-weight: 500;
+    font-size: 40px;
+
+}
+
+.chapter_controls_box{
+  grid-row: 2/3;
+  background-color: white;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add_chapter_button{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    height: 50px;
+    width: 150px;
+    background-color: rgb(23, 169, 121);
+    color: white;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 20px;
+    font-size: 18px;
+}
+
+.add_chapter_button:hover{
+    background-color: rgb(8, 85, 59);
+
+}
+
+.cancel_button{
+    position: absolute;
+    top: 2%;
+    left: 3%;
+    height: 30px;
+    width: 60px;
+    background-color: rgb(189, 53, 53);
+    color: white;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 20px;
+    font-size: 13px;
+    line-height: 13px;
+}
+
+.add_button{
+    position: absolute;
+    top: 2%;
+    right: 3%;
+    height: 30px;
+    width: 60px;
+    background-color: rgb(59, 150, 91);
+    color: white;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 20px;
+    font-size: 13px;
+    line-height: 13px;
+}
+
+.add_button:hover{
+    background-color: green;
+}
+.cancel_button:hover{
+    background-color: red;
+
+}
+
+.title_text_box{
+    height: 50px;
+    width: 90%;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%,0%);
+    background-color: white;
+    border: 1px solid rgb(200, 196, 196);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title_text{
+  height: 90%;
+  width: 95%; 
+  border: none;
+  outline: none;
+  
+}
+
+.boxtag{
+    position: absolute;
+    top: -22px;
+    width: 100%;
+    height: 20px;
+    left: 0%;
+    /* background-color: aqua; */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: rgb(190, 183, 183);
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.title_description_box{
+    height: 150px;
+    width: 90%;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%,0%);
+    background-color: white;
+    border: 1px solid rgb(200, 196, 196);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
