@@ -229,7 +229,7 @@ const deletedraftcourse = asynchandler(async (req, res) => {
 
 
 const completeChapter = asynchandler(async (req, res) => {
-  const { courseId, username, chapter_number } = req.body;
+  const { courseId, username, chapter_name } = req.body;
 
   try {
       // Find the user with the given username
@@ -250,8 +250,8 @@ const completeChapter = asynchandler(async (req, res) => {
       };
 
       // Add the chapter number if it's not already completed
-      if (!progress.chaptersDone.includes(chapter_number)) {
-          progress.chaptersDone.push(chapter_number);
+      if (!progress.chaptersDone.includes(chapter_name)) {
+          progress.chaptersDone.push(chapter_name);
           // Update the last accessed date
           progress.lastAccessed = new Date();
 

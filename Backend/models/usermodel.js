@@ -24,7 +24,7 @@ const UserSchema = mongoose.Schema(
             type: Map,
             of: {
                 lastAccessed: Date,
-                chaptersDone: [Number]
+                chaptersDone: [String]
             }
         }
         

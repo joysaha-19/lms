@@ -19,6 +19,7 @@ export default function UI() {
   const [chaptersdone, setchaptersdone] = useState([]);
   const [loading1,setLoading1]=useState(true);
   const [loading2,setLoading2]=useState(true);
+  const [chapternames,setchapternames]=useState([]);
 
   const videoRef = useRef(null); // Create a ref for the video element
 
@@ -48,6 +49,7 @@ export default function UI() {
       console.log(data["chapters"])
       setChaptersAvailable(arr);
       setQueryCourse(data);
+      setchapternames(data["chapters"]);
     } catch (error) {
       console.error("Could not fetch course:", error);
     }finally{
@@ -88,13 +90,13 @@ export default function UI() {
   function handleenroll(a) {
     nav(`/student/enroll/${a}`);
   }
-  async function completeChapter(username, courseId, chapter_number) {
+  async function completeChapter(username, courseId, chapter_name) {
     // Construct the JSON data inside the function
     console.log("here");
     const postData = {
       username: username,
       courseId: courseId,
-      chapter_number: chapter_number,
+      chapter_name: chapter_name,
     };
 
     try {
@@ -111,7 +113,7 @@ export default function UI() {
 
       if (response.ok) {
         console.log("Successful");
-        let abc = [...chaptersdone, currentChapter];
+        let abc = [...chaptersdone, chapternames[currentChapter]["name"]];
         setchaptersdone(abc);
 
         // Additional actions upon success can be handled here
@@ -152,14 +154,14 @@ export default function UI() {
                 color:
                   currentChapter === index
                     ? "black"
-                    : chaptersdone.includes(index)
+                    : chaptersdone.includes(value["name"])
                     ? "green"
                     : "lightgray",
               }}
             >
               {!chaptersavailable[index] ? (
                 <LockIcon></LockIcon>
-              ) : chaptersdone.includes(index) ? (
+              ) : chaptersdone.includes(value["name"]) ? (
                 <CheckCircleOutlinedIcon></CheckCircleOutlinedIcon>
               ) : (
                 <PlayCircleIcon></PlayCircleIcon>
@@ -211,7 +213,7 @@ export default function UI() {
                   display: !chaptersavailable[currentChapter] ? "none" : "flex",
                 }}
                 onEnded={() =>
-                  completeChapter(username, courseId, currentChapter)
+                  completeChapter(username, courseId, chapternames[currentChapter]["name"])
                 }
               >
                 <source src={Video} type="video/mp4" />
@@ -232,12 +234,12 @@ export default function UI() {
               style={{
                 display:
                   !chaptersavailable.includes(0) &&
-                  !chaptersdone.includes(currentChapter)
+                  !chaptersdone.includes(chapternames[currentChapter]["name"])
                     ? "flex"
                     : "none",
               }}
               onClick={() =>
-                completeChapter(username, courseId, currentChapter)
+                completeChapter(username, courseId, chapternames[currentChapter]["name"])
               }
             >
               Mark as Complete
@@ -247,7 +249,7 @@ export default function UI() {
               style={{
                 display:
                   !chaptersavailable.includes(0) &&
-                  chaptersdone.includes(currentChapter)
+                  chaptersdone.includes(chapternames[currentChapter]["name"])
                     ? "flex"
                     : "none",
               }}
