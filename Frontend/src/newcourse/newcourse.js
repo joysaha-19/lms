@@ -366,7 +366,7 @@ if (loading1 ) {
         </div>
         <div className='newcourse_cost'>
             <div className='newcourse_namebox_title'><p>Course Cost in $</p></div>
-            <div className='newcourse_name_textbox'>
+            <div className='newcourse_name_textbox' style={{bottom:'25%'}}>
                 <input
                     className='course_name_text'
                     type='number'
