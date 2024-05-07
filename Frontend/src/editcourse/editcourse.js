@@ -1,6 +1,6 @@
 import React, { useState , useRef ,useEffect } from 'react';
-import './newcourse.css';
-import { useNavigate } from 'react-router-dom';
+import './editcourse.css';
+import { useNavigate, useParams } from 'react-router-dom';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -29,35 +29,61 @@ const MainContainer = () => {
     const [editCourseCost, setEditCourseCost] = useState(false);
     const [completedFields, setCompletedFields] = useState(0);
     const [loading1,setLoading1]=useState(true);
-    const [teacherid, setteacherid] = useState();
+    // const [teacherid, setteacherid] = useState();
 
-    const[publishmessage,setpublishmessage]=useState("Publish");
+    const[publishmessage,setpublishmessage]=useState("Save");
+    const {courseId}=useParams();
 
     const username="Joydeep";
-    async function fetchTeacher(username) {
-      const encodedUsername = encodeURIComponent(username);
-      const url = `http://localhost:5000/lms/teachers/getteacher?username=${encodedUsername}`;
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        setteacherid(data["_id"]);
+    // async function fetchTeacher(username) {
+    //   const encodedUsername = encodeURIComponent(username);
+    //   const url = `http://localhost:5000/lms/teachers/getteacher?username=${encodedUsername}`;
+    //   try {
+    //     const response = await fetch(url);
+    //     const data = await response.json();
+    //     setteacherid(data["_id"]);
        
-      } catch (error) {
-        console.error("Failed to fetch teacher data:", error);
-      } finally {
-      }
-      setLoading1(false);
-    }
+    //   } catch (error) {
+    //     console.error("Failed to fetch teacher data:", error);
+    //   } finally {
+    //   }
+    //   setLoading1(false);
+    // }
 
+    async function fetchCourse(courseId) {
+        const encodedCourse = encodeURIComponent(courseId);
+        const url = `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourse}`;
 
-
-  
-    useEffect(() => {
-      fetchTeacher(username);
-      
-  
-    }, []);
     
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+
+          setChapters(data["chapters"]);
+          setCourseDescription(data["tag"]);
+          setCourseCost(data["course_cost"]);
+          setCourseTitle(data["course_name"]);
+          setImage('/pics/logo.webp')
+        } catch (error) {
+          console.error("Could not fetch course:", error);
+        }finally{
+          setLoading1(false);
+        }
+      }
+
+
+  
+      useEffect(() => {
+        if (courseId) {
+          fetchCourse(courseId);
+        } else {
+          console.error("No course ID available");
+        }
+      }, [courseId]);
+      
 
 
 
@@ -69,18 +95,16 @@ const MainContainer = () => {
         return;
         }
       const courseData = {
+          course_id: courseId,
           course_name: courseTitle,
           course_desc: "",
-          course_instructor: username,
           course_cost: Number(courseCost),
-          enrolled: [],
-          teacherid: teacherid,
           chapters: chapters,
           tag: courseDescription  // Assuming tag is static, change if needed
       };
 
       try {
-          const response = await fetch('http://localhost:5000/lms/courses/addcourse', {
+          const response = await fetch('http://localhost:5000/lms/courses/editpublishedcourse', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json'
@@ -89,17 +113,17 @@ const MainContainer = () => {
           });
           const responseData = await response.json();
           if (response.ok) {
-              console.log('Course added successfully:', responseData);
-              setpublishmessage("Published Successfully");
+              console.log('Course edited successfully:', responseData);
+              setpublishmessage("Saved");
               const a= setTimeout(()=>{
                 nav('/teacher');
                 return ()=>clearTimeout(a);
               },2000)
           } else {
-              console.log('Failed to add course:', responseData);
+              console.log('Failed to edit course:', responseData);
           }
       } catch (error) {
-          console.error('Failed to send course data:', error);
+          console.error('Failed to edit course data:', error);
       }
   };
 
@@ -222,7 +246,7 @@ No chapters have been added
  const add_chapters=<div className='add_chapter_box'>
  <div className='add_chapter_area'>
    <div className='add_chapters_title'>
-     <p>Add Chapters (min 2)</p>
+     <p>Edit Chapters (min 2)</p>
    </div>
    <div className='chapter_controls_box'>
      <div className='add_chapter_button' style={{ display: !addingChapter ? 'flex' : 'none' }} onClick={() => { setAddingChapter(true); setEditing(false); setReadOnly(false); }}>
@@ -303,7 +327,7 @@ if (loading1 ) {
     <div className='newcourse_parent'>
     <div className='leftpanel'>
         <div className='newcourse_titlebox'>
-            <div className='newcourse_title_container'><p>New Course Setup</p>
+            <div className='newcourse_title_container'><p>Edit Course</p>
                 <p style={{ fontSize: '14px' }}>Completed Fields:{completedFields}/5</p>
             </div>
         </div>

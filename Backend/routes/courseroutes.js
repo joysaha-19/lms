@@ -9,7 +9,8 @@ const {
   addcourse,
   deletepublishedcourse,
   deletedraftcourse,
-  completeChapter
+  completeChapter,
+  editpublishedcourse
 } = require("../controllers/coursecontroller");
 const validatetoken = require("../middleware/accesstokenhandler2");
 // Define your routes here, for example:
@@ -20,6 +21,8 @@ router.post("/enroll",  enrollincourse);
 router.get("/seecourse",seecourse);
 router.post("/addcourse", addcourse);
 router.post("/deletepublishedcourse", deletepublishedcourse);
+router.post("/editpublishedcourse", editpublishedcourse);
+
 router.post("/deletedraftcourse", deletedraftcourse);
 router.post("/completechapter", completeChapter);
 module.exports = router;

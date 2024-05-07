@@ -176,6 +176,38 @@ const deletepublishedcourse = asynchandler(async (req, res) => {
   }
 });
 
+const editpublishedcourse = asynchandler(async (req, res) => {
+  const { course_id,course_name,course_desc,course_cost,chapters,courseDescription } = req.body;
+  try {
+    // Find the course by ID
+    const course = await Courses.findById(course_id);
+
+    // Check if the course exists
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Update the course with new data from req.body
+    if (course_name) course.course_name = course_name;
+    if (course_desc) course.course_desc = course_desc;
+    if (typeof course_cost === 'number') course.course_cost = course_cost;
+    if (chapters) course.chapters = chapters;
+    if (courseDescription) course.tag = courseDescription;
+
+    // Save the updated course
+    const updatedCourse = await course.save();
+
+    // Respond with the updated course
+    res.status(200).json({
+      message: "Course updated successfully",
+      course: updatedCourse
+    });
+  } catch (error) {
+    console.error('Error editing published course:', error);
+    res.status(500).json({ message: "-1", error: error.message });
+  }
+});
+
 
 
 const deletedraftcourse = asynchandler(async (req, res) => {
@@ -239,4 +271,4 @@ const completeChapter = asynchandler(async (req, res) => {
 
 
 
-module.exports = {getcourse, getallcourses, getallusercourses, seecourse, enrollincourse, addcourse,deletepublishedcourse, deletedraftcourse,completeChapter };
+module.exports = {getcourse, getallcourses, getallusercourses, seecourse, enrollincourse, addcourse,deletepublishedcourse, deletedraftcourse,completeChapter ,editpublishedcourse};

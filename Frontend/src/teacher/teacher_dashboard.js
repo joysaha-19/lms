@@ -178,6 +178,8 @@ export default function UI() {
   }, [username, refreshData]);
   
   useEffect(()=>{
+
+    fetchTeacher(username)
    if(activeMenu===1)
     setmax1(999999999);
   else{
@@ -213,7 +215,7 @@ export default function UI() {
 
   function generateYAxisLabels(max) {
     let labels = [];
-    for (let i = 0; i <= max; i += 50) {
+    for (let i = 0; i <= max; i += 100) {
       labels.push(i);
     }
     return labels;
@@ -337,7 +339,7 @@ export default function UI() {
                     className="teacher_ylabel"
                     style={{
                       position: "absolute",
-                      bottom: `${(label / max) * 100}%`,
+                      bottom: `${(label / max) * 95}%`,
                     }}
                   >
                     {label}$
@@ -361,7 +363,7 @@ export default function UI() {
                       </div>
                     </div>
                     <div className="teacher_header_edit">
-                      <EditOutlinedIcon  className="teacher_editbutton"  />
+                      <EditOutlinedIcon  className="teacher_editbutton" onClick={()=>navigate(`/teacher/editcourse/${value["course_id"]}`)} />
                       <Delete className="teacher_deletebutton" onClick={() => handleClickOpen(index)} />
                     </div>
                   </div>
