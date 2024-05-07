@@ -151,7 +151,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 30px;
 }
+
+
 
 .teacher_header_coursename {
     justify-content: flex-start;
@@ -285,7 +288,7 @@ body {
     width: 30px; /* Adjust width as needed */
     text-align: right; /* Align text to the right */
     color: gray;
-    font-size: 12px;
+    font-size: 8px;
 }
 
 .teacher_statusbox {
@@ -301,11 +304,23 @@ body {
 .teacher_editbutton {
     border-radius: 50%;
     background-color: transparent;
-    transition: all 0.0s ease;
+    transition: all 0.3s ease;
+    color: gray;
 }
 
 .teacher_editbutton:hover {
-    background-color: rgb(195, 188, 188);
+    color: green;
+}
+
+.teacher_deletebutton {
+    border-radius: 50%;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    color: gray;
+}
+
+.teacher_deletebutton:hover {
+    color: red;
 }
 
 .teacher_menu {

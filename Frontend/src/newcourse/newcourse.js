@@ -31,6 +31,8 @@ const MainContainer = () => {
     const [loading1,setLoading1]=useState(true);
     const [teacherid, setteacherid] = useState();
 
+    const[publishmessage,setpublishmessage]=useState("Publish");
+
     const username="Joydeep";
     async function fetchTeacher(username) {
       const encodedUsername = encodeURIComponent(username);
@@ -88,6 +90,11 @@ const MainContainer = () => {
           const responseData = await response.json();
           if (response.ok) {
               console.log('Course added successfully:', responseData);
+              setpublishmessage("Published Successfully");
+              const a= setTimeout(()=>{
+                nav('/teacher');
+                return ()=>clearTimeout(a);
+              },2000)
           } else {
               console.log('Failed to add course:', responseData);
           }
@@ -383,7 +390,7 @@ if (loading1 ) {
             </div>
         </div>
         <div className='submitoptions'>
-            <div className='publishoptionbutton'  onClick={submitCourse}>Publish</div>
+            <div className='publishoptionbutton'  onClick={submitCourse}>{publishmessage}</div>
             <div className='saveoptionbutton' onClick={()=>nav('/teacher')}>Exit</div>
         </div>
     </div>

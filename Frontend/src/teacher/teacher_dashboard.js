@@ -5,6 +5,13 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import Delete from "@mui/icons-material/Delete";
 export default function UI() {
   const navigate = useNavigate(null);
   const [publishedCourses, setPublishedCourses] = useState([]);
@@ -25,6 +32,62 @@ export default function UI() {
   const [chart, setchart] = useState([]);
   const [max, setmax] = useState(0);
   const [max1,setmax1] =useState(99999999999999);
+  const [refreshData, setRefreshData] = useState(false);
+  const [teacherid,setteacherid]=useState("");
+
+
+  const [open, setOpen] = useState(false);
+  const [deleteCandidate, setDeleteCandidate] = useState(null);
+
+  // Function to open dialog
+  const handleClickOpen = (index) => {
+    setDeleteCandidate(chart[index]);
+    setOpen(true);
+  };
+
+  // Function to close dialog
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  // Modified handledelete to use deleteCandidate
+  async function handleDelete() {
+    if (!deleteCandidate) return;
+
+    const { course_id, status } = deleteCandidate;
+    const url = status === 'published' 
+      ? 'http://localhost:5000/lms/courses/deletepublishedcourse' 
+      : 'http://localhost:5000/lms/courses/deletedraftcourse';
+
+    const body = JSON.stringify({
+      courseid: course_id,
+      teacherid: teacherid
+    });
+
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: body
+      });
+
+      if (response.ok) {
+        console.log('Course deletion successful:', await response.json());
+        // Refresh data or remove course from chart
+        setchart(currentChart => currentChart.filter(c => c.course_id !== course_id));
+        handleClose();
+      } else {
+        throw new Error('Failed to delete the course');
+      }
+    } catch (error) {
+      console.error('Error during deletion:', error);
+    }
+  };
+
   function handlenavigate(a) {
     // Use template literals to dynamically create the path
     console.log(a);
@@ -44,6 +107,7 @@ export default function UI() {
       let newChart1 = [];
       setPublishedCourses(data["published_courses"]);
       setDraftCourses(data["published_courses"]);
+      setteacherid(data["_id"]);
       const courseFetchPromises = data["published_courses"].map(
         async (courseId) => {
           const encodedCourseid = encodeURIComponent(courseId);
@@ -60,7 +124,8 @@ export default function UI() {
             enrolled: enrolled,
             revenue: revenue,
             status: "published",
-            cost: courseData["course_cost"]
+            cost: courseData["course_cost"],
+            course_id:courseData["_id"]
           };
         }
       );
@@ -77,7 +142,8 @@ export default function UI() {
           return {
             course_name: courseData["course_name"],
             status: "drafted",
-            cost: courseData["course_cost"]
+            cost: courseData["course_cost"],
+            course_id:courseData["_id"]
 
           };
         }
@@ -101,11 +167,15 @@ export default function UI() {
     setLoading1(false);
   }
 
+ 
+
+
+
   useEffect(() => {
     fetchTeacher(username);
     
 
-  }, []);
+  }, [username, refreshData]);
   
   useEffect(()=>{
    if(activeMenu===1)
@@ -139,7 +209,7 @@ export default function UI() {
   
   const [filterText, setFilterText] = useState('');
 
-  
+ 
 
   function generateYAxisLabels(max) {
     let labels = [];
@@ -157,6 +227,20 @@ export default function UI() {
   }
   return (
     <div className="teacher_dashboard_parent">
+       <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{"Are you sure you want to delete this course?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {`Are you sure you want to delete the course: ${deleteCandidate?.course_name}? This action cannot be undone.`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleDelete} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div className="teacher_logobox">
         <div className="teacher_logoboxactual">
           <img className="logoimage" src="./pics/logo.png" alt="logo" />
@@ -278,7 +362,7 @@ export default function UI() {
                     </div>
                     <div className="teacher_header_edit">
                       <EditOutlinedIcon  className="teacher_editbutton"  />
-                     
+                      <Delete className="teacher_deletebutton" onClick={() => handleClickOpen(index)} />
                     </div>
                   </div>
                 );

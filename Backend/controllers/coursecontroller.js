@@ -142,21 +142,40 @@ const addcourse = asynchandler(async (req, res) => {
   }
 });
 const deletepublishedcourse = asynchandler(async (req, res) => {
+  const { courseid, teacherid } = req.body;
   try {
-    const { courseid ,teacherid} = req.body;
-    const deletedCourse = await Courses.findByIdAndDelete(courseid);
-    await Teachers.findByIdAndUpdate(
-      teacherid,
-      { $pull:{ published_courses: courseid } },  // $pull removes the specified courseId from the array
-      { new: true, runValidators: true }  // Options to return the updated document and run schema validation
-  )
+    // Retrieve the course to get the enrolled users
+    const course = await Courses.findById(courseid);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
 
-    
-    res.status(201).json({message:"course successfully added"});
+    // Remove the course from each enrolled user's list of courses and progressReports
+    const updates = course.enrolled.map(async (username) => {
+      await Users.findOneAndUpdate({ username: username }, {
+          $pull: { courses: courseid },
+          $unset: { [`progressReports.${courseid}`]: "" }
+      });
+  });
+
+    // Execute all updates in parallel
+    await Promise.all(updates);
+
+    // Remove the course document
+    await Courses.findByIdAndDelete(courseid);
+
+    // Update the teacher document to remove the course from published_courses
+    await Teachers.findByIdAndUpdate(teacherid, {
+      $pull: { published_courses: courseid }
+    });
+
+    res.status(200).json({ message: "Course successfully deleted" });
   } catch (error) {
-    res.status(400).json({message:"-1"});
+    console.error('Error deleting published course:', error);
+    res.status(500).json({ message: "-1", error: error.message });
   }
 });
+
 
 
 const deletedraftcourse = asynchandler(async (req, res) => {
