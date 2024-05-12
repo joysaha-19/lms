@@ -91,3 +91,4 @@ This will run the frontend of the Lesson Management System on your local machine
 ## Usage
 
 After setting up both the frontend and backend, navigate to `http://localhost:3000` in your web browser to start using the application. Register as a student or teacher to explore the functionalities provided by the Lesson Management System.
+
