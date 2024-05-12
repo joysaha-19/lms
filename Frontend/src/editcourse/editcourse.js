@@ -33,9 +33,8 @@ const MainContainer = () => {
     // const [teacherid, setteacherid] = useState();
 
     const[publishmessage,setpublishmessage]=useState("Save");
-    const {courseId}=useParams();
+    const {courseId,username}=useParams();
 
-    const username="Joydeep";
     // async function fetchTeacher(username) {
     //   const encodedUsername = encodeURIComponent(username);
     //   const url = `http://localhost:5000/lms/teachers/getteacher?username=${encodedUsername}`;
@@ -119,7 +118,7 @@ const MainContainer = () => {
               console.log('Course edited successfully:', responseData);
               setpublishmessage("Saved");
               const a= setTimeout(()=>{
-                nav('/teacher');
+                nav(`/teacher/${username}`);
                 return ()=>clearTimeout(a);
               },2000)
           } else {
@@ -426,7 +425,7 @@ if (loading1 ) {
         </div>
         <div className='submitoptions'>
             <div className='publishoptionbutton'  onClick={submitCourse}>{publishmessage}</div>
-            <div className='saveoptionbutton' onClick={()=>nav('/teacher')}>Exit</div>
+            <div className='saveoptionbutton' onClick={()=>nav(`/teacher/${username}`)}>Exit</div>
         </div>
     </div>
 </div>

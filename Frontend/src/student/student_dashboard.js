@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./student_dashboard.css";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -45,8 +46,10 @@ export default function UI() {
   function handlenavigate(a) {
     // Use template literals to dynamically create the path
     console.log(a);
-    navigate(`/student/course/${a}`);
+    navigate(`/student/course/${username}/${a}`);
   }
+  const { username } = useParams();
+
   async function fetchCoursesForUser(username) {
     const encodedUsername = encodeURIComponent(username);
     const url = `http://localhost:5000/lms/courses/usercourses?username=${encodedUsername}`;
@@ -160,7 +163,7 @@ export default function UI() {
   }
 
   useEffect(() => {
-    fetchCoursesForUser("Joydeep");
+    fetchCoursesForUser(username);
     fetchAllCourses();
   }, []);
 
@@ -322,7 +325,7 @@ export default function UI() {
           />
         </div>
         <div className="switchoption" onClick={()=>
-          navigate('/teacher')
+          navigate(`/teacher/${username}`)
         }>Switch to Teacher Mode</div>
       </div>
       <div className="studentmenu">

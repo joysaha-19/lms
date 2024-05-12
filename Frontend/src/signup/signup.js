@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import './signup.css';
 import Bg from '../assets/bg.jpg';
+import { useNavigate } from 'react-router-dom';
 
 export default function Signup() {
+    const nav=useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    name:''
   });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState(''); // State to store server response errors
@@ -32,6 +35,13 @@ export default function Signup() {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match.';
     }
+    if (formData.username.length===0) {
+        newErrors.confirmPassword = 'Please enter a unique username';
+      }
+
+      if (formData.name.length===0) {
+        newErrors.confirmPassword = 'Please enter your name';
+      }
     return newErrors;
   };
 
@@ -44,7 +54,22 @@ export default function Signup() {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/lms/users/register', {
+      const response1 = await fetch('http://localhost:5000/lms/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          name:formData.name
+        })
+      });
+      const username=formData.username
+      const textResponse1= await response1.text();
+
+      const response2 = await fetch('http://localhost:5000/lms/teachers/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -56,12 +81,24 @@ export default function Signup() {
         })
       });
 
-      const textResponse = await response.text();
-      setServerError(textResponse); // Set error message from server response
+      const textResponse2 = await response2.text();
 
-      if (!response.ok) {
+      if (!response1.ok) {
+        setServerError(textResponse1)
         return;
       }
+      if(!response2.ok)
+        {
+            setServerError(textResponse2)
+            return;
+
+        }
+
+        setServerError("Registered Successfully! Redirecting...");
+        const a =setTimeout(()=>{
+            nav(`/student/${username}`);
+            return ()=>clearTimeout(a);
+        },2000)
       // Handle successful registration scenario, e.g., redirect or clear form
     } catch (error) {
       console.error('Error:', error);
@@ -75,10 +112,14 @@ export default function Signup() {
                 <img alt="lmsimage" src='/pics/logo.png'></img>
             </div>
       <div className="container_signup">
-        <div className="title_signup">Registration for Students</div>
+        <div className="title_signup">Registration</div>
         <div className="content_signup">
           <form onSubmit={handleSubmit}>
             <div className="user-details_signup">
+              <div className="input-box_signup">
+                <span className="details_signup">Full Name</span>
+                <input type="text" placeholder="Enter your full name" name="name" required onChange={handleInputChange} />
+              </div>
               <div className="input-box_signup">
                 <span className="details_signup">Username</span>
                 <input type="text" placeholder="Enter your username" name="username" required onChange={handleInputChange} />
@@ -103,14 +144,14 @@ export default function Signup() {
                 {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
               </div>
             </div>
-            {serverError && <div className="server-error" style={{width:'100%', display:'flex',alignItems:'center',justifyContent:'center'}}><p style={{color:serverError==="Registration Successful. Redirecting..."?"green":'red'}}>{serverError}</p></div>}  
+            {serverError && <div className="server-error" style={{width:'100%', display:'flex',alignItems:'center',justifyContent:'center'}}><p style={{color:serverError==="Registered Successfully! Redirecting..."?"green":'red'}}>{serverError}</p></div>}  
 
             <div className="button_signup">
               <input type="submit" value="Register" />
             </div>
             <div className="additional-options_signup">
-              <button type="button" className="signin-btn_signup">Sign in</button>
-              <button type="button" className="register-teacher-btn_signup">Register as Teacher</button>
+              <button type="button" className="signin-btn_signup" onClick={()=>nav('/signin')}>Sign in</button>
+              {/* <button type="button" className="register-teacher-btn_signup">Register as Teacher</button> */}
             </div>
           </form>
         </div>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState ,useRef} from "react";
 import { useNavigate } from "react-router-dom";
+import { useParams } from 'react-router-dom';
+
 import "./teacher_dashboard.css";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
@@ -94,7 +96,7 @@ export default function UI() {
     navigate(`/teacher/course/${a}`);
   }
 
-  const username = "Joydeep";
+  const { username } = useParams();
   async function fetchTeacher(username) {
     const encodedUsername = encodeURIComponent(username);
     const url = `http://localhost:5000/lms/teachers/getteacher?username=${encodedUsername}`;
@@ -251,7 +253,7 @@ export default function UI() {
       </div>
       <div className="teacher_appbar">
       <div className="switchoption" onClick={()=>
-          navigate('/student')
+          navigate(`/student/${username}`)
         }>Switch to Student Mode
       </div>
       </div>
@@ -291,7 +293,7 @@ export default function UI() {
         <div className="teacher_filterbox" style={{ display: !activeMenu ? "none" : "flex" }}>
         <input className="teacher_filtertext" type="text" value={filterText} onChange={handleFilterChange} placeholder="Search courses..." />
 </div>
-<div className="newcoursebutton" style={{ display: !activeMenu ? "none" : "flex" }} onClick={()=>navigate('/teacher/addcourse')}><p>{<AddCircleOutlineOutlinedIcon></AddCircleOutlineOutlinedIcon>}{" New Course"}</p></div>
+<div className="newcoursebutton" style={{ display: !activeMenu ? "none" : "flex" }} onClick={()=>navigate(`/teacher/addcourse/${username}`)}><p>{<AddCircleOutlineOutlinedIcon></AddCircleOutlineOutlinedIcon>}{" New Course"}</p></div>
 
         <div
           className="teacher_coursestableheader"
@@ -365,7 +367,7 @@ export default function UI() {
                       </div>
                     </div>
                     <div className="teacher_header_edit">
-                      <EditOutlinedIcon  className="teacher_editbutton" onClick={()=>navigate(`/teacher/editcourse/${value["course_id"]}`)} />
+                      <EditOutlinedIcon  className="teacher_editbutton" onClick={()=>navigate(`/teacher/editcourse/${username}/${value["course_id"]}`)} />
                       <Delete className="teacher_deletebutton" onClick={() => handleClickOpen(index)} />
                     </div>
                   </div>

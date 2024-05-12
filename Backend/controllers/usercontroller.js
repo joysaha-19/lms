@@ -14,6 +14,11 @@ const register = asynchandler(async (req, res) => {
     res.status(400).send("Email already in use");
     return 
   }
+  const usernameinuse = await Users.findOne({ username: username });
+  if (usernameinuse) {
+    res.status(400).send("Username already in use");
+    return 
+  }
   const hashedpassword = await bcrypt.hash(password, 10);
   const added = await Users.create({
     username: username,
@@ -31,31 +36,37 @@ const register = asynchandler(async (req, res) => {
   }
 });
 const login= asynchandler(async(req,res)=>{
-  const {email,password}=req.body;
-  if(!email||!password){
+  const {username,password}=req.body;
+  if(!username||!password){
       res.status(200).send("All fields are mandatory");
       
   }
-  const usercheck=await Users.findOne({"email":email});
+  console.log(username)
+  const usercheck=await Users.findOne({"username":username});
   if (usercheck&&await bcrypt.compare(password,usercheck.password))
       {
-          const accesstoken=jwt.sign({
-              user:{
-                  username:usercheck.username,
-                  email:usercheck.email,
-                  id:usercheck.id
-                   },
-              },
+      //     const accesstoken=jwt.sign({
+      //         user:{
+      //             username:usercheck.username,
+      //             email:usercheck.email,
+      //             id:usercheck.id
+      //              },
+      //         },
               
-              process.env.ACC_TOKEN,
+      //         process.env.ACC_TOKEN,
               
-              {expiresIn:"1d"}
-          );
-          res.status(200).send(accesstoken);
-          // req.headers.authorization = `Bearer ${accesstoken}`;
-      }
-      else{
-      res.status(400).send("Incorrect email id or password");
+      //         {expiresIn:"1d"}
+      //     );
+      //     res.status(200).send(accesstoken);
+      //     // req.headers.authorization = `Bearer ${accesstoken}`;
+      // }
+      // else{
+      // res.status(400).send("Incorrect email id or password");
+      res.status(200).send("Logged in successfully. Redirecting...")
+      
+  }
+  else{
+    res.status(400).send("Invalid username or password.")
       
   }
   });

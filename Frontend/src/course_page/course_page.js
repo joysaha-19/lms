@@ -10,7 +10,6 @@ import SamplePdf from "../assets/sample_assignment.pdf"
 import "./course_page.css";
 
 export default function UI() {
-  const username = "Joydeep";
   const nav = useNavigate(null);
   const [scroller, setScroller] = useState(0);
   const [querycourse, setQueryCourse] = useState({});
@@ -24,7 +23,7 @@ export default function UI() {
   const videoRef = useRef(null); // Create a ref for the video element
 
   // Extract the courseId parameter from the URL
-  const { courseId } = useParams();
+  const { courseId ,username} = useParams();
 
   async function fetchCourse(username, courseId) {
     const encodedCourse = encodeURIComponent(courseId);
@@ -88,7 +87,7 @@ export default function UI() {
   }
 
   function handleenroll(a) {
-    nav(`/student/enroll/${a}`);
+    nav(`/student/enroll/${username}/${a}`);
   }
   async function completeChapter(username, courseId, chapter_name) {
     // Construct the JSON data inside the function
@@ -176,7 +175,7 @@ export default function UI() {
         ></div>
       </div>
       <div className="course_page_appbar">
-        <div className="exitbutton" onClick={() => nav("/student")}>
+        <div className="exitbutton" onClick={() => nav(`/student/${username}`)}>
           <p>EXIT</p>
         </div>
       </div>

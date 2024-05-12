@@ -1,5 +1,7 @@
 import React, { useState , useRef ,useEffect } from 'react';
 import './newcourse.css';
+import { useParams } from 'react-router-dom';
+
 import { useNavigate } from 'react-router-dom';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -33,7 +35,7 @@ const MainContainer = () => {
 
     const[publishmessage,setpublishmessage]=useState("Publish");
 
-    const username="Joydeep";
+    const { username } = useParams();
     async function fetchTeacher(username) {
       const encodedUsername = encodeURIComponent(username);
       const url = `http://localhost:5000/lms/teachers/getteacher?username=${encodedUsername}`;
@@ -93,8 +95,7 @@ const MainContainer = () => {
             console.log('Course added successfully:', responseData);
             setpublishmessage("Published Successfully");
             setTimeout(() => {
-                nav('/teacher');
-            }, 2000);
+              nav(`/teacher/${username}`)            }, 2000);
         } else {
             console.error('Failed to add course:', responseData);
         }
@@ -403,7 +404,7 @@ if (loading1 ) {
         </div>
         <div className='submitoptions'>
             <div className='publishoptionbutton'  onClick={submitCourse}>{publishmessage}</div>
-            <div className='saveoptionbutton' onClick={()=>nav('/teacher')}>Exit</div>
+            <div className='saveoptionbutton' onClick={()=>nav(`/teacher/${username}`)}>Exit</div>
         </div>
     </div>
 </div>

@@ -4,7 +4,7 @@ import "./enrollment.css";
 
 export default function UI() {
   const navigate = useNavigate();
-  const { courseId } = useParams();
+  const { courseId,username } = useParams();
   const [querycourse, setQueryCourse] = useState({});
   const [cardNumber, setCardNumber] = useState('');
   const [cvv, setCvv] = useState('');
@@ -13,7 +13,6 @@ export default function UI() {
   const [buttontext,setbuttontext]=useState('');
   const [loading1,setLoading1]=useState(true);
 
-  const username = "Joydeep";
 
   async function fetchCourse(username, courseId) {
     const encodedCourse = encodeURIComponent(courseId);
@@ -71,7 +70,7 @@ export default function UI() {
       }    // Further processing would go here, such as submitting to a server
       setbuttontext('Enrolled Succesfully');
      const a= setTimeout(()=>{
-        navigate(`/student/course/${courseId}`);
+        navigate(`/student/course/${username}/${courseId}`);
         return()=>clearTimeout(a);
       },3000)
 
