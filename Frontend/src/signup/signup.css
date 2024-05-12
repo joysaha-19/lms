@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+.parent_signup {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 100vw;
+  /* background: linear-gradient(135deg, #71b7e6, #9b59b6); */
+  position: relative;
+}
+.lmsimagebox{
+    height: 200px;
+    width: 300px;
+    background-color: rgba(173, 216, 230, 0.097);
+    position: absolute;
+    left: 0%;
+    top: 0%;
+}
+
+.lmsimagebox img{
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 2/1;
+    object-fit: contain;
+}
+.container_signup {
+  max-width: 700px;
+  width: 100%;
+  background-color: #ffffffd5;
+  padding: 25px 30px;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.container_signup .title_signup {
+  font-size: 25px;
+  font-weight: 500;
+  position: relative;
+}
+.container_signup .title_signup::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 30px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+.content_signup form .user-details_signup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0 12px 0;
+}
+form .user-details_signup .input-box_signup {
+  margin-bottom: 15px;
+  width: calc(100% / 2 - 20px);
+}
+form .input-box_signup span.details_signup {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.user-details_signup .input-box_signup input {
+  height: 45px;
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  border-radius: 5px;
+  padding-left: 15px;
+  border: 1px solid #ccc;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+.user-details_signup .input-box_signup input:focus,
+.user-details_signup .input-box_signup input:valid {
+  border-color: #9b59b6;
+}
+form .gender-details_signup .gender-title_signup {
+  font-size: 20px;
+  font-weight: 500;
+}
+form .category_signup {
+  display: flex;
+  width: 80%;
+  margin: 14px 0;
+  justify-content: space-between;
+}
+form .category_signup label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+form .category_signup label .dot_signup {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background: #d9d9d9;
+  border: 5px solid transparent;
+  transition: all 0.3s ease;
+}
+#dot-1:checked ~ .category_signup label .one,
+#dot-2:checked ~ .category_signup label .two,
+#dot-3:checked ~ .category_signup label .three {
+  background: #9b59b6;
+  border-color: #d9d9d9;
+}
+form input[type="radio"] {
+  display: none;
+}
+form .button_signup {
+  height: 45px;
+  margin: 35px 0;
+}
+form .button_signup input {
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+form .button_signup input:hover {
+  background: linear-gradient(-135deg, #71b7e6, #9b59b6);
+}
+.additional-options_signup {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+  width: 500px;
+  gap: 50px;
+}
+.signin-btn_signup, .register-teacher-btn_signup {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  border: 2px solid purple;
+
+  background: #9b59b6;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.signin-btn_signup:hover, .register-teacher-btn_signup:hover {
+  background: #71b7e6;
+}
+@media(max-width: 584px) {
+  .container_signup {
+    max-width: 100%;
+  }
+  form .user-details_signup .input-box_signup {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  form .category_signup {
+    width: 100%;
+  }
+  .content_signup form .user-details_signup {
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+  .user-details_signup::-webkit-scrollbar {
+    width: 5px;
+  }
+}
+@media(max-width: 459px) {
+  .container_signup .content_signup .category_signup {
+    flex-direction: column;
+  }
+}

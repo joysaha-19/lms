@@ -5,12 +5,14 @@ import Enrollment from './enrollment/enrollment';
 import Teacher from './teacher/teacher_dashboard';
 import NewCourse from './newcourse/newcourse';
 import EditCourse from './editcourse/editcourse';
+import Signup from './signup/signup'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+      <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Navigate replace to="/student" />} />
         <Route path="/student" element={<StdDash />} />
         <Route path="/student/course/:courseId" element={<CoursePage />} />
