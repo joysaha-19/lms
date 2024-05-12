@@ -36,7 +36,7 @@ export default function UI() {
   const [max1,setmax1] =useState(99999999999999);
   const [refreshData, setRefreshData] = useState(false);
   const [teacherid,setteacherid]=useState("");
-
+  const token=localStorage.getItem("accesstoken");
 
   const [open, setOpen] = useState(false);
   const [deleteCandidate, setDeleteCandidate] = useState(null);
@@ -66,14 +66,17 @@ export default function UI() {
       teacherid: teacherid
     });
 
-    const headers = {
-      'Content-Type': 'application/json'
-    };
+    
 
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: headers,
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+          'username':`${username}`
+
+        },
         body: body
       });
 
@@ -101,7 +104,13 @@ export default function UI() {
     const encodedUsername = encodeURIComponent(username);
     const url = `http://localhost:5000/lms/teachers/getteacher?username=${encodedUsername}`;
     try {
-      const response = await fetch(url);
+      const response = await fetch(url,{
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'username':`${username}`
+
+        }
+      });
       const data = await response.json();
       let s = 0;
       let localMax = 0;
@@ -115,7 +124,13 @@ export default function UI() {
         async (courseId) => {
           const encodedCourseid = encodeURIComponent(courseId);
           const courseResponse = await fetch(
-            `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourseid}`
+            `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourseid}`,{
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'username':`${username}`
+
+              }
+            }
           );
           const courseData = await courseResponse.json();
           const enrolled = courseData["enrolled"].length;
@@ -139,7 +154,12 @@ export default function UI() {
         async (courseId) => {
           const encodedCourseid = encodeURIComponent(courseId);
           const courseResponse = await fetch(
-            `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourseid}`
+            `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourseid}`,
+            { headers: {
+              'Authorization': `Bearer ${token}`,
+              'username':`${username}`
+
+            }}
           );
           const courseData = await courseResponse.json();
           return {
@@ -165,9 +185,14 @@ export default function UI() {
       
     } catch (error) {
       console.error("Failed to fetch teacher data:", error);
+      // setLoading1(false);
+      // setLoading2(false)
+
     } finally {
+      setLoading1(false);
+      setLoading2(false)
+     
     }
-    setLoading1(false);
   }
 
  

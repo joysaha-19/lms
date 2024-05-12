@@ -49,12 +49,19 @@ export default function UI() {
     navigate(`/student/course/${username}/${a}`);
   }
   const { username } = useParams();
+  const token=localStorage.getItem("accesstoken");
 
   async function fetchCoursesForUser(username) {
     const encodedUsername = encodeURIComponent(username);
     const url = `http://localhost:5000/lms/courses/usercourses?username=${encodedUsername}`;
     try {
-      const response = await fetch(url);
+      const response = await fetch(url,{
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'username':`${username}`
+
+        }
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -130,7 +137,13 @@ export default function UI() {
   async function fetchAllCourses() {
     const url = `http://localhost:5000/lms/courses/allcourses`;
     try {
-      const response = await fetch(url);
+      const response = await fetch(url,{
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'username':`${username}`
+
+        }
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

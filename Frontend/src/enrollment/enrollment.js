@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./enrollment.css";
 
 export default function UI() {
+  const token=localStorage.getItem("accesstoken");
+
   const navigate = useNavigate();
   const { courseId,username } = useParams();
   const [querycourse, setQueryCourse] = useState({});
@@ -19,7 +21,13 @@ export default function UI() {
     const url = `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourse}`;
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(url,{
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'username':`${username}`
+
+        }
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -57,7 +65,10 @@ export default function UI() {
       const response = await fetch(url, {
         method: 'POST', // Specify the method as POST
         headers: {
-          'Content-Type': 'application/json' // Specify the content type in the headers
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+          'username':`${username}`
+
         },
         body: JSON.stringify({
           username: username, // Include the username in the body

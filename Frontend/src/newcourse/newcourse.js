@@ -12,6 +12,8 @@ import DoneIcon from '@mui/icons-material/Done';
 import UploadIcon from '@mui/icons-material/Upload';
 
 const MainContainer = () => {
+  const token=localStorage.getItem("accesstoken");
+
   const nav=useNavigate(null);
   const [editing, setEditing] = useState(false);
     const [readOnly, setReadOnly] = useState(false);
@@ -40,7 +42,13 @@ const MainContainer = () => {
       const encodedUsername = encodeURIComponent(username);
       const url = `http://localhost:5000/lms/teachers/getteacher?username=${encodedUsername}`;
       try {
-        const response = await fetch(url);
+        const response = await fetch(url,{
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'username':`${username}`
+
+          }
+        });
         const data = await response.json();
         setteacherid(data["_id"]);
        
@@ -85,7 +93,8 @@ const MainContainer = () => {
         const response = await fetch('http://localhost:5000/lms/courses/addcourse', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+              "Content-Type": "application/json",
+              'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(courseData)
         });

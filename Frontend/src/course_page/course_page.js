@@ -10,6 +10,8 @@ import SamplePdf from "../assets/sample_assignment.pdf"
 import "./course_page.css";
 
 export default function UI() {
+  const token=localStorage.getItem("accesstoken");
+
   const nav = useNavigate(null);
   const [scroller, setScroller] = useState(0);
   const [querycourse, setQueryCourse] = useState({});
@@ -30,7 +32,15 @@ export default function UI() {
     const url = `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourse}`;
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(url,
+        {
+          method: 'GET',
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'username':`${username}`
+          }
+      }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -60,7 +70,16 @@ export default function UI() {
     const encodedUsername = encodeURIComponent(username);
     const url = `http://localhost:5000/lms/courses/usercourses?username=${encodedUsername}`;
     try {
-      const response = await fetch(url);
+      const response = await fetch(url,
+        {
+          method: 'GET',
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'username':`${username}`
+
+          }
+      }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -105,6 +124,9 @@ export default function UI() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`,
+            'username':`${username}`
+
           },
           body: JSON.stringify(postData),
         }

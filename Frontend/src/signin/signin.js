@@ -56,16 +56,21 @@ const response1 = await fetch('http://localhost:5000/lms/users/login', {
     password: formData.password,
   })
 });
-console.log('Received response:', response1);
+// console.log('Received response:', response1);
 
-const textResponse1=await response1.text();
+const jsonResponse = await response1.json();  // Make sure 'response1' is the response object from fetch
+const textResponse1 = jsonResponse["message"];
+
+// Access 'accesstoken' correctly if it's part of the JSON response
+const accesstoken = jsonResponse["accesstoken"].toString();
       
       if (!response1.ok) {
         setServerError(textResponse1)
         return;
       }
      
-
+        localStorage.setItem("accesstoken",accesstoken);
+        console.log(accesstoken);
         setServerError("Logged in Successfully! Redirecting...");
         const a =setTimeout(()=>{
             nav(`/student/${username}`);

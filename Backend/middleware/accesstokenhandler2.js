@@ -5,6 +5,7 @@ const validatetoken=asynchandler(async(req,res,next)=>
 {
     let token;
     const authheader=req.headers.authorization||req.headers.Authorization;
+    const username=req.headers.username||req.headers.Username;
     if(authheader&&authheader.startsWith("Bearer"))
     {
     token=authheader.split(" ")[1];
@@ -16,7 +17,11 @@ const validatetoken=asynchandler(async(req,res,next)=>
          
         }
         else{
-        
+        if(decoded.user.username!==username)
+            {
+            res.status(401).send("User not authorized");
+        return;
+            }
         req.user=decoded.user;
         
         console.log(decoded);

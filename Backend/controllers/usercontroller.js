@@ -41,32 +41,34 @@ const login= asynchandler(async(req,res)=>{
       res.status(200).send("All fields are mandatory");
       
   }
-  console.log(username)
   const usercheck=await Users.findOne({"username":username});
   if (usercheck&&await bcrypt.compare(password,usercheck.password))
       {
-      //     const accesstoken=jwt.sign({
-      //         user:{
-      //             username:usercheck.username,
-      //             email:usercheck.email,
-      //             id:usercheck.id
-      //              },
-      //         },
+          const accesstoken=jwt.sign({
+              user:{
+                  username:usercheck.username,
+                  email:usercheck.email,
+                  id:usercheck.id
+                   },
+              },
               
-      //         process.env.ACC_TOKEN,
+              process.env.ACC_TOKEN,
               
-      //         {expiresIn:"1d"}
-      //     );
-      //     res.status(200).send(accesstoken);
-      //     // req.headers.authorization = `Bearer ${accesstoken}`;
-      // }
-      // else{
-      // res.status(400).send("Incorrect email id or password");
-      res.status(200).send("Logged in successfully. Redirecting...")
+              {expiresIn:"2h"}
+          );
+          res.status(200).json({"accesstoken":accesstoken,
+            "message":"Logged in successfully. Redirecting..."
+          });
+          // req.headers.authorization = `Bearer ${accesstoken}`;
+      }
+     
+      // res.status(200).send("Logged in successfully. Redirecting...")
       
-  }
+  
   else{
-    res.status(400).send("Invalid username or password.")
+    res.status(400).json({
+    "message":"Invalid username or password"
+  });
       
   }
   });

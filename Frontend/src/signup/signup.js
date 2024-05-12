@@ -96,7 +96,7 @@ export default function Signup() {
 
         setServerError("Registered Successfully! Redirecting...");
         const a =setTimeout(()=>{
-            nav(`/student/${username}`);
+            nav(`/signin`);
             return ()=>clearTimeout(a);
         },2000)
       // Handle successful registration scenario, e.g., redirect or clear form

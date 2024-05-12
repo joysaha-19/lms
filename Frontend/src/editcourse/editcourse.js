@@ -10,6 +10,8 @@ import DoneIcon from '@mui/icons-material/Done';
 import UploadIcon from '@mui/icons-material/Upload';
 
 const MainContainer = () => {
+  const token=localStorage.getItem("accesstoken");
+
   const nav=useNavigate(null);
   const [editing, setEditing] = useState(false);
     const [readOnly, setReadOnly] = useState(false);
@@ -56,7 +58,11 @@ const MainContainer = () => {
 
     
         try {
-          const response = await fetch(url);
+          const response = await fetch(url,{ headers: {
+            'Authorization': `Bearer ${token}`,
+            'username':`${username}`
+
+          }});
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -109,7 +115,10 @@ const MainContainer = () => {
           const response = await fetch('http://localhost:5000/lms/courses/editpublishedcourse', {
               method: 'POST',
               headers: {
-                  'Content-Type': 'application/json'
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`,
+                'username':`${username}`
+
               },
               body: JSON.stringify(courseData)
           });

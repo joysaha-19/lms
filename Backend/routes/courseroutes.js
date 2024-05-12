@@ -14,15 +14,15 @@ const {
 } = require("../controllers/coursecontroller");
 const validatetoken = require("../middleware/accesstokenhandler2");
 // Define your routes here, for example:
-router.get("/spcourse",  getcourse);
-router.get("/allcourses",  getallcourses);
-router.get("/usercourses",  getallusercourses);
-router.post("/enroll",  enrollincourse);
-router.get("/seecourse",seecourse);
+router.get("/spcourse", validatetoken, getcourse);
+router.get("/allcourses",validatetoken,  getallcourses);
+router.get("/usercourses",validatetoken,  getallusercourses);
+router.post("/enroll", validatetoken, enrollincourse);
+router.get("/seecourse",validatetoken,seecourse);
 router.post("/addcourse", addcourse);
-router.post("/deletepublishedcourse", deletepublishedcourse);
-router.post("/editpublishedcourse", editpublishedcourse);
+router.post("/deletepublishedcourse", validatetoken,deletepublishedcourse);
+router.post("/editpublishedcourse", validatetoken,editpublishedcourse);
 
-router.post("/deletedraftcourse", deletedraftcourse);
-router.post("/completechapter", completeChapter);
+router.post("/deletedraftcourse", validatetoken,deletedraftcourse);
+router.post("/completechapter", validatetoken,completeChapter);
 module.exports = router;

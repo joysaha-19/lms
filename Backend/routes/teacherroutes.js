@@ -15,7 +15,7 @@ router.post("/login", login);
 
 router.get("/current", validatetoken, current);
 
-router.get("/getteacher", getteacher);
+router.get("/getteacher",validatetoken, getteacher);
 
 
 router.post("/logout", validatetoken, logout);
