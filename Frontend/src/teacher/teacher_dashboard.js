@@ -105,6 +105,7 @@ export default function UI() {
       let localMax = 0;
       let newChart = [];
       let newChart1 = [];
+      let totalsales=0;
       setPublishedCourses(data["published_courses"]);
       setDraftCourses(data["published_courses"]);
       setteacherid(data["_id"]);
@@ -288,7 +289,7 @@ export default function UI() {
           </div>
         </div>
         <div className="teacher_filterbox" style={{ display: !activeMenu ? "none" : "flex" }}>
-        <input className="teacher_filtertext" type="text" value={filterText} onChange={handleFilterChange} placeholder="Filter courses..." />
+        <input className="teacher_filtertext" type="text" value={filterText} onChange={handleFilterChange} placeholder="Search courses..." />
 </div>
 <div className="newcoursebutton" style={{ display: !activeMenu ? "none" : "flex" }} onClick={()=>navigate('/teacher/addcourse')}><p>{<AddCircleOutlineOutlinedIcon></AddCircleOutlineOutlinedIcon>}{" New Course"}</p></div>
 
@@ -321,6 +322,7 @@ export default function UI() {
                       style={{
                         height: `${(parseFloat(value["revenue"]) / parseFloat(max1)) * 100}%`,
                         width: `${95 / chart.length}%`,
+                        backgroundColor:value["revenue"]===0?'red':''
                       }}
                     >
                       <div className="teacher_charttag">
