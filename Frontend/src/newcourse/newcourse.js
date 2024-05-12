@@ -63,46 +63,45 @@ const MainContainer = () => {
 
 
     const submitCourse = async () => {
-      if(completedFields<5)
-        {
-          alert("All fields are mandatory");
+    if (completedFields < 5) {
+        alert("All fields are mandatory");
         return;
-        }
-      const courseData = {
-          course_name: courseTitle,
-          course_desc: "",
-          course_instructor: username,
-          course_cost: Number(courseCost),
-          enrolled: [],
-          teacherid: teacherid,
-          chapters: chapters,
-          tag: courseDescription  // Assuming tag is static, change if needed
-      };
+    }
 
-      try {
-          const response = await fetch('http://localhost:5000/lms/courses/addcourse', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(courseData)
-          });
-          const responseData = await response.json();
-          if (response.ok) {
-              console.log('Course added successfully:', responseData);
-              setpublishmessage("Published Successfully");
-              const a= setTimeout(()=>{
+    // Image is now a Base64 string, included directly in JSON
+    const courseData = {
+        course_name: courseTitle,
+        tag: courseDescription,
+        course_instructor: username,
+        course_cost: Number(courseCost),
+        enrolled: [],
+        teacherid: teacherid,
+        chapters: chapters,
+    };
+
+    try {
+        const response = await fetch('http://localhost:5000/lms/courses/addcourse', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(courseData)
+        });
+        const responseData = await response.json();
+
+        if (response.ok) {
+            console.log('Course added successfully:', responseData);
+            setpublishmessage("Published Successfully");
+            setTimeout(() => {
                 nav('/teacher');
-                return ()=>clearTimeout(a);
-              },2000)
-          } else {
-              console.log('Failed to add course:', responseData);
-          }
-      } catch (error) {
-          console.error('Failed to send course data:', error);
-      }
-  };
-
+            }, 2000);
+        } else {
+            console.error('Failed to add course:', responseData);
+        }
+    } catch (error) {
+        console.error('Failed to send course data:', error);
+    }
+};
 
 
 
@@ -111,7 +110,7 @@ const MainContainer = () => {
     useEffect(() => {
         const fieldsFilled = [
             courseTitle !== '',
-            courseDescription !== 'None'||'',
+            courseDescription !== '',
             courseCost !== '',
             image !== null,
             chapters.length > 1
@@ -120,12 +119,16 @@ const MainContainer = () => {
     }, [courseTitle, courseDescription, courseCost, image, chapters]);
 
     const handleImageChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setImage(imageUrl);
-        }
-    };
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImage(reader.result); // This is now a Base64 string
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
 
     const handleClickIcon = () => {
         if (fileInputRef.current) {
@@ -330,12 +333,17 @@ if (loading1 ) {
             <div className='newcourse_namebox_title'><p>Course Tag</p></div>
             <div className='newcourse_description_textbox'>
             <select className='course_description_text' value={courseDescription} onChange={handleSelectChange} style={{ width: '90%', height: '35px' }}>
-              <option value="None">None</option>
+              <option value="">None</option>
               <option value="Engineering">Engineering</option>
               <option value="Art">Art</option>
               <option value="Medical">Medical</option>
               <option value="Science">Science</option>
               <option value="Humanities">Humanities</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Biology">Biology</option>
+              <option value="Architecture">Architecture</option>
+
+
 
           </select>
                 

@@ -45,12 +45,13 @@ body {
     grid-row: 2/3;
     background-color: transparent;
     border-radius: 10px;
+    background-color: black;
 
 }
 
 .cardImageArea img{
     aspect-ratio: 2/1;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .cardTitleArea{

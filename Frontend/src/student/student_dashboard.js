@@ -3,8 +3,26 @@ import { useNavigate } from "react-router-dom";
 import "./student_dashboard.css";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import EngineeringPic from '../assets/engineering.png'
+import MedicalPic from '../assets/medical.png'
+import ArtPic from '../assets/art.png'
+import HumanitiesPic from '../assets/humanities.png'
+import BiologyPic from '../assets/biology.png'
+import ArchitecturePic from '../assets/architecture.png'
+import MathsPic from '../assets/maths.png'
+
+
 
 export default function UI() {
+  const imageobj={
+    "Engineering":EngineeringPic,
+    "Medical":MedicalPic,
+    "Art":ArtPic,
+    "Humanities":HumanitiesPic,
+    "Biology":BiologyPic,
+    "Architecture":ArchitecturePic,
+    "Mathematics":MathsPic
+  }
   const navigate = useNavigate(null);
   const [courses, setCourses] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
@@ -50,10 +68,14 @@ export default function UI() {
           if (value.chaptersDone.length === value.chapters.length)
             complete = complete + 1;
           else pending = pending + 1;
-         
+        
           const progress = parseInt(
-            Math.ceil((value.chaptersDone.length / value.chapters.length) * 100)
+            Math.ceil(
+              (value.chaptersDone.filter(chapterDone => 
+                  value.chapters.some(chapter => chapter.name === chapterDone)).length / value.chapters.length) * 100
+            )
           );
+          
           obj1[key]=  <div className="cardProgressArea">
           <div className="progressBarArea">
             <div
@@ -83,6 +105,8 @@ export default function UI() {
             chapters: value.chapters.length,
             progress,
             courseid: key,
+            image: value["image"]
+
           });
         }
       }
@@ -121,6 +145,7 @@ export default function UI() {
           chapters: value.chapters.length,
           courseid: value._id,
           course_cost: value.course_cost.toString(),
+          image: value["image"]
         });
       }
 
@@ -174,7 +199,7 @@ export default function UI() {
     }
   }
 
-  function CourseCard({ title, tag, chapters, progress, courseid }) {
+  function CourseCard({ title, tag, chapters, progress, courseid ,image }) {
     return (
       <div
         className="cardParent"
@@ -184,7 +209,7 @@ export default function UI() {
         }}
       >
         <div className="cardImageArea">
-          <img alt="Course logo" src={`url-to-course-logo/${courseid}`}></img>
+          <img alt="Course logo" src={imageobj[tag]} style={{objectFit:'contain'}}></img>
         </div>
         <div className="cardTitleArea">
           <p className="cardTitle">{title}</p>
@@ -220,7 +245,7 @@ export default function UI() {
     );
   }
 
-  function GeneralCourseCard({ title, tag, chapters, courseid, course_cost }) {
+  function GeneralCourseCard({ title, tag, chapters, courseid, course_cost,image }) {
     return (
       <div
   className="cardParent"
@@ -230,7 +255,7 @@ export default function UI() {
   }}
 >
   <div className="cardImageArea">
-    <img alt="Course logo" src={`url-to-course-logo/${courseid}`}></img>
+    <img alt="Course logo" src={imageobj[tag]}></img>
   </div>
   <div className="cardTitleArea">
     <p className="cardTitle">{title}</p>

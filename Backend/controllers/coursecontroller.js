@@ -114,31 +114,45 @@ await user.save();
 
 const addcourse = asynchandler(async (req, res) => {
   try {
-    const { course_name, course_desc, course_instructor, course_cost, enrolled,chapters,tag ,teacherid} = req.body;
-    const course = new Courses({
-      course_name,
-      course_desc,
-      course_instructor,
-      course_cost,
-      enrolled,
-      chapters,
-      tag
-    });
-    const savedCourse = await course.save();
-    const courseid=savedCourse._id.toString();
-   await Teachers.findByIdAndUpdate(
-      teacherid,
-      { $addToSet: { published_courses: courseid } },  // $addToSet ensures the courseId is only added if it's not already present
-      { new: true, runValidators: true }  // Options to return the updated document and run schema validation
-  ).then(updatedTeacher => {
-      console.log('Updated Teacher:', updatedTeacher);
-  }).catch(error => {
-      console.error('Error updating teacher:', error);
-  });    
+      const {
+          course_name,
+          course_desc,
+          course_instructor,
+          course_cost,
+          enrolled,
+          chapters,
+          tag,
+          teacherid,
+      } = req.body;
 
-    res.status(201).json({message:"course successfully added"});
+      // Convert Base64 image string to a Buffer
+      const course = new Courses({
+          course_name,
+          course_desc,
+          course_instructor,
+          course_cost,
+          enrolled,
+          chapters,
+          tag,
+      });
+
+      const savedCourse = await course.save();
+      const courseid = savedCourse._id.toString();
+
+      await Teachers.findByIdAndUpdate(
+          teacherid,
+          { $addToSet: { published_courses: courseid } },
+          { new: true, runValidators: true }
+      ).then(updatedTeacher => {
+          console.log('Updated Teacher:', updatedTeacher);
+          res.status(201).json({ message: "Course successfully added", course: savedCourse });
+      }).catch(error => {
+          console.error('Error updating teacher:', error);
+          throw new Error('Teacher update failed');
+      });
   } catch (error) {
-    res.status(400).json({message:"-1"});
+      console.error('Error adding course:', error);
+      res.status(400).json({ message: "Failed to add course" });
   }
 });
 const deletepublishedcourse = asynchandler(async (req, res) => {

@@ -29,6 +29,7 @@ const MainContainer = () => {
     const [editCourseCost, setEditCourseCost] = useState(false);
     const [completedFields, setCompletedFields] = useState(0);
     const [loading1,setLoading1]=useState(true);
+    const [imagebinary,setimagebinary]=useState("");
     // const [teacherid, setteacherid] = useState();
 
     const[publishmessage,setpublishmessage]=useState("Save");
@@ -66,7 +67,9 @@ const MainContainer = () => {
           setCourseDescription(data["tag"]);
           setCourseCost(data["course_cost"]);
           setCourseTitle(data["course_name"]);
-          setImage('/pics/logo.webp')
+          setImage('/pics/logo.webp');
+          setimagebinary(data["image"]);
+          console.log(data["image"]);
         } catch (error) {
           console.error("Could not fetch course:", error);
         }finally{
@@ -133,15 +136,16 @@ const MainContainer = () => {
     const [chapters, setChapters] = useState([]);
 
     useEffect(() => {
-        const fieldsFilled = [
-            courseTitle !== '',
-            courseDescription !== 'None'||'',
-            courseCost !== '',
-            image !== null,
-            chapters.length > 1
-        ];
-        setCompletedFields(fieldsFilled.filter(Boolean).length);
-    }, [courseTitle, courseDescription, courseCost, image, chapters]);
+      const fieldsFilled = [
+          courseTitle !== '',
+          courseDescription !== '' && courseDescription !== "None",
+          courseCost !== '',
+          image !== null,
+          chapters.length > 1
+      ];
+      setCompletedFields(fieldsFilled.filter(Boolean).length);
+  }, [courseTitle, courseDescription, courseCost, image, chapters]);
+  
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -354,12 +358,15 @@ if (loading1 ) {
             <div className='newcourse_namebox_title'><p>Course Tag</p></div>
             <div className='newcourse_description_textbox'>
             <select className='course_description_text' value={courseDescription} onChange={handleSelectChange} style={{ width: '90%', height: '35px' }}>
-              <option value="None">None</option>
+            <option value="">None</option>
               <option value="Engineering">Engineering</option>
               <option value="Art">Art</option>
               <option value="Medical">Medical</option>
               <option value="Science">Science</option>
               <option value="Humanities">Humanities</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Biology">Biology</option>
+              <option value="Architecture">Architecture</option>
 
           </select>
                 

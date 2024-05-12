@@ -23,7 +23,9 @@ const studentcourseSchema = mongoose.Schema(
     }],
     tag: { 
       type: String
-    }
+    },
+    image: { type: Buffer }  // Storing image data as binary
+
   },
   { 
     collection: "Courses",
