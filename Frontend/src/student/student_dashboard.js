@@ -328,11 +328,6 @@ export default function UI() {
   // }
   return (
     <div className="student_dashboard_parent">
-      <div className="logobox">
-        <div className="logoboxactual">
-        <img className="logoimage" src="./pics/logo.png" alt="logo"></img>
-        </div>
-      </div>
       <div className="appbar">
         <div
           className="searchbox"
@@ -351,6 +346,12 @@ export default function UI() {
           navigate(`/teacher/${username}`)
         }>Switch to Teacher Mode &nbsp;<ArrowForwardIcon></ArrowForwardIcon></div>
       </div>
+      <div className="logobox">
+        <div className="logoboxactual">
+        <img className="logoimage" src="./pics/logo.png" alt="logo"></img>
+        </div>
+      </div>
+      
       <div className="studentmenu">
         <div
           className="browseoption"

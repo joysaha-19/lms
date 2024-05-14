@@ -1,323 +1,348 @@
 @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Text:wght@100..900&family=Climate+Crisis&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Unbounded:wght@200..900&display=swap');
 
 body {
-    margin: 0;
-  }
-  body {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-  /* *{
-      scrollbar-width: 0;
-  } */
-  /* *::-webkit-scrollbar {
-    display: none;
-  } */
-.student_dashboard_parent{
-    height: 100vh;
-    width: 100vw;
-    background-color: rgb(255, 255, 255);
-    font-family: "IBM Plex Sans", sans-serif;
-    font-style: normal;
-    display: grid;
-    grid-template-columns: 1fr 6fr;
-    grid-template-rows: 70px 1fr;
-    animation: appear1 0.6s ease 0.1s 1 normal forwards;
+  margin: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.student_dashboard_parent {
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(255, 255, 255);
+  font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal;
+  display: grid;
+  grid-template-columns: 1fr 6fr;
+  grid-template-rows: 70px 1fr;
+  animation: appear1 0.6s ease 0.1s 1 normal forwards;
+  opacity: 0;
+  overflow-y: hidden;
+}
+
+@keyframes appear1 {
+  0% {
+    transform: translateX(-100px);
     opacity: 0;
-  
   }
-  
-  @keyframes appear1 {
-    0%{
-      /* opacity: 0; */
-      transform: translateX(-100px);
-      opacity: 0;
-    }
-  
-    100%{
-      opacity: 1;
-      transform: translateX(0px);
-  
-      /* opacity: 1; */
-    }
-    
+  100% {
+    opacity: 1;
+    transform: translateX(0px);
   }
-.cardParent{
-    height: 275px;
-    width: 275px;
-    background-color: rgb(255, 255, 255);
-    border-radius: 10px;
-    border: 3px solid rgb(201, 194, 194);
-
-    display: grid;
-    grid-template-columns: 5px 1fr 5px;
-    grid-template-rows: 5px 2.9fr 3px 1.2fr 3px 0.6fr 3px 0.6fr 5px;
-    transition: all 0.15s ease-out;
 }
 
-.cardImageArea{
-    grid-column: 2/3;
-    grid-row: 2/3;
-    background-color: transparent;
-    border-radius: 10px;
-    background-color: black;
-
+.cardParent {
+  height: 275px;
+  width: 275px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  border: 3px solid rgb(201, 194, 194);
+  display: grid;
+  grid-template-columns: 5px 1fr 5px;
+  grid-template-rows: 5px 2.9fr 3px 1.2fr 3px 0.6fr 3px 0.6fr 5px;
+  transition: all 0.15s ease-out;
 }
 
-.cardImageArea img{
-    aspect-ratio: 2/1;
-    object-fit: contain;
+.cardImageArea {
+  grid-column: 2/3;
+  grid-row: 2/3;
+  background-color: transparent;
+  border-radius: 10px;
+  background-color: black;
 }
 
-.cardTitleArea{
-    grid-column: 2/3 ;
-    grid-row: 4/5;
-    background-color: transparent;
-    border-radius: 10px;
-
-
+.cardImageArea img {
+  aspect-ratio: 2/1;
+  object-fit: contain;
 }
 
-.cardTitle{
-    text-align: left;
-    font-size: 14px;
-    color: gray;
-    font-weight: 600;
-    transition: color 0.15s ease-out;
+.cardTitleArea {
+  grid-column: 2/3;
+  grid-row: 4/5;
+  background-color: transparent;
+  border-radius: 10px;
 }
 
-.cardTag{
-    text-align: left;
-    font-size: 13px;
-    color: rgb(147, 131, 131);
-    font-weight: 400;
+.cardTitle {
+  text-align: left;
+  font-size: 14px;
+  color: gray;
+  font-weight: 600;
+  transition: color 0.15s ease-out;
 }
 
-.cardChaptersArea{
-    grid-column: 2/3;
-    grid-row: 6/7;
-    background-color: transparent;
-    border-radius: 10px;
-
+.cardTag {
+  text-align: left;
+  font-size: 13px;
+  color: rgb(147, 131, 131);
+  font-weight: 400;
 }
 
-.cardChapters{
-    text-align: left;
-    font-size: 12px;
-    margin-top: 6px;
-    color: rgb(147, 131, 131);
-    font-weight: 400;
+.cardChaptersArea {
+  grid-column: 2/3;
+  grid-row: 6/7;
+  background-color: transparent;
+  border-radius: 10px;
 }
 
-.cardProgressArea{
-    grid-column: 2/3;
-    grid-row: 8/9;
-    background-color: transparent;
-    border-radius: 10px;
-    display: grid;
-    grid-template-rows: 1.5fr 1fr;
-    
-
+.cardChapters {
+  text-align: left;
+  font-size: 12px;
+  margin-top: 6px;
+  color: rgb(147, 131, 131);
+  font-weight: 400;
 }
 
-.EnrollmentStatus{
-    grid-column: 2/3;
-    grid-row: 8/9;
-   position: relative;
-
-    color: white;
+.cardProgressArea {
+  grid-column: 2/3;
+  grid-row: 8/9;
+  background-color: transparent;
+  border-radius: 10px;
+  display: grid;
+  grid-template-rows: 1.5fr 1fr;
 }
 
-.EnrollButton{
-    position: absolute;
-    left: 1%;
-    bottom: 10%;
-    background-color: green;
-    height: 80%;
-    width: 75px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-}
-.progressValueArea{
-    grid-row: 2/3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-}
-.cardProgress{
-    text-align: left;
-    font-size: 12px;
-    color: rgb(29, 153, 202);
-    font-weight: 900;
-}
-.progressBarArea{
-    grid-row: 1/2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.EnrollmentStatus {
+  grid-column: 2/3;
+  grid-row: 8/9;
+  position: relative;
+  color: white;
 }
 
-
-.progressBar{
-
-height: 8px;
-width: 98%;
-padding-left: 1%;
-border-radius: 10px;
-border:  1px solid rgba(109, 106, 106, 0.266);
-grid-row: 1/2;
-
+.EnrollButton {
+  position: absolute;
+  left: 1%;
+  bottom: 10%;
+  background-color: green;
+  height: 80%;
+  width: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
 }
 
-.logobox{
-    grid-column: 1/2;
-    grid-row: 1/2;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom:1px solid rgb(201, 194, 194);
-
+.progressValueArea {
+  grid-row: 2/3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.logoboxactual{
-    height: 90%;
-    width: 60%;
-    background-color: transparent;
-}
-.logoboxactual img{
-    object-fit: contain;
-    aspect-ratio: 5/2;
-    /* height: 100%;
-    width: 100%; */
-}
-/* .logobox img{
-    aspect-ratio: 2/1;
-    object-fit: cover;
-    height: 98%;
-    width: 90%;
-} */
-.appbar{
-    grid-column: 2/3;
-    grid-row: 1/2;
-    background-color: transparent;
-    position: relative;
-    border-bottom: 1px solid rgb(201, 194, 194);
-
-
-}
-.switchoption{
-    position: absolute;
-    top: 50%;
-    right: 5%;
-    transform: translate(0%,-50%);
-    height: 50px;
-    width: 300px;
-    background-color: cadetblue;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 15px;
-    font-weight: 800;
-    color: white;
-    border-radius: 10px;
+.cardProgress {
+  text-align: left;
+  font-size: 12px;
+  color: rgb(29, 153, 202);
+  font-weight: 900;
 }
 
-.switchoption:hover{
-    background-color: rgb(47, 121, 217);
+.progressBarArea {
+  grid-row: 1/2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.cardParent:hover{
-    transform: scale(1.05);
+
+.progressBar {
+  height: 8px;
+  width: 98%;
+  padding-left: 1%;
+  border-radius: 10px;
+  border: 1px solid rgba(109, 106, 106, 0.266);
+  grid-row: 1/2;
 }
-.cardParent:hover .cardTitle{
-    color:rgb(29, 153, 202) ;
+
+.logobox {
+  grid-column: 1/2;
+  grid-row: 1/2;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgb(201, 194, 194);
 }
-.searchbox{
-    position: absolute;
-    top: 50%;
-    left: 5%;
-    transform: translateY(-50%);
-    height: 40px;
-    width: 300px;
-    background-color: rgba(188, 182, 182, 0.521);
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+.logoboxactual {
+  height: 90%;
+  width: 60%;
+  background-color: transparent;
 }
-.searchtextbox{
-   
-    height: 90%;
-    width: 90%;
-    border: none;
+
+.logoboxactual img {
+  object-fit: contain;
+  aspect-ratio: 5/2;
+}
+
+.appbar {
+  grid-column: 2/3;
+  grid-row: 1/2;
+  background-color: white;
+  position: sticky;
+  border-bottom: 1px solid rgb(201, 194, 194);
+  top: 0;
+  z-index: 10;
+}
+
+.switchoption {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  transform: translate(0%, -50%);
+  height: 50px;
+  width: 300px;
+  background-color: cadetblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: white;
+  border-radius: 10px;
+}
+
+.switchoption:hover {
+  background-color: rgb(47, 121, 217);
+}
+
+.cardParent:hover {
+  transform: scale(1.05);
+}
+
+.cardParent:hover .cardTitle {
+  color: rgb(29, 153, 202);
+}
+
+.searchbox {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  height: 40px;
+  width: 300px;
+  background-color: rgba(188, 182, 182, 0.521);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.searchtextbox {
+  height: 90%;
+  width: 90%;
+  border: none;
   outline: none;
-    background-color: transparent;
-}
-.studentmenu{
-    grid-column: 1/2;
-    grid-row: 2/3;
-    background-color: white;
-    border-right: 1px solid rgb(201, 194, 194);
-    position: relative;
-
-}
-.scroller{
-    position: absolute;
-    right: 0%;
-    top:0%;
-    height: 50px;
-    width: 5px;
-    background-color: rgb(10, 124, 166);
-    border-radius: 10px;
-    transition: all 0.0s ease;
+  background-color: transparent;
 }
 
-.browseoption{
-    width: 100%;
-    height: 50px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    transition: all 0.0s ease;
+.studentmenu {
+  grid-column: 1/2;
+  grid-row: 2/3;
+  background-color: white;
+  border-right: 1px solid rgb(201, 194, 194);
+  position: relative;
+  overflow: hidden;
 }
 
-.browseoption p{
-    margin-left: 10px;
-    font-weight: 600;
-    transition: all 0.0s ease;
-
-
-}
-.dashboardoption{
-    width: 100%;
-    height: 50px;
-     display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    transition: all 0.0s ease;
-
+.scroller {
+  position: absolute;
+  right: 0%;
+  top: 0%;
+  height: 50px;
+  width: 5px;
+  background-color: rgb(10, 124, 166);
+  border-radius: 10px;
+  transition: all 0.0s ease;
 }
 
-
-.dashboardoption p{
-    margin-left: 10px;
-    font-weight: 600;
-    transition: all 0.0s ease;
-
+.browseoption {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transition: all 0.0s ease;
 }
 
-.maincontent{
-    grid-column: 2/3;
-    grid-row: 2/3;
-    background-color: transparent;
-    display: grid;
-    grid-template-rows: 110px 10px 1fr;
+.browseoption p {
+  margin-left: 10px;
+  font-weight: 600;
+  transition: all 0.0s ease;
 }
+
+.dashboardoption {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transition: all 0.0s ease;
+}
+
+.dashboardoption p {
+  margin-left: 10px;
+  font-weight: 600;
+  transition: all 0.0s ease;
+}
+
+.maincontent {
+  grid-column: 2/3;
+  grid-row: 2/3;
+  background-color: transparent;
+  overflow-y: scroll;
+}
+
+.tagmenu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  height: 90px;
+}
+
+.tagoption {
+  height: 40px;
+  min-width: 130px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgb(1, 198, 233);
+  transition: background-color 0.3s ease;
+  font-size: 12px;
+  text-align: center;
+}
+
+.tagoption:hover {
+  background-color: rgb(67, 124, 164);
+}
+
+.coursecardsarea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-left: 1%;
+  padding-top: 20px;
+}
+
+.cardscontainer {
+  width: 90%;
+  padding-bottom: 10px;
+  padding-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+  background-color: transparent;
+}
+
+
 
 .LoadingArea_student{
     grid-column: 2/3;
@@ -347,7 +372,7 @@ grid-row: 1/2;
     color: #333;                      /* Darker text color */
   }
 .legend{
-    grid-row: 1/2;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -378,66 +403,4 @@ grid-row: 1/2;
     color: rgb(19, 113, 150);
     font-weight: 700;
     background-color: rgba(0, 255, 255, 0.714);
-}
-.tagmenu{
-    grid-row: 1/2;
-    background-color: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    z-index: 1;
-    padding-top: 10px;
-}
-.tagoption_empty{
-    height: 30px;
-    width: 30px;
-    background-color:transparent;
-    
-    
-}
-.tagoption{
-    height: 40px;
-    min-width: 130px;
-    border-radius: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid rgb(1, 198, 233);
-   transition: background-color 0.3s ease;
-   font-size: 12px;
-   text-align: center;
-    
-}
-
-.tagoption:hover{
-    background-color: rgb(67, 124, 164);
-}
-
-.coursecardsarea{
-    grid-row: 3/4;
-    background-color: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow-y: scroll;
-    z-index: 2;
-    padding-left: 1%;
-}
-
-.cardscontainer{
-    width: 90%;
-    height: 100%;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 20px;
-    background-color: transparent;
-    
-        /* scrollbar-width: 0; */
-
 }
