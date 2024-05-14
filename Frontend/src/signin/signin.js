@@ -52,8 +52,8 @@ const response1 = await fetch('http://localhost:5000/lms/users/login', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    username: formData.username,
-    password: formData.password,
+    username: formData.username.trim(),
+    password: formData.password.trim(),
   })
 });
 // console.log('Received response:', response1);

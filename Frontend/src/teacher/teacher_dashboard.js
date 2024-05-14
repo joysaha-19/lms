@@ -28,7 +28,6 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { CircularProgress } from "@mui/material";
 
 import AnimationData from "../assets/tick-anim.json";
-import { green } from "@mui/material/colors";
 export default function UI() {
   const [refresher, setrefresher] = useState(0);
   const [windowindex, setwindowindex] = useState(0);
@@ -105,6 +104,10 @@ export default function UI() {
         );
         handleClose();
       } else {
+        if (response.status === 401) {
+          navigate('/unauthorized');
+          return;
+        }
         throw new Error("Failed to delete the course");
       }
     } catch (error) {
@@ -129,6 +132,10 @@ export default function UI() {
           username: `${username}`,
         },
       });
+      if (response.status === 401) {
+        navigate('/unauthorized');
+        return;
+      }
       const data = await response.json();
       let s = 0;
       let localMax = 0;
@@ -150,6 +157,10 @@ export default function UI() {
               },
             }
           );
+          if (courseResponse.status === 401) {
+            navigate('/unauthorized');
+            return;
+          }
           const courseData = await courseResponse.json();
           const enrolled = courseData["enrolled"].length;
           const revenue = enrolled * courseData["course_cost"];
@@ -183,6 +194,10 @@ export default function UI() {
               },
             }
           );
+          if (courseResponse.status === 401) {
+            navigate('/unauthorized');
+            return;
+          }
           const courseData = await courseResponse.json();
           return {
             course_name: courseData["course_name"],
@@ -354,6 +369,10 @@ export default function UI() {
         //   setwindowindex(0);
         // }, 2000);
       } else {
+        if (response.status === 401) {
+          navigate('/unauthorized');
+          return;
+        }
         setdialogtext("Failed to save changes. Please try again later.")
         console.error("Failed to add course:", responseData);
       }
@@ -361,6 +380,85 @@ export default function UI() {
       console.error("Failed to send course data:", error);
     }
   };
+
+
+  const saveDraft = async () => {
+    if (completedFields < 5) {
+      alert("All fields are mandatory");
+      return;
+    }
+    const courseData = {
+      course_name: courseTitle,
+      tag: courseDescription,
+      course_instructor: username,
+      course_cost: Number(courseCost),
+      enrolled: [],
+      teacherid: teacherid,
+      chapters: chapters,
+    };
+
+    try {
+      setpublishdialogopen(true);
+      setdialogtext("Saving your course....");
+      const response = await fetch(
+        "http://localhost:5000/lms/courses/addcourse",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            username: `${username}`,
+
+          },
+          body: JSON.stringify(courseData),
+        }
+      );
+      const responseData = await response.json();
+
+      
+      if (response.ok) {
+        console.log("Draft saved successfully:", responseData);
+        setrefresher((prev) => prev + 1);
+      
+        setfinaldialogtext(
+          `Draft saved succussfully!`
+        );
+        const b = setTimeout(() => {
+            setpublishdialogopen(false);
+            setfinaldialogopen(true);
+        
+        }, 2000);
+        const a = setTimeout(() => {
+          setfinaldialogopen(false);
+          setwindowindex(0);
+          setCourseDescription("");
+          setCourseTitle("");
+          setChapters([]);
+          setCompletedFields(0);
+          setCourseCost(0);
+          setImage("");
+        }, 4000);
+
+        return () => {
+          clearTimeout(timer1);
+          clearTimeout(timer2);
+        };
+        // setTimeout(() => {
+        //   setwindowindex(0);
+        // }, 2000);
+      } else {
+        if (response.status === 401) {
+          navigate('/unauthorized');
+          return;
+        }
+        setdialogtext("Failed to save changes. Please try again later.")
+        console.error("Failed to add course:", responseData);
+      }
+    } catch (error) {
+      console.error("Failed to send course data:", error);
+    }
+  };
+
 
 
   useEffect(() => {
@@ -726,6 +824,10 @@ export default function UI() {
         //   setwindowindex(0);
         // }, 2000);
       } else {
+        if (response.status === 401) {
+          navigate('/unauthorized');
+          return;
+        }
         seteditdialogtext("Failed to save changes. Please try again later.")
         console.error("Failed to add course:", responseData);
       }
@@ -927,6 +1029,8 @@ export default function UI() {
           <div className="publishoptionbutton" onClick={submitCourse}>
             {publishmessage}
           </div>
+          <div className='publishoptionbutton' style={{position:'absolute', right:'250px'}}  >Save as Draft</div>
+
         </div>
       </div>
     </div>

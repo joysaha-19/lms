@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./enrollment.css";
+// import Dialog from "@mui/material/Dialog";
+// import DialogActions from "@mui/material/DialogActions";
+// import DialogContent from "@mui/material/DialogContent";
+// import DialogContentText from "@mui/material/DialogContentText";
+// import DialogTitle from "@mui/material/DialogTitle";
+import AnimationData from "../assets/tick-anim.json";
+import Lottie from "react-lottie";
+
+
 
 export default function UI() {
   const token=localStorage.getItem("accesstoken");
@@ -14,8 +23,20 @@ export default function UI() {
   const [expDate, setExpDate] = useState('');
   const [buttontext,setbuttontext]=useState('');
   const [loading1,setLoading1]=useState(true);
+  const [op,setop]=useState(0);
+  const [bgc,setbgc]=useState('');
+  const [success,setsuccess]=useState(0);
+  const [zindex,setzindex]=useState(0);
 
-
+  const defaultOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: AnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  // const [open,setopen]=useState(false);
   async function fetchCourse(username, courseId) {
     const encodedCourse = encodeURIComponent(courseId);
     const url = `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourse}`;
@@ -56,7 +77,8 @@ export default function UI() {
       return;
     }
     
-
+    setop(1);
+    setzindex(10);
     // If all fields are filled, handle the payment process
     setbuttontext('Processing payment...');
     const url = `http://localhost:5000/lms/courses/enroll`;
@@ -79,11 +101,15 @@ export default function UI() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }    // Further processing would go here, such as submitting to a server
-      setbuttontext('Enrolled Succesfully');
+     
      const a= setTimeout(()=>{
+      setsuccess(1);
+      setbgc('lightgreen');
+      },2000)
+
+      const b= setTimeout(()=>{
         navigate(`/student/course/${username}/${courseId}`);
-        return()=>clearTimeout(a);
-      },3000)
+        },4500)
 
   }catch (error) {
     console.error("Could not fetch course:", error);
@@ -94,8 +120,18 @@ if (loading1) {
 }
   return (
     <div className="enrollment_parent">
+      <div className="cover" style={{opacity:op,zIndex:zindex}}>     
+       <div className="enrollment-checkbox" style={{backgroundColor:bgc}}>{success?            <Lottie
+              options={defaultOptions}
+              height={150}
+              width={150}
+              // ref={lottieRef}
+            />:<p>Enrolling...</p>}</div>
+</div>
       <div className="course_details_area">
-        <div className="course_details_box">
+      <div className="exitbutton" style={{left:'2%',top:'5%'}} onClick={() => navigate(`/student/${username}`)}>
+          <p>EXIT</p>
+        </div>        <div className="course_details_box">
           <div className="course_name">{querycourse["course_name"]}</div>
           <div className="course_cost">US${querycourse["course_cost"]}</div>
           <div className="course_instructor">By{" "} {querycourse["course_instructor"]}</div>

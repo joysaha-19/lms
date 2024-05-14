@@ -33,12 +33,12 @@ export default function UI() {
   const [filterColor, setFilterColor] = useState([]);
   const [tagOptions, setTagOptions] = useState([]);
   const [userCourseIds, setUserCourseIds] = useState([]);
-  const [activeMenu, setActiveMenu] = useState(1);
-  const [bgDashboard, setBgDashboard] = useState("rgba(106, 191, 233, 0.289)");
-  const [bgBrowser, setBgBrowser] = useState("white");
-  const [textDashboard, setTextDashboard] = useState("rgb(10, 124, 166)");
-  const [textBrowser, setTextBrowser] = useState("gray");
-  const [scroller, setScroller] = useState(50);
+  const [activeMenu, setActiveMenu] = useState(0);
+  const [bgDashboard, setBgDashboard] = useState("white");
+  const [bgBrowser, setBgBrowser] = useState("rgba(106, 191, 233, 0.289)");
+  const [textDashboard, setTextDashboard] = useState("gray");                   
+  const [textBrowser, setTextBrowser] = useState("rgb(10, 124, 166)");  
+  const [scroller, setScroller] = useState(0);
   const [search, setSearch] = useState("");
   const [pendingcourses, setpendingcourses] = useState(0);
   const [completecourses, setcompletecourses] = useState(0);
@@ -65,6 +65,10 @@ export default function UI() {
         }
       });
       if (!response.ok) {
+        if (response.status === 401) {
+          navigate('/unauthorized');
+          return;
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       let pending = 0;
@@ -147,6 +151,10 @@ export default function UI() {
         }
       });
       if (!response.ok) {
+        if (response.status === 401) {
+          navigate('/unauthorized');
+          return;
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();

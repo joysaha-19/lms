@@ -66,10 +66,18 @@ export default function UI() {
       ]);
 
       if (!courseResponse.ok) {
+        if (courseResponse.status === 401) {
+          navigate('/unauthorized');
+          return;
+        }
         throw new Error(`HTTP error! status: ${courseResponse.status}`);
       }
 
       if (!userCoursesResponse.ok) {
+        if (userCoursesResponse.status === 401) {
+          navigate('/unauthorized');
+          return;
+        }
         throw new Error(`HTTP error! status: ${userCoursesResponse.status}`);
       }
 
@@ -170,6 +178,10 @@ export default function UI() {
           setprogresstext("Course completed!")
         }
       } else {
+        if (response.status === 401) {
+          navigate('/unauthorized');
+          return;
+        }
         throw new Error("Failed to complete chapter");
       }
     } catch (error) {
