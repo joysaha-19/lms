@@ -4,7 +4,7 @@
     background-color: transparent;
   display: grid;
   grid-template-columns: 60px 1fr 1px 1.2fr;
-  animation: appear 0.6s ease 0.1s 1 normal forwards;
+  animation: appear 0.3s ease 0s 1 normal forwards;
   opacity: 0;
 
 }
