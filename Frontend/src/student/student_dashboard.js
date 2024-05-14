@@ -379,7 +379,7 @@ export default function UI() {
         </div>
   
       </div>
-      <div className="maincontent" style={{display:loading1&&loading2?'none':'grid'}}>
+      <div className="maincontent" style={{display:loading1&&loading2?'none':'flex'}}>
      
         <div
           className="tagmenu"

@@ -223,6 +223,43 @@ const editpublishedcourse = asynchandler(async (req, res) => {
 });
 
 
+const add_draftcourse = asynchandler(async (req, res) => {
+  const { course_title, tag, username, course_cost, chapters } = req.body;
+
+  // Basic validation
+  if (!course_title || !tag || !username || !course_cost || !chapters || !Array.isArray(chapters)) {
+      return res.status(400).send("All fields are required and chapters should be an array.");
+  }
+
+  try {
+      // Find the teacher by username
+      const teacher = await Teachers.findOne({ username: username });
+
+      if (!teacher) {
+          return res.status(404).send("Teacher not found.");
+      }
+
+      // Create the draft course object
+      const draftCourse = {
+          course_title: course_title,
+          tag: tag,
+          course_cost: course_cost,
+          chapters: chapters
+      };
+
+      // Add the draft course to the teacher's draft_courses array
+      teacher.draft_courses.push(draftCourse);
+
+      // Save the updated teacher document
+      await teacher.save();
+
+      res.status(200).send("Draft course added successfully.");
+  } catch (error) {
+      res.status(500).send("An error occurred while adding the draft course.");
+  }
+});
+
+
 
 const deletedraftcourse = asynchandler(async (req, res) => {
   try {
@@ -285,4 +322,4 @@ const completeChapter = asynchandler(async (req, res) => {
 
 
 
-module.exports = {getcourse, getallcourses, getallusercourses, seecourse, enrollincourse, addcourse,deletepublishedcourse, deletedraftcourse,completeChapter ,editpublishedcourse};
+module.exports = {getcourse, getallcourses, getallusercourses, seecourse, enrollincourse, addcourse,deletepublishedcourse, deletedraftcourse,completeChapter ,editpublishedcourse,add_draftcourse};

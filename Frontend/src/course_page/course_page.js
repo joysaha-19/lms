@@ -203,7 +203,6 @@ export default function UI() {
 
   return (
     <div className="course_page_parent">
-      <div className="progress-box" style={{ animation: a ? 'slideDown 3s ease 0.1s 1 normal backwards' : 'none' }}>{progresstext}</div>
       <ReactConfetti
         ref={confettiRef}
         width={window.innerWidth}
@@ -254,6 +253,7 @@ export default function UI() {
         ></div>
       </div>
       <div className="course_page_appbar">
+      <div className="progress-box" style={{ animation: a ? 'slideDown 3s ease 0.1s 1 normal backwards' : 'none' }}>{progresstext}</div>
         <div className="exitbutton" onClick={() => nav(`/student/${username}`)}>
           <p>EXIT</p>
         </div>

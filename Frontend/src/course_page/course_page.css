@@ -157,6 +157,7 @@ body {
     display: grid;
     grid-template-rows: 580px 1fr;
     overflow-y: scroll;
+    width: 100%;
 
 }
 
@@ -313,11 +314,11 @@ body {
       opacity: 0;
     }
     30% {
-      top: 2%;
+      top: 20px;
       opacity: 1;
     }
     70% {
-        top: 2%;
+        top: 20px;
         opacity: 1;
       }
       100%{
@@ -328,7 +329,7 @@ body {
   
   .progress-box {
     position: absolute;
-    left: 50%;
+    left: 35%;
     transform: translateX(-50%);
     width: 200px;
     height: 40px;

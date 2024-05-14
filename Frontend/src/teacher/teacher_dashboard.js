@@ -382,26 +382,24 @@ export default function UI() {
   };
 
 
-  const saveDraft = async () => {
+  const addtodraft = async () => {
     if (completedFields < 5) {
       alert("All fields are mandatory");
       return;
     }
     const courseData = {
-      course_name: courseTitle,
+      course_title: courseTitle,
       tag: courseDescription,
-      course_instructor: username,
       course_cost: Number(courseCost),
-      enrolled: [],
-      teacherid: teacherid,
       chapters: chapters,
+      username:username
     };
 
     try {
       setpublishdialogopen(true);
-      setdialogtext("Saving your course....");
+      setdialogtext("Drafting your course....");
       const response = await fetch(
-        "http://localhost:5000/lms/courses/addcourse",
+        "http://localhost:5000/lms/courses/addtodraft",
         {
           method: "POST",
           headers: {
@@ -1029,7 +1027,7 @@ export default function UI() {
           <div className="publishoptionbutton" onClick={submitCourse}>
             {publishmessage}
           </div>
-          <div className='publishoptionbutton' style={{position:'absolute', right:'250px'}}  >Save as Draft</div>
+          <div className='publishoptionbutton' style={{position:'absolute', right:'250px'}} onClick={addtodraft}  >Save as Draft</div>
 
         </div>
       </div>

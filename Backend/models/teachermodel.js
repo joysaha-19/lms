@@ -20,13 +20,30 @@ const TeacherSchema = mongoose.Schema(
             ref: 'Courses',
             required: true
         }],
-
         draft_courses: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Courses',
-            required: true
+            course_title: {
+                type: String,
+                required: [true, "Please add the course title."],
+            },
+            tag: {
+                type: String,
+                required: [true, "Please add the course tag."],
+            },
+            chapters: [{
+                name: {
+                    type: String,
+                    required: [true, "Please add the chapter name."],
+                },
+                description: {
+                    type: String,
+                    required: [true, "Please add the chapter description."],
+                }
+            }],
+            course_cost: {
+                type: Number,
+                required: [true, "Please add the course cost."],
+            }
         }],
-        
     },
     { 
         collection: "teachers",

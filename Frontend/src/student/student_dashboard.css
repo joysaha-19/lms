@@ -287,10 +287,10 @@ body {
 }
 
 .maincontent {
-  grid-column: 2/3;
-  grid-row: 2/3;
+  display: flex;
   background-color: transparent;
   overflow-y: scroll;
+  flex-direction: column;
 }
 
 .tagmenu {
@@ -372,7 +372,7 @@ body {
     color: #333;                      /* Darker text color */
   }
 .legend{
-    height: 100px;
+    min-height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
