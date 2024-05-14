@@ -24,7 +24,8 @@ const UserSchema = mongoose.Schema(
             type: Map,
             of: {
                 lastAccessed: Date,
-                chaptersDone: [String]
+                chaptersDone: [String],
+                // completed: Boolean
             }
         }
         

@@ -1,103 +1,123 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import Video from "../assets/sample_video.mp4";
-import SamplePdf from "../assets/sample_assignment.pdf"
+import SamplePdf from "../assets/sample_assignment.pdf";
+import ReactConfetti from 'react-confetti';
 
 import "./course_page.css";
 
 export default function UI() {
-  const token=localStorage.getItem("accesstoken");
+  const token = localStorage.getItem("accesstoken");
 
-  const nav = useNavigate(null);
+  const nav = useNavigate();
+  const [progresstext,setprogresstext]=useState("Progress updated!")
   const [scroller, setScroller] = useState(0);
   const [querycourse, setQueryCourse] = useState({});
   const [chaptersavailable, setChaptersAvailable] = useState([]);
   const [currentChapter, setCurrentChapter] = useState(0);
   const [chaptersdone, setchaptersdone] = useState([]);
-  const [loading1,setLoading1]=useState(true);
-  const [loading2,setLoading2]=useState(true);
-  const [chapternames,setchapternames]=useState([]);
+  const [loading, setLoading] = useState(true);
+  const [chapternames, setchapternames] = useState([]);
+  const [a, setA] = useState(false);
+  const confettiRef = useRef(null);
+  const [initialcompleted, setinitialcompleted] = useState(false);
+  const [confetti, setconfetti] = useState(false);
+
+  const toggleProgress = () => {
+    let c = a;
+    setA(!c);
+    const b = setTimeout(() => {
+      setA(a);
+      return () => clearTimeout(b);
+    }, 3100);
+  };
 
   const videoRef = useRef(null); // Create a ref for the video element
 
   // Extract the courseId parameter from the URL
-  const { courseId ,username} = useParams();
+  const { courseId, username } = useParams();
 
-  async function fetchCourse(username, courseId) {
+  async function fetchCourseData(username, courseId) {
     const encodedCourse = encodeURIComponent(courseId);
-    const url = `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourse}`;
+    const encodedUsername = encodeURIComponent(username);
+
+    const courseUrl = `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourse}`;
+    const userCoursesUrl = `http://localhost:5000/lms/courses/usercourses?username=${encodedUsername}`;
 
     try {
-      const response = await fetch(url,
-        {
+      const [courseResponse, userCoursesResponse] = await Promise.all([
+        fetch(courseUrl, {
           method: 'GET',
           headers: {
-              'Authorization': `Bearer ${token}`,
-              'username':`${username}`
+            'Authorization': `Bearer ${token}`,
+            'username': `${username}`
           }
+        }),
+        fetch(userCoursesUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'username': `${username}`
+          }
+        })
+      ]);
+
+      if (!courseResponse.ok) {
+        throw new Error(`HTTP error! status: ${courseResponse.status}`);
       }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+
+      if (!userCoursesResponse.ok) {
+        throw new Error(`HTTP error! status: ${userCoursesResponse.status}`);
       }
-      const data = await response.json();
-      const n = data["chapters"].length;
+
+      const courseData = await courseResponse.json();
+      const userCoursesData = await userCoursesResponse.json();
+      const coursedata = userCoursesData[courseId];
+
+      if (coursedata) {
+        setchaptersdone(coursedata["chaptersDone"]);
+        const allChaptersDone = courseData["chapters"].every(chapter =>
+          coursedata["chaptersDone"].includes(chapter.name)
+        );
+        // Set confetti to true if all chapters are done
+        if (allChaptersDone) {
+          setconfetti(false);
+          setinitialcompleted(true);
+          
+        }
+      }
+
+      const n = courseData["chapters"].length;
       let arr = [];
 
-      if (data["enrolled"].includes(username)) {
+      if (courseData["enrolled"].includes(username)) {
         // If username is enrolled, fill the array with 1s
         arr = new Array(n).fill(1);
       } else {
         // Only the first value is 1, rest are 0
         arr = [1, ...new Array(n - 1).fill(0)];
       }
-      console.log(data["chapters"])
+
       setChaptersAvailable(arr);
-      setQueryCourse(data);
-      setchapternames(data["chapters"]);
+      setQueryCourse(courseData);
+      setchapternames(courseData["chapters"]);
+
+      
     } catch (error) {
-      console.error("Could not fetch course:", error);
-    }finally{
-      setLoading1(false);
+      console.error("Could not fetch course data:", error);
+    } finally {
+      setLoading(false);
     }
   }
 
-  async function fetchCoursesForUser(username, courseId) {
-    const encodedUsername = encodeURIComponent(username);
-    const url = `http://localhost:5000/lms/courses/usercourses?username=${encodedUsername}`;
-    try {
-      const response = await fetch(url,
-        {
-          method: 'GET',
-          headers: {
-              'Authorization': `Bearer ${token}`,
-              'username':`${username}`
-
-          }
-      }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      const coursedata = data[courseId.toString()];
-      setchaptersdone(coursedata["chaptersDone"]);
-    } catch (error) {
-      console.error("Could not fetch courses:", error);
-    }finally{
-      setLoading2(false);
-    }
-  }
   useEffect(() => {
-    if (courseId) {
-      fetchCourse(username, courseId);
-      fetchCoursesForUser(username, courseId);
+    if (courseId && username) {
+      fetchCourseData(username, courseId);
     }
-  }, [courseId]); // Dependency array includes courseId to refetch if it changes
+  }, [courseId, username]);
 
   function handleChapterChange(index) {
     const dist = index * 80;
@@ -108,9 +128,11 @@ export default function UI() {
   function handleenroll(a) {
     nav(`/student/enroll/${username}/${a}`);
   }
+
   async function completeChapter(username, courseId, chapter_name) {
-    // Construct the JSON data inside the function
-    console.log("here");
+    if (chaptersdone.includes(chapter_name))
+      return;
+
     const postData = {
       username: username,
       courseId: courseId,
@@ -125,8 +147,7 @@ export default function UI() {
           headers: {
             "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`,
-            'username':`${username}`
-
+            'username': `${username}`
           },
           body: JSON.stringify(postData),
         }
@@ -134,10 +155,20 @@ export default function UI() {
 
       if (response.ok) {
         console.log("Successful");
-        let abc = [...chaptersdone, chapternames[currentChapter]["name"]];
+        let abc = [...chaptersdone, chapternames[currentChapter]?.["name"]];
         setchaptersdone(abc);
 
-        // Additional actions upon success can be handled here
+        toggleProgress();
+        const allChaptersDone = chapternames.every(chapter =>
+          abc.includes(chapter.name)
+        );
+
+        // Set confetti to true if all chapters are done
+        if (allChaptersDone && !initialcompleted) {
+          setconfetti(true);
+          setinitialcompleted(true);
+          setprogresstext("Course completed!")
+        }
       } else {
         throw new Error("Failed to complete chapter");
       }
@@ -145,6 +176,7 @@ export default function UI() {
       console.error("Error completing chapter:", error);
     }
   }
+
   useEffect(() => {
     // Reset video to the start when currentChapter changes
     if (videoRef.current) {
@@ -153,12 +185,25 @@ export default function UI() {
     }
   }, [currentChapter]);
 
-  if (loading1 || loading2) {
+  if (loading) {
     return <div className="loading">Loading course info...</div>;
   }
+
   return (
-    
     <div className="course_page_parent">
+      <div className="progress-box" style={{ animation: a ? 'slideDown 3s ease 0.1s 1 normal backwards' : 'none' }}>{progresstext}</div>
+      <ReactConfetti
+        ref={confettiRef}
+        width={window.innerWidth}
+        height={window.innerHeight}
+        recycle={false}
+        numberOfPieces={800}
+        wind={0.0}
+        gravity={0.1}
+        initialVelocityX={5}
+        initialVelocityY={5}
+        run={confetti}
+      />
       <div className="course_title_area">
         <p>{querycourse.course_name}</p>
       </div>
@@ -176,16 +221,16 @@ export default function UI() {
                   currentChapter === index
                     ? "black"
                     : chaptersdone.includes(value["name"])
-                    ? "green"
-                    : "lightgray",
+                      ? "green"
+                      : "lightgray",
               }}
             >
               {!chaptersavailable[index] ? (
-                <LockIcon></LockIcon>
+                <LockIcon />
               ) : chaptersdone.includes(value["name"]) ? (
-                <CheckCircleOutlinedIcon></CheckCircleOutlinedIcon>
+                <CheckCircleOutlinedIcon />
               ) : (
-                <PlayCircleIcon></PlayCircleIcon>
+                <PlayCircleIcon />
               )}{" "}
               {value.name}
             </p>
@@ -222,7 +267,7 @@ export default function UI() {
                   display: chaptersavailable[currentChapter] ? "none" : "flex",
                 }}
               >
-                <LockIcon></LockIcon>
+                <LockIcon />
               </div>
               <video
                 ref={videoRef}
@@ -234,7 +279,7 @@ export default function UI() {
                   display: !chaptersavailable[currentChapter] ? "none" : "flex",
                 }}
                 onEnded={() =>
-                  completeChapter(username, courseId, chapternames[currentChapter]["name"])
+                  completeChapter(username, courseId, chapternames[currentChapter]?.["name"])
                 }
               >
                 <source src={Video} type="video/mp4" />
@@ -255,12 +300,12 @@ export default function UI() {
               style={{
                 display:
                   !chaptersavailable.includes(0) &&
-                  !chaptersdone.includes(chapternames[currentChapter]["name"])
+                  !chaptersdone.includes(chapternames[currentChapter]?.["name"])
                     ? "flex"
                     : "none",
               }}
               onClick={() =>
-                completeChapter(username, courseId, chapternames[currentChapter]["name"])
+                completeChapter(username, courseId, chapternames[currentChapter]?.["name"])
               }
             >
               Mark as Complete
@@ -270,7 +315,7 @@ export default function UI() {
               style={{
                 display:
                   !chaptersavailable.includes(0) &&
-                  chaptersdone.includes(chapternames[currentChapter]["name"])
+                  chaptersdone.includes(chapternames[currentChapter]?.["name"])
                     ? "flex"
                     : "none",
               }}
@@ -283,14 +328,12 @@ export default function UI() {
               <p>Objective</p>
             </div>
             <div className="chapter_info">
-            <div className="chapter_info">
-  <p>{querycourse.chapters?.[currentChapter]?.description || "Loading chapter description..."}</p>
-</div>
+              <p>{querycourse.chapters?.[currentChapter]?.description || "Loading chapter description..."}</p>
             </div>
-            <div className="attachment_link" style={{display: chaptersavailable.includes(0) ? "none" : "flex"}}>
+            <div className="attachment_link" style={{ display: chaptersavailable.includes(0) ? "none" : "flex" }}>
               <p>Assignment: <a href={SamplePdf} download style={{ color: 'blue', textDecoration: 'underline' }}>
-      Download PDF
-    </a></p>
+                Download PDF
+              </a></p>
             </div>
           </div>
         </div>

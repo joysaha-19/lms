@@ -14,6 +14,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import Delete from "@mui/icons-material/Delete";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { CircularProgress } from "@mui/material";
 export default function UI() {
   const navigate = useNavigate(null);
   const [publishedCourses, setPublishedCourses] = useState([]);
@@ -40,6 +42,7 @@ export default function UI() {
 
   const [open, setOpen] = useState(false);
   const [deleteCandidate, setDeleteCandidate] = useState(null);
+  
 
   // Function to open dialog
   const handleClickOpen = (index) => {
@@ -252,9 +255,7 @@ export default function UI() {
     setFilterText(event.target.value);
   }
   
-  if (loading1) {
-    return <div className="loading">Loading course info...</div>;
-  }
+ 
   return (
     <div className="teacher_dashboard_parent">
        <Dialog open={open} onClose={handleClose}>
@@ -279,7 +280,7 @@ export default function UI() {
       <div className="teacher_appbar">
       <div className="switchoption" onClick={()=>
           navigate(`/student/${username}`)
-        }>Switch to Student Mode
+        }> <ArrowBackIcon></ArrowBackIcon>&nbsp; Switch to Student Mode
       </div>
       </div>
       <div className="teacher_teachermenu">
@@ -302,7 +303,14 @@ export default function UI() {
           style={{ transform: `translateY(${scroller}px)` }}
         ></div>
       </div>
-      <div className="teacher_maincontent">
+      <div className="LoadingArea_student" style={{display:loading1&&loading2?'flex':'none'}}>
+      <div className="loading-box">
+          <CircularProgress />
+          <div className="loading-message">Loading...</div>
+        </div>
+  
+      </div>
+      <div className="teacher_maincontent" style={{display:loading1&&loading2?'none':'grid'}}>
         <div
           className="teacher_legend"
           style={{ display: activeMenu ? "none" : "flex" }}

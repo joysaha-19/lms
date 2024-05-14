@@ -11,6 +11,8 @@ import HumanitiesPic from '../assets/humanities.png'
 import BiologyPic from '../assets/biology.png'
 import ArchitecturePic from '../assets/architecture.png'
 import MathsPic from '../assets/maths.png'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { CircularProgress } from "@mui/material";
 
 
 
@@ -313,9 +315,9 @@ export default function UI() {
   const handleInputChange = (event) => {
     setSearch(event.target.value);
   };
-  if (loading1 || loading2) {
-    return <div className="loading">Loading course info...</div>;
-  }
+  // if (loading1 || loading2) {
+  //   return <div className="loading">Loading course info...</div>;
+  // }
   return (
     <div className="student_dashboard_parent">
       <div className="logobox">
@@ -339,7 +341,7 @@ export default function UI() {
         </div>
         <div className="switchoption" onClick={()=>
           navigate(`/teacher/${username}`)
-        }>Switch to Teacher Mode</div>
+        }>Switch to Teacher Mode &nbsp;<ArrowForwardIcon></ArrowForwardIcon></div>
       </div>
       <div className="studentmenu">
         <div
@@ -361,7 +363,15 @@ export default function UI() {
           style={{ transform: `translateY(${scroller}px)` }}
         ></div>
       </div>
-      <div className="maincontent">
+      <div className="LoadingArea_student" style={{display:loading1&&loading2?'flex':'none'}}>
+      <div className="loading-box">
+          <CircularProgress />
+          <div className="loading-message">Loading...</div>
+        </div>
+  
+      </div>
+      <div className="maincontent" style={{display:loading1&&loading2?'none':'grid'}}>
+     
         <div
           className="tagmenu"
           style={{ display: activeMenu ? "none" : "flex" }}

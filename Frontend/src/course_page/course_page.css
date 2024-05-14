@@ -24,9 +24,26 @@ body {
     display: grid;
     grid-template-columns: 1.5fr 6fr;
     grid-template-rows: 70px 1fr;
-
-}
-
+    position: relative;
+    animation: appear 0.6s ease 0.1s 1 normal forwards;
+    opacity: 0;
+  
+  }
+  
+  @keyframes appear {
+    0%{
+      /* opacity: 0; */
+      opacity: 0;
+    }
+  
+    100%{
+      opacity: 1;
+  
+      /* opacity: 1; */
+    }
+    
+  }
+  
 .course_title_area{
     grid-column: 1/2;
     grid-row: 1/2;
@@ -281,3 +298,41 @@ body {
     left: 20px;
     transform: translate(0%,0%);
 }
+
+
+@keyframes slideDown {
+    0% {
+      top: -50px;
+      opacity: 0;
+    }
+    30% {
+      top: 2%;
+      opacity: 1;
+    }
+    70% {
+        top: 2%;
+        opacity: 1;
+      }
+      100%{
+        top: -50px;
+        opacity: 0;
+      }
+  }
+  
+  .progress-box {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 40px;
+    background-color: #0eab13;
+    color: white;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 5px;
+    top: -50px;
+    /* animation: slideDown 3s ease 0.1s 1 normal backwards; */
+    font-weight: 500;
+    z-index: 10;
+  }
+  
