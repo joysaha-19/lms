@@ -1,7 +1,7 @@
 .newcourse_parent {
-  height: 100vh;
-  width: 100vw;
-  background-color: #f8f9fa;
+  grid-column: 2/3;
+    grid-row: 2/3;
+    background-color: transparent;
   display: grid;
   grid-template-columns: 60px 1fr 1px 1.2fr;
   animation: appear 0.6s ease 0.1s 1 normal forwards;
@@ -26,7 +26,7 @@
 .leftpanel {
   grid-column: 2/3;
   display: grid;
-  grid-template-rows: 20px 1fr 10px 1fr 10px 1.3fr 10px 2.4fr;
+  grid-template-rows: 0px 1fr 10px 1fr 10px 1fr 10px 2.4fr;
   background-color: transparent;
 }
 
@@ -41,11 +41,12 @@
   grid-column: 1/2;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  font-size: 2.5rem;
+  font-size: 40px;
   color: #5c5959;
-  font-weight: 600;
+  font-weight: 800;
+
 }
 
 .newcourse_namebox {
@@ -61,7 +62,8 @@
   left: 3%;
   bottom: 10%;
   background-color: rgba(139, 222, 237, 0.544);
-  border-radius: 20px;
+  border-radius: 10px;
+  border: 2px solid lightblue;
 }
 
 .course_name_text {
@@ -108,7 +110,8 @@
   left: 0%;
   transform: translate(0%, -50%);
   color: #525252;
-  font-size: 1.5rem;
+  font-weight: 400;
+  font-size: 20px;
 }
 
 .newcourse_descriptionbox {
@@ -118,13 +121,14 @@
 }
 
 .newcourse_description_textbox {
-  height: 70px;
+  height: 50px;
   width: 80%;
   position: absolute;
   left: 3%;
   bottom: 10%;
   background-color: rgba(139, 222, 237, 0.544);
-  border-radius: 20px;
+  border-radius: 10px;
+  border: 2px solid lightblue;
 }
 
 .course_description_text {
@@ -154,7 +158,8 @@
   transform: translate(0%, 0%);
   bottom: 9%;
   background-color: rgba(139, 222, 237, 0.544);
-  border-radius: 20px;
+  border-radius: 10px;
+  border: 2px solid lightblue;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -164,7 +169,7 @@
   grid-column: 4/5;
   background-color: transparent;
   display: grid;
-  grid-template-rows: 100px 2fr 20px 1fr 20px 0.8fr;
+  grid-template-rows: 100px 2fr 20px 1fr 20px 0.4fr;
 }
 
 .exitbox {
@@ -183,6 +188,7 @@
 }
 
 .newcourse_cost {
+  margin-top: 5px;
   grid-row: 4/5;
   background-color: transparent;
   position: relative;
@@ -197,7 +203,7 @@
 .saveoptionbutton {
   height: 50px;
   width: 200px;
-  color: white;
+  color: rgb(255, 255, 255);
   font-size: 20px;
   text-align: center;
   display: flex;
@@ -205,17 +211,19 @@
   align-items: center;
   position: absolute;
   right: 2%;
-  border-radius: 20px;
-  font-weight: 400;
+  border-radius: 10px;
+  font-weight: 600;
+  border: 2px solid lightblue;
+  font-size: 16px;
 }
 
 .publishoptionbutton {
-  background-color: #11a811;
+  background-color: #50a9cf;
   top: -10%;
 }
 
 .publishoptionbutton:hover {
-  background-color: green;
+  background-color: rgb(42, 123, 189);
 }
 
 .saveoptionbutton {
@@ -229,20 +237,20 @@
 
 .add_chapter_box {
   height: 400px;
-  width: 700px;
-  background-color: #cac2c2;
+  width: 650px;
+  background-color: rgba(71, 167, 184, 0.544);
   border-radius: 30px;
   display: grid;
   grid-template-columns: 2.5fr 3fr;
   position: absolute;
-  left: 3%;
+  left: 1%;
   top: 40%;
   transform: translate(0%, -50%);
 }
 
 .added_chapters_area {
   grid-column: 2/3;
-  background-color: #cac2c2;
+  background-color: transparent;
   display: grid;
   grid-template-rows: 1fr 4fr;
   max-height: 400px;
@@ -252,7 +260,7 @@
 
 .added_chapters_container {
   grid-row: 2/3;
-  background-color: #cac2c2;
+  background-color: transparent;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -277,7 +285,7 @@
 
 .add_chapter_area {
   grid-column: 1/2;
-  background-color: #82827f;
+  background-color: transparent;
   grid-template-rows: 1fr 4fr;
   display: grid;
   border-bottom-left-radius: 20px;
@@ -286,15 +294,16 @@
 
 .added_chapter_box {
   height: 50px;
-  background-color: rgba(139, 222, 237, 0.544);
+  background-color: rgba(209, 240, 245, 0.947);
   width: 100%;
   display: grid;
   grid-template-columns: 0.7fr 3fr 1fr;
   grid-template-rows: 1fr;
   flex-grow: 0;
   flex-shrink: 0;
-  border-radius: 20px;
+  border-radius: 10px;
   transition: all 0.3s ease;
+  border: 3px rgb(17, 147, 191);
 }
 
 .added_chapter_box:hover {
@@ -318,8 +327,18 @@
   align-items: center;
   justify-content: center;
   color: #706b6b;
+ transition: all 0.3s ease;
 }
 
+.upbox{
+border-top-left-radius: 10px;
+}
+.downbox{
+  border-bottom-left-radius: 10px;
+}
+.upbox:hover, .downbox:hover{
+  background-color: aliceblue;
+}
 .arrow_up {
   transform: rotate(90deg);
 }
@@ -375,7 +394,7 @@
 
 .add_chapters_title {
   grid-row: 1/2;
-  background-color: #cac2c2;
+  background-color: transparent;
   position: relative;
   font-weight: 600;
   border-top-left-radius: 20px;
@@ -388,12 +407,12 @@
   transform: translate(0%, -50%);
   color: #525252;
   font-weight: 400;
-  font-size: 30px;
+  font-size: 20px;
 }
 
 .chapter_controls_box {
   grid-row: 2/3;
-  background-color: #cac2c2;
+  background-color: transparent;
   position: relative;
   display: flex;
   justify-content: center;
@@ -410,7 +429,7 @@
   transform: translate(-50%, -50%);
   height: 50px;
   width: 150px;
-  background-color: #17a979;
+  background-color: #4a927a;
   color: white;
   font-weight: 600;
   display: flex;
@@ -433,7 +452,7 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  border-radius: 20px;
+  border-radius: 10px;
   font-size: 13px;
   line-height: 13px;
   color: white;
@@ -492,7 +511,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  color: white;
+  color: rgb(4, 68, 102);
   font-weight: 600;
   font-size: 15px;
 }

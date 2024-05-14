@@ -3,7 +3,6 @@ import StdDash from './student/student_dashboard';
 import CoursePage from './course_page/course_page';
 import Enrollment from './enrollment/enrollment';
 import Teacher from './teacher/teacher_dashboard';
-import NewCourse from './newcourse/newcourse';
 import EditCourse from './editcourse/editcourse';
 import Signup from './signup/signup';
 import Signin from './signin/signin'
@@ -21,7 +20,6 @@ function App() {
         <Route path="/student/course/:username/:courseId" element={<CoursePage />} />
         <Route path="/student/enroll/:username/:courseId" element={<Enrollment />} />
         <Route path="/teacher/:username" element={<Teacher />} />
-        <Route path="/teacher/addcourse/:username" element={<NewCourse />} />
         <Route path="/teacher/editcourse/:username/:courseId" element={<EditCourse />} />
       </Routes>
     </BrowserRouter>
