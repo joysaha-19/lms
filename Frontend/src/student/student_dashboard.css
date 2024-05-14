@@ -291,6 +291,7 @@ body {
   background-color: transparent;
   overflow-y: scroll;
   flex-direction: column;
+  position: relative;
 }
 
 .tagmenu {
@@ -300,12 +301,18 @@ body {
   gap: 10px;
   flex-wrap: wrap;
   padding-top: 10px;
-  height: 90px;
+  height: 80px;
+  background-color: transparent;
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 95%;
+  transform: translateX(-50%);
 }
 
 .tagoption {
-  height: 40px;
-  min-width: 130px;
+  height: 30px;
+  min-width: 100px;
   border-radius: 50px;
   display: flex;
   justify-content: center;
@@ -327,7 +334,12 @@ body {
   flex-wrap: wrap;
   gap: 20px;
   padding-left: 1%;
-  padding-top: 20px;
+  padding-top: 10px;
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  width: 99%;
+  transform: translateX(-50%);
 }
 
 .cardscontainer {

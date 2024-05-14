@@ -530,7 +530,7 @@ border-top-left-radius: 10px;
   align-items: center;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1500px) {
   .newcourse_title_container {
     font-size: 30px;
   }

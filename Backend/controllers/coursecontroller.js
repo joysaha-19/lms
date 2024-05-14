@@ -255,6 +255,7 @@ const add_draftcourse = asynchandler(async (req, res) => {
 
       res.status(200).send("Draft course added successfully.");
   } catch (error) {
+      console.log(error);
       res.status(500).send("An error occurred while adding the draft course.");
   }
 });
