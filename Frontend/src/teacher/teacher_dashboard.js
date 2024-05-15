@@ -28,49 +28,66 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { CircularProgress } from "@mui/material";
 
 import AnimationData from "../assets/tick-anim.json";
+
 export default function UI() {
-  const [refresher, setrefresher] = useState(0);
-  const [windowindex, setwindowindex] = useState(0);
+  const [refresher, setRefresher] = useState(0);
+  const [windowIndex, setWindowIndex] = useState(0);
   const navigate = useNavigate(null);
+  const { username } = useParams();
+
   const [publishedCourses, setPublishedCourses] = useState([]);
   const [draftCourses, setDraftCourses] = useState([]);
-  const [courseid, setcourseid] = useState();
+  const [courseId, setCourseId] = useState();
   const [activeMenu, setActiveMenu] = useState(1);
   const [bgDashboard, setBgDashboard] = useState("rgba(106, 191, 233, 0.289)");
   const [bgBrowser, setBgBrowser] = useState("white");
   const [textDashboard, setTextDashboard] = useState("rgb(10, 124, 166)");
   const [textBrowser, setTextBrowser] = useState("gray");
   const [scroller, setScroller] = useState(50);
-  const [pendingcourses, setpendingcourses] = useState(0);
-  const [completecourses, setcompletecourses] = useState(0);
-  const [progressbars, setprogressbars] = useState({});
+  const [pendingCourses, setPendingCourses] = useState(0);
+  const [completeCourses, setCompleteCourses] = useState(0);
+  const [progressBars, setProgressBars] = useState({});
   const [loading1, setLoading1] = useState(true);
   const [loading2, setLoading2] = useState(true);
-  const [totalrevenue, setTotalRevenue] = useState(0);
-  const [chart, setchart] = useState([]);
-  const [max, setmax] = useState(0);
-  const [max1, setmax1] = useState(99999999999999);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [chart, setChart] = useState([]);
+  const [max, setMax] = useState(0);
+  const [max1, setMax1] = useState(99999999999999);
   const [refreshData, setRefreshData] = useState(false);
-  const [teacherid, setteacherid] = useState("");
+  const [teacherId, setTeacherId] = useState("");
   const token = localStorage.getItem("accesstoken");
   const [open, setOpen] = useState(false);
-  const [finaldialogopen,setfinaldialogopen]=useState(false);
-  const [publishdialogopen, setpublishdialogopen] = useState(false);
+  const [finalDialogOpen, setFinalDialogOpen] = useState(false);
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [deleteCandidate, setDeleteCandidate] = useState(null);
 
-  // Function to open dialog
+  // State for new course creation
+  const [courseTitle, setCourseTitle] = useState("");
+  const [courseDescription, setCourseDescription] = useState("");
+  const [courseCost, setCourseCost] = useState("");
+  const [chapters, setChapters] = useState([]);
+  const [image, setImage] = useState(null);
+  const fileInputRef = useRef(null);
+  const [completedFields, setCompletedFields] = useState(0);
+  const [dialogText, setDialogText] = useState("Publishing...");
+  const [finalDialogText, setFinalDialogText] = useState("");
+  const [stopped, setStopped] = useState(false);
+
+  // State for editing course
+  const [editingCourse, setEditingCourse] = useState({});
+  const [editDialogText, setEditDialogText] = useState("Saving changes");
+  const [editStopped, setEditStopped] = useState(true);
+
   const handleClickOpen = (index) => {
     setDeleteCandidate(chart[index]);
     setOpen(true);
   };
 
-  // Function to close dialog
   const handleClose = () => {
-    setpublishdialogopen(false);
+    setPublishDialogOpen(false);
     setOpen(false);
   };
 
-  // Modified handledelete to use deleteCandidate
   async function handleDelete() {
     if (!deleteCandidate) return;
 
@@ -82,7 +99,7 @@ export default function UI() {
 
     const body = JSON.stringify({
       courseid: course_id,
-      teacherid: teacherid,
+      teacherid: teacherId,
     });
 
     try {
@@ -98,14 +115,13 @@ export default function UI() {
 
       if (response.ok) {
         console.log("Course deletion successful:", await response.json());
-        // Refresh data or remove course from chart
-        setchart((currentChart) =>
+        setChart((currentChart) =>
           currentChart.filter((c) => c.course_id !== course_id)
         );
         handleClose();
       } else {
         if (response.status === 401) {
-          navigate('/unauthorized');
+          navigate("/unauthorized");
           return;
         }
         throw new Error("Failed to delete the course");
@@ -116,12 +132,9 @@ export default function UI() {
   }
 
   function handlenavigate(a) {
-    // Use template literals to dynamically create the path
-    console.log(a);
     navigate(`/teacher/course/${a}`);
   }
 
-  const { username } = useParams();
   async function fetchTeacher(username) {
     const encodedUsername = encodeURIComponent(username);
     const url = `http://localhost:5000/lms/teachers/getteacher?username=${encodedUsername}`;
@@ -133,23 +146,22 @@ export default function UI() {
         },
       });
       if (response.status === 401) {
-        navigate('/unauthorized');
+        navigate("/unauthorized");
         return;
       }
       const data = await response.json();
       let s = 0;
       let localMax = 0;
       let newChart = [];
-      let newChart1 = [];
-      let totalsales = 0;
       setPublishedCourses(data["published_courses"]);
-      setDraftCourses(data["published_courses"]);
-      setteacherid(data["_id"]);
+      setDraftCourses(data["draft_courses"]);
+      setTeacherId(data["_id"]);
+
       const courseFetchPromises = data["published_courses"].map(
         async (courseId) => {
-          const encodedCourseid = encodeURIComponent(courseId);
+          const encodedCourseId = encodeURIComponent(courseId);
           const courseResponse = await fetch(
-            `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourseid}`,
+            `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourseId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -158,13 +170,13 @@ export default function UI() {
             }
           );
           if (courseResponse.status === 401) {
-            navigate('/unauthorized');
+            navigate("/unauthorized");
             return;
           }
           const courseData = await courseResponse.json();
           const enrolled = courseData["enrolled"].length;
           const revenue = enrolled * courseData["course_cost"];
-          const chapterlist=courseData["chapters"];
+          const chapterList = courseData["chapters"];
           s += revenue;
           localMax = Math.max(localMax, revenue);
           return {
@@ -174,57 +186,32 @@ export default function UI() {
             status: "published",
             cost: courseData["course_cost"],
             course_id: courseData["_id"],
-            chapters:chapterlist,
-            tag:courseData["tag"]
+            chapters: chapterList,
+            tag: courseData["tag"],
           };
         }
       );
 
       newChart = await Promise.all(courseFetchPromises);
 
-      const courseFetchPromises1 = data["draft_courses"].map(
-        async (courseId) => {
-          const encodedCourseid = encodeURIComponent(courseId);
-          const courseResponse = await fetch(
-            `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourseid}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                username: `${username}`,
-              },
-            }
-          );
-          if (courseResponse.status === 401) {
-            navigate('/unauthorized');
-            return;
-          }
-          const courseData = await courseResponse.json();
-          return {
-            course_name: courseData["course_name"],
-            status: "drafted",
-            cost: courseData["course_cost"],
-            course_id: courseData["_id"],
-          };
-        }
-      );
+      const draftCourses = data["draft_courses"].map((courseData) => ({
+        course_name: courseData["course_title"],
+        status: "drafted",
+        cost: courseData["course_cost"],
+        course_id: courseData["_id"],
+        chapters: courseData["chapters"],
+      }));
 
-      newChart1 = await Promise.all(courseFetchPromises1);
-      let a = [...newChart, ...newChart1];
+      let a = [...newChart, ...draftCourses];
 
       setTotalRevenue(s);
-      setchart(a);
-      setmax(localMax);
-      // setTimeout(()=>{
-      //   setmax1(localMax);
-      //   return()=>clearTimeout(a);
-      // },3000)
+      setChart(a);
+      console.log(a);
+      setMax(localMax);
     } catch (error) {
       console.error("Failed to fetch teacher data:", error);
-      // setLoading1(false);
-      // setLoading2(false)
     } finally {
       setLoading1(false);
-      setLoading2(false);
     }
   }
 
@@ -234,10 +221,10 @@ export default function UI() {
 
   useEffect(() => {
     fetchTeacher(username);
-    if (activeMenu === 1) setmax1(999999999);
+    if (activeMenu === 1) setMax1(999999999);
     else {
       const a = setTimeout(() => {
-        setmax1(max);
+        setMax1(max);
         return () => clearTimeout(a);
       }, 200);
     }
@@ -252,14 +239,14 @@ export default function UI() {
       setTextBrowser("rgb(10, 124, 166)");
       setTextDashboard("gray");
       setScroller(0);
-      setwindowindex(0);
+      setWindowIndex(0);
     } else {
       setBgBrowser("white");
       setBgDashboard("rgba(106, 191, 233, 0.289)");
       setTextBrowser("gray");
       setTextDashboard("rgb(10, 124, 166)");
       setScroller(50);
-      setwindowindex(0);
+      setWindowIndex(0);
     }
   }
 
@@ -278,31 +265,13 @@ export default function UI() {
 
   ///////////////////////////////////////////////////////////////////NEW COURSE/////////////////////////////////////////////////////////////////
 
-  const [finaldialogtext,setfinaldialogtext]=useState("");
-  const [chapters, setChapters] = useState([]);
-
-  const [editing, setEditing] = useState(false);
-  const [readOnly, setReadOnly] = useState(false);
   const [addingChapter, setAddingChapter] = useState(false);
   const [newChapterName, setNewChapterName] = useState("");
   const [newChapterDescription, setNewChapterDescription] = useState("");
   const [editingIndex, setEditingIndex] = useState(-1);
-  const [image, setImage] = useState(null);
-  const fileInputRef = useRef(null);
-
-  const [courseTitle, setCourseTitle] = useState("");
-  const [courseDescription, setCourseDescription] = useState("");
-  const [courseCost, setCourseCost] = useState("");
-
   const [editCourseTitle, setEditCourseTitle] = useState(false);
   const [editCourseDescription, setEditCourseDescription] = useState(false);
   const [editCourseCost, setEditCourseCost] = useState(false);
-  const [completedFields, setCompletedFields] = useState(0);
-
-  const [publishmessage, setpublishmessage] = useState("Publish");
-
-  const [stopped, setstopped] = useState(false);
-  const [dialogtext, setdialogtext] = useState("Publishing...");
 
   const submitCourse = async () => {
     if (completedFields < 5) {
@@ -315,13 +284,13 @@ export default function UI() {
       course_instructor: username,
       course_cost: Number(courseCost),
       enrolled: [],
-      teacherid: teacherid,
+      teacherid: teacherId,
       chapters: chapters,
     };
 
     try {
-      setpublishdialogopen(true);
-      setdialogtext("Publishing your course....");
+      setPublishDialogOpen(true);
+      setDialogText("Publishing your course....");
       const response = await fetch(
         "http://localhost:5000/lms/courses/addcourse",
         {
@@ -330,29 +299,26 @@ export default function UI() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
             username: `${username}`,
-
           },
           body: JSON.stringify(courseData),
         }
       );
       const responseData = await response.json();
 
-      
       if (response.ok) {
         console.log("Course added successfully:", responseData);
-        setrefresher((prev) => prev + 1);
-      
-        setfinaldialogtext(
+        setRefresher((prev) => prev + 1);
+
+        setFinalDialogText(
           `Your course ${courseTitle} has been published succussfully!`
         );
         const b = setTimeout(() => {
-            setpublishdialogopen(false);
-            setfinaldialogopen(true);
-        
+          setPublishDialogOpen(false);
+          setFinalDialogOpen(true);
         }, 2000);
         const a = setTimeout(() => {
-          setfinaldialogopen(false);
-          setwindowindex(0);
+          setFinalDialogOpen(false);
+          setWindowIndex(0);
           setCourseDescription("");
           setCourseTitle("");
           setChapters([]);
@@ -362,18 +328,15 @@ export default function UI() {
         }, 4000);
 
         return () => {
-          clearTimeout(timer1);
-          clearTimeout(timer2);
+          clearTimeout(b);
+          clearTimeout(a);
         };
-        // setTimeout(() => {
-        //   setwindowindex(0);
-        // }, 2000);
       } else {
         if (response.status === 401) {
-          navigate('/unauthorized');
+          navigate("/unauthorized");
           return;
         }
-        setdialogtext("Failed to save changes. Please try again later.")
+        setDialogText("Failed to save changes. Please try again later.");
         console.error("Failed to add course:", responseData);
       }
     } catch (error) {
@@ -381,8 +344,7 @@ export default function UI() {
     }
   };
 
-
-  const addtodraft = async () => {
+  const addToDraft = async () => {
     if (completedFields < 5) {
       alert("All fields are mandatory");
       return;
@@ -392,12 +354,12 @@ export default function UI() {
       tag: courseDescription,
       course_cost: Number(courseCost),
       chapters: chapters,
-      username:username
+      username: username,
     };
 
     try {
-      setpublishdialogopen(true);
-      setdialogtext("Drafting your course....");
+      setPublishDialogOpen(true);
+      setDialogText("Drafting your course....");
       const response = await fetch(
         "http://localhost:5000/lms/courses/addtodraft",
         {
@@ -406,29 +368,24 @@ export default function UI() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
             username: `${username}`,
-
           },
           body: JSON.stringify(courseData),
         }
       );
-      const responseData = await response.json();
 
-      
+      const text = await response.text();
       if (response.ok) {
-        console.log("Draft saved successfully:", responseData);
-        setrefresher((prev) => prev + 1);
-      
-        setfinaldialogtext(
-          `Draft saved succussfully!`
-        );
+        console.log("Draft saved successfully:", text);
+        setRefresher((prev) => prev + 1);
+
+        setFinalDialogText(`Draft saved successfully!`);
         const b = setTimeout(() => {
-            setpublishdialogopen(false);
-            setfinaldialogopen(true);
-        
+          setPublishDialogOpen(false);
+          setFinalDialogOpen(true);
         }, 2000);
         const a = setTimeout(() => {
-          setfinaldialogopen(false);
-          setwindowindex(0);
+          setFinalDialogOpen(false);
+          setWindowIndex(0);
           setCourseDescription("");
           setCourseTitle("");
           setChapters([]);
@@ -438,26 +395,21 @@ export default function UI() {
         }, 4000);
 
         return () => {
-          clearTimeout(timer1);
-          clearTimeout(timer2);
+          clearTimeout(b);
+          clearTimeout(a);
         };
-        // setTimeout(() => {
-        //   setwindowindex(0);
-        // }, 2000);
       } else {
         if (response.status === 401) {
-          navigate('/unauthorized');
+          navigate("/unauthorized");
           return;
         }
-        setdialogtext("Failed to save changes. Please try again later.")
+        setDialogText("Failed to save changes. Please try again later.");
         console.error("Failed to add course:", responseData);
       }
     } catch (error) {
       console.error("Failed to send course data:", error);
     }
   };
-
-
 
   useEffect(() => {
     const fieldsFilled = [
@@ -475,7 +427,7 @@ export default function UI() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result); // This is now a Base64 string
+        setImage(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -517,14 +469,10 @@ export default function UI() {
     setNewChapterName("");
     setNewChapterDescription("");
     setAddingChapter(false);
-    setEditing(false);
-    setReadOnly(false);
     setEditingIndex(-1);
   }
 
   function handleEditChapter(index) {
-    setEditing(true);
-    setReadOnly(false);
     setAddingChapter(true);
     setEditingIndex(index);
     setNewChapterName(chapters[index].name);
@@ -532,8 +480,6 @@ export default function UI() {
   }
 
   function handleChapterInfoClick(index) {
-    setEditing(false);
-    setReadOnly(true);
     setAddingChapter(true);
     setNewChapterName(chapters[index].name);
     setNewChapterDescription(chapters[index].description);
@@ -543,10 +489,8 @@ export default function UI() {
     const updatedChapters = chapters.filter((_, idx) => idx !== index);
     setChapters(updatedChapters);
 
-    if (index === editingIndex || readOnly) {
+    if (index === editingIndex) {
       setAddingChapter(false);
-      setEditing(false);
-      setReadOnly(false);
       setEditingIndex(-1);
       setNewChapterName("");
       setNewChapterDescription("");
@@ -579,11 +523,11 @@ export default function UI() {
       : text;
   }
 
-  const nochapters = (
+  const noChapters = (
     <div className="no_chapters">No chapters have been added</div>
   );
 
-  const add_chapters = (
+  const addChapters = (
     <div className="add_chapter_box">
       <div className="add_chapter_area">
         <div className="add_chapters_title">
@@ -595,8 +539,6 @@ export default function UI() {
             style={{ display: !addingChapter ? "flex" : "none" }}
             onClick={() => {
               setAddingChapter(true);
-              setEditing(false);
-              setReadOnly(false);
             }}
           >
             <AddCircleOutlineIcon />
@@ -607,8 +549,6 @@ export default function UI() {
             style={{ display: addingChapter ? "flex" : "none" }}
             onClick={() => {
               setAddingChapter(false);
-              setEditing(false);
-              setReadOnly(false);
               setNewChapterName("");
               setNewChapterDescription("");
             }}
@@ -617,10 +557,10 @@ export default function UI() {
           </div>
           <div
             className="add_button"
-            style={{ display: addingChapter && !readOnly ? "flex" : "none" }}
-            onClick={() => handleAddOrEditChapter(editing ? "edit" : "add")}
+            style={{ display: addingChapter ? "flex" : "none" }}
+            onClick={() => handleAddOrEditChapter(editingIndex !== -1 ? "edit" : "add")}
           >
-            <p>{editing ? "Save" : "Add"}</p>
+            <p>{editingIndex !== -1 ? "Save" : "Add"}</p>
           </div>
 
           <div
@@ -633,11 +573,6 @@ export default function UI() {
               placeholder="E.g.: Introduction"
               value={newChapterName}
               onChange={(e) => setNewChapterName(e.target.value)}
-              readOnly={readOnly}
-              style={{
-                color: readOnly ? "gray" : "",
-                cursor: readOnly ? "not-allowed" : "",
-              }}
             />
             <div className="boxtag">Chapter Title</div>
           </div>
@@ -649,14 +584,9 @@ export default function UI() {
               className="title_text"
               type="text"
               placeholder="In this chapter, we will..."
-              style={{
-                resize: "none",
-                color: readOnly ? "gray" : "",
-                cursor: readOnly ? "not-allowed" : "",
-              }}
+              style={{ resize: "none" }}
               value={newChapterDescription}
               onChange={(e) => setNewChapterDescription(e.target.value)}
-              readOnly={readOnly}
             ></textarea>
             <div className="boxtag">Chapter Objective</div>
           </div>
@@ -729,53 +659,48 @@ export default function UI() {
     },
   };
 
-  function handleexit() {
-    setwindowindex(0);
-    setpublishdialogopen(false);
-    setwindowindex(0);
+  function handleExit() {
+    setWindowIndex(0);
+    setPublishDialogOpen(false);
+    setWindowIndex(0);
     setCourseDescription("");
     setCourseTitle("");
     setChapters([]);
     setCompletedFields(0);
     setCourseCost(0);
     setImage("");
-    setImage("");
   }
 
   ////////////////////////////////////////////////////////////////////////////EDIT COURSE////////////////////////////////////////////////////////////////////
 
-  const [editingcourse, seteditingcourse] = useState({});
-  const [editdialogtext,seteditdialogtext]=useState("Saving changes");
-  const [editstopped,seteditstopped]=useState(true);
-  function handleeditwindow(course) {
-    seteditingcourse(course);
+  function handleEditWindow(course) {
+    setEditingCourse(course);
     setChapters(course["chapters"]);
-  setCourseDescription(course["tag"]);
-  setCourseCost(course["cost"]);
-  setCourseTitle(course["course_name"]);
-  setImage("/pics/logo.webp");
-    setwindowindex(2);
+    setCourseDescription(course["tag"]);
+    setCourseCost(course["cost"]);
+    setCourseTitle(course["course_name"]);
+    setImage("/pics/logo.webp");
+    setWindowIndex(2);
   }
-  
 
-  const submitCourseforedit = async () => {
+  const submitCourseForEdit = async () => {
     if (completedFields < 5) {
       alert("All fields are mandatory");
       return;
     }
-    setpublishdialogopen(true);
+    setPublishDialogOpen(true);
     const courseData = {
-      course_id: editingcourse["course_id"],
+      course_id: editingCourse["course_id"],
       course_name: courseTitle,
       course_desc: "",
       course_cost: Number(courseCost),
       chapters: chapters,
-      tag: courseDescription  // Assuming tag is static, change if needed
+      tag: courseDescription,
     };
 
     try {
-      setpublishdialogopen(true);
-      seteditdialogtext("Applying changes to your course");
+      setPublishDialogOpen(true);
+      setEditDialogText("Applying changes to your course");
       const response = await fetch(
         "http://localhost:5000/lms/courses/editpublishedcourse",
         {
@@ -784,7 +709,6 @@ export default function UI() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
             username: `${username}`,
-
           },
           body: JSON.stringify(courseData),
         }
@@ -793,19 +717,16 @@ export default function UI() {
 
       if (response.ok) {
         console.log("Course added successfully:", responseData);
-        setrefresher((prev) => prev + 1);
-      
-        setfinaldialogtext(
-          `Changes saved successfully!`
-        );
+        setRefresher((prev) => prev + 1);
+
+        setFinalDialogText(`Changes saved successfully!`);
         const b = setTimeout(() => {
-            setpublishdialogopen(false);
-            setfinaldialogopen(true);
-        
+          setPublishDialogOpen(false);
+          setFinalDialogOpen(true);
         }, 2000);
         const a = setTimeout(() => {
-          setfinaldialogopen(false);
-          setwindowindex(0);
+          setFinalDialogOpen(false);
+          setWindowIndex(0);
           setCourseDescription("");
           setCourseTitle("");
           setChapters([]);
@@ -815,18 +736,15 @@ export default function UI() {
         }, 4000);
 
         return () => {
-          clearTimeout(timer1);
-          clearTimeout(timer2);
+          clearTimeout(b);
+          clearTimeout(a);
         };
-        // setTimeout(() => {
-        //   setwindowindex(0);
-        // }, 2000);
       } else {
         if (response.status === 401) {
-          navigate('/unauthorized');
+          navigate("/unauthorized");
           return;
         }
-        seteditdialogtext("Failed to save changes. Please try again later.")
+        setEditDialogText("Failed to save changes. Please try again later.");
         console.error("Failed to add course:", responseData);
       }
     } catch (error) {
@@ -835,9 +753,9 @@ export default function UI() {
   };
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  const newcourse_window = (
+  const newCourseWindow = (
     <div className="newcourse_parent">
-      <Dialog open={publishdialogopen} sx={{ color: "green" }}>
+      <Dialog open={publishDialogOpen} sx={{ color: "green" }}>
         <DialogContent>
           <DialogContentText
             sx={{
@@ -852,21 +770,14 @@ export default function UI() {
           >
             <div>
               <p style={{ fontSize: "25px", textAlign: "center" }}>
-                {dialogtext}
+                {dialogText}
               </p>
             </div>
-           
           </DialogContentText>
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleDelete} autoFocus>
-            Delete
-          </Button>
-        </DialogActions> */}
       </Dialog>
 
-      <Dialog open={finaldialogopen} sx={{ color: "green" }}>
+      <Dialog open={finalDialogOpen} sx={{ color: "green" }}>
         <DialogContent>
           <DialogContentText
             sx={{
@@ -881,7 +792,7 @@ export default function UI() {
           >
             <div>
               <p style={{ fontSize: "25px", textAlign: "center" }}>
-                {finaldialogtext}
+                {finalDialogText}
               </p>
             </div>
             <Lottie
@@ -889,16 +800,9 @@ export default function UI() {
               height={150}
               width={150}
               isStopped={stopped}
-              // ref={lottieRef}
             />
           </DialogContentText>
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleDelete} autoFocus>
-            Delete
-          </Button>
-        </DialogActions> */}
       </Dialog>
       <div className="leftpanel">
         <div className="newcourse_titlebox">
@@ -995,7 +899,7 @@ export default function UI() {
         </div>
       </div>
       <div className="rightpanel">
-        <div className="newcourse_chapterbox">{add_chapters}</div>
+        <div className="newcourse_chapterbox">{addChapters}</div>
         <div className="newcourse_cost">
           <div className="newcourse_namebox_title">
             <p>Course Cost in $</p>
@@ -1025,24 +929,24 @@ export default function UI() {
         </div>
         <div className="submitoptions">
           <div className="publishoptionbutton" onClick={submitCourse}>
-            {publishmessage}
+            Publish
           </div>
-          <div className='publishoptionbutton' style={{position:'absolute', right:'250px'}} onClick={addtodraft}  >Save as Draft</div>
-
+          <div
+            className="publishoptionbutton"
+            style={{ position: "absolute", right: "250px" }}
+            onClick={addToDraft}
+          >
+            Save as Draft
+          </div>
         </div>
       </div>
     </div>
   );
 
-
-
-
-
-
-  const courselist_window = (
+  const courseListWindow = (
     <div
       className="teacher_maincontent"
-      style={{ display: loading1 && loading2 ? "none" : "grid" }}
+      style={{ display: loading1  ? "none" : "grid" }}
     >
       <div
         className="teacher_legend"
@@ -1053,7 +957,7 @@ export default function UI() {
         </div>
         <div className="teacher_bluebox">
           Total Revenue:
-          <p>&nbsp;{totalrevenue}$</p>
+          <p>&nbsp;{totalRevenue}$</p>
         </div>
       </div>
       <div
@@ -1071,7 +975,7 @@ export default function UI() {
       <div
         className="newcoursebutton"
         style={{ display: !activeMenu ? "none" : "flex" }}
-        onClick={() => setwindowindex(1)}
+        onClick={() => setWindowIndex(1)}
       >
         <p>
           {<AddCircleOutlineOutlinedIcon></AddCircleOutlineOutlinedIcon>}
@@ -1119,7 +1023,7 @@ export default function UI() {
                   </div>
                 );
               } else {
-                return null; // Return null for non-published courses
+                return null;
               }
             })}
 
@@ -1142,10 +1046,10 @@ export default function UI() {
             className="teacher_courselist"
             style={{ display: !activeMenu ? "none" : "flex" }}
           >
-            {chart
-              .filter((course) =>
-                course.course_name.toLowerCase().includes(filterText)
-              )
+           {chart
+  .filter((course) =>
+    course.course_name && course.course_name.toLowerCase().includes(filterText.toLowerCase())
+  )
               .map((value, index) => {
                 return (
                   <div className="teacher_tablerow">
@@ -1169,7 +1073,7 @@ export default function UI() {
                     <div className="teacher_header_edit">
                       <EditOutlinedIcon
                         className="teacher_editbutton"
-                        onClick={() => handleeditwindow(value)}
+                        onClick={() => handleEditWindow(value)}
                       />
                       <Delete
                         className="teacher_deletebutton"
@@ -1185,10 +1089,9 @@ export default function UI() {
     </div>
   );
 
-
-
-const editcourse_window= <div className='newcourse_parent'>
-    <Dialog open={publishdialogopen} sx={{ color: "green" }}>
+  const editCourseWindow = (
+    <div className="newcourse_parent">
+      <Dialog open={publishDialogOpen} sx={{ color: "green" }}>
         <DialogContent>
           <DialogContentText
             sx={{
@@ -1203,21 +1106,14 @@ const editcourse_window= <div className='newcourse_parent'>
           >
             <div>
               <p style={{ fontSize: "25px", textAlign: "center" }}>
-                {editdialogtext}
+                {editDialogText}
               </p>
             </div>
-           
           </DialogContentText>
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleDelete} autoFocus>
-            Delete
-          </Button>
-        </DialogActions> */}
       </Dialog>
 
-      <Dialog open={finaldialogopen} sx={{ color: "green" }}>
+      <Dialog open={finalDialogOpen} sx={{ color: "green" }}>
         <DialogContent>
           <DialogContentText
             sx={{
@@ -1232,7 +1128,7 @@ const editcourse_window= <div className='newcourse_parent'>
           >
             <div>
               <p style={{ fontSize: "25px", textAlign: "center" }}>
-                {finaldialogtext}
+                {finalDialogText}
               </p>
             </div>
             <Lottie
@@ -1240,123 +1136,106 @@ const editcourse_window= <div className='newcourse_parent'>
               height={150}
               width={150}
               isStopped={stopped}
-              // ref={lottieRef}
             />
           </DialogContentText>
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleDelete} autoFocus>
-            Delete
-          </Button>
-        </DialogActions> */}
       </Dialog>
-<div className='leftpanel'>
-    <div className='newcourse_titlebox'>
-        <div className='newcourse_title_container'><p>Edit Course</p>
-            <p style={{ fontSize: '14px' }}>Completed Fields:{completedFields}/5</p>
+      <div className="leftpanel">
+        <div className="newcourse_titlebox">
+          <div className="newcourse_title_container">
+            <p>Edit Course</p>
+            <p style={{ fontSize: "14px" }}>Completed Fields:{completedFields}/5</p>
+          </div>
         </div>
-    </div>
-    <div className='newcourse_namebox'>
-        <div className='newcourse_namebox_title'><p>Course Title</p></div>
-        <div className='newcourse_name_textbox'>
+        <div className="newcourse_namebox">
+          <div className="newcourse_namebox_title"><p>Course Title</p></div>
+          <div className="newcourse_name_textbox">
             <input
-                className='course_name_text'
-                type='text'
-                value={courseTitle}
-                onChange={e => setCourseTitle(e.target.value)}
-                readOnly={!editCourseTitle}
-                style={inputStyle(editCourseTitle)}
-                placeholder='Enter Course Title'
+              className="course_name_text"
+              type="text"
+              value={courseTitle}
+              onChange={e => setCourseTitle(e.target.value)}
+              readOnly={!editCourseTitle}
+              style={inputStyle(editCourseTitle)}
+              placeholder="Enter Course Title"
             />
             {editCourseTitle ? (
-                <DoneIcon className='tickicon' onClick={() => handleDoneClick(setEditCourseTitle)} />
+              <DoneIcon className="tickicon" onClick={() => handleDoneClick(setEditCourseTitle)} />
             ) : (
-                <EditIcon className='editicon' onClick={() => handleEditClick(setEditCourseTitle)} />
+              <EditIcon className="editicon" onClick={() => handleEditClick(setEditCourseTitle)} />
             )}
+          </div>
         </div>
-    </div>
-    <div className='newcourse_descriptionbox'>
-        <div className='newcourse_namebox_title'><p>Course Tag</p></div>
-        <div className='newcourse_description_textbox'>
-        <select className='course_description_text' value={courseDescription} onChange={handleSelectChange} style={{ width: '90%', height: '35px' }}>
-        <option value="">None</option>
-          <option value="Engineering">Engineering</option>
-          <option value="Art">Art</option>
-          <option value="Medical">Medical</option>
-          <option value="Science">Science</option>
-          <option value="Humanities">Humanities</option>
-          <option value="Mathematics">Mathematics</option>
-          <option value="Biology">Biology</option>
-          <option value="Architecture">Architecture</option>
-
-      </select>
-            
+        <div className="newcourse_descriptionbox">
+          <div className="newcourse_namebox_title"><p>Course Tag</p></div>
+          <div className="newcourse_description_textbox">
+            <select className="course_description_text" value={courseDescription} onChange={handleSelectChange} style={{ width: '90%', height: '35px' }}>
+              <option value="">None</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Art">Art</option>
+              <option value="Medical">Medical</option>
+              <option value="Science">Science</option>
+              <option value="Humanities">Humanities</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Biology">Biology</option>
+              <option value="Architecture">Architecture</option>
+            </select>
+          </div>
         </div>
-    </div>
-    <div className='newcourse_imagebox'>
-        <div className='newcourse_namebox_title'><p>Course Thumbnail</p></div>
-        <div className='newcourse_image_area'>
+        <div className="newcourse_imagebox">
+          <div className="newcourse_namebox_title"><p>Course Thumbnail</p></div>
+          <div className="newcourse_image_area">
             <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-                ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+              ref={fileInputRef}
             />
             {!image && (
-                <div style={{ textAlign: 'center' }}>
-                    Upload thumbnail here
-                    <UploadIcon className='uploadicon' onClick={handleClickIcon} />
-                </div>
+              <div style={{ textAlign: 'center' }}>
+                Upload thumbnail here
+                <UploadIcon className="uploadicon" onClick={handleClickIcon} />
+              </div>
             )}
             {image && (
-                <>
-                    <img src={image} alt="Uploaded" style={{ width: '400px', height: '200px', objectFit: 'contain' }} />
-                    <UploadIcon className='tickicon' onClick={handleClickIcon} />
-                </>
+              <>
+                <img src={image} alt="Uploaded" style={{ width: '400px', height: '200px', objectFit: 'contain' }} />
+                <UploadIcon className="tickicon" onClick={handleClickIcon} />
+              </>
             )}
+          </div>
         </div>
-    </div>
-</div>
-<div className='rightpanel'>
-  {/* <div className='exitbox' >
-    <div className='newcourse_tag'></div>
-    <div className='exitbutton' onClick={()=>nav('/teacher')} style={{position:'absolute',top:'30%',right:'5%'}}>EXIT</div>
-  </div> */}
-    <div className='newcourse_chapterbox'>
-        {add_chapters}
-    </div>
-    <div className='newcourse_cost'>
-        <div className='newcourse_namebox_title'><p>Course Cost in $</p></div>
-        <div className='newcourse_name_textbox' style={{bottom:'25%'}}>
+      </div>
+      <div className="rightpanel">
+        <div className="newcourse_chapterbox">{addChapters}</div>
+        <div className="newcourse_cost">
+          <div className="newcourse_namebox_title"><p>Course Cost in $</p></div>
+          <div className="newcourse_name_textbox" style={{ bottom: '25%' }}>
             <input
-                className='course_name_text'
-                type='number'
-                value={courseCost}
-                onChange={e => setCourseCost(e.target.value)}
-                readOnly={!editCourseCost}
-                style={inputStyle(editCourseCost)}
-                placeholder='Enter cost of course in $'
+              className="course_name_text"
+              type="number"
+              value={courseCost}
+              onChange={e => setCourseCost(e.target.value)}
+              readOnly={!editCourseCost}
+              style={inputStyle(editCourseCost)}
+              placeholder="Enter cost of course in $"
             />
             {editCourseCost ? (
-                <DoneIcon className='tickicon' onClick={() => handleDoneClick(setEditCourseCost)} />
+              <DoneIcon className="tickicon" onClick={() => handleDoneClick(setEditCourseCost)} />
             ) : (
-                <EditIcon className='editicon' onClick={() => handleEditClick(setEditCourseCost)} />
+              <EditIcon className="editicon" onClick={() => handleEditClick(setEditCourseCost)} />
             )}
+          </div>
         </div>
+        <div className="submitoptions">
+          <div className="publishoptionbutton" onClick={submitCourseForEdit}>Save Changes</div>
+        </div>
+      </div>
     </div>
-    <div className='submitoptions'>
-        <div className='publishoptionbutton'  onClick={submitCourseforedit}>Save Changes</div>
-    </div>
-</div>
-</div>
+  );
 
-
-
-  const windows = [courselist_window, newcourse_window,editcourse_window];
-
-  //////////////////////////////////////////////////////////////////////////////////////////
+  const windows = [courseListWindow, newCourseWindow, editCourseWindow];
 
   return (
     <div className="teacher_dashboard_parent">
@@ -1382,10 +1261,10 @@ const editcourse_window= <div className='newcourse_parent'>
         </div>
       </div>
       <div className="teacher_appbar">
-        {windowindex !== 0 ? (
+        {windowIndex !== 0 ? (
           <div
             className="exitbutton"
-            onClick={handleexit}
+            onClick={handleExit}
             style={{ transition: "all 0s" }}
           >
             <p>EXIT</p>
@@ -1422,7 +1301,7 @@ const editcourse_window= <div className='newcourse_parent'>
       </div>
       <div
         className="LoadingArea_student"
-        style={{ display: loading1 && loading2 ? "flex" : "none" }}
+        style={{ display: loading1  ? "flex" : "none" }}
       >
         <div className="loading-box">
           <CircularProgress />
@@ -1430,7 +1309,7 @@ const editcourse_window= <div className='newcourse_parent'>
         </div>
       </div>
 
-      {!loading1 && !loading2 && windows[windowindex]}
+      {!loading1  && windows[windowIndex]}
     </div>
   );
 }

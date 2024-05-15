@@ -32,11 +32,9 @@ const TeacherSchema = mongoose.Schema(
             chapters: [{
                 name: {
                     type: String,
-                    required: [true, "Please add the chapter name."],
                 },
                 description: {
                     type: String,
-                    required: [true, "Please add the chapter description."],
                 }
             }],
             course_cost: {

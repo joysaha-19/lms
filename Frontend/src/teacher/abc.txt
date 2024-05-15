@@ -1,0 +1,30 @@
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Lottie from "react-lottie";
+
+import "./newcourse.css";
+
+import "./teacher_dashboard.css";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DoneIcon from "@mui/icons-material/Done";
+import UploadIcon from "@mui/icons-material/Upload";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import Delete from "@mui/icons-material/Delete";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { CircularProgress } from "@mui/material";
+
+import AnimationData from "../assets/tick-anim.json";
