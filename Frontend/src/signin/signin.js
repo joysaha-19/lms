@@ -18,22 +18,11 @@ export default function Signup() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value.trim()
     });
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    const emailRegex = /\S+@\S+\.\S+/;
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address.';
-    }
-    if (formData.password.length < 5) {
-      newErrors.password = 'Password must be at least 5 characters long.';
-    }
-    
-    return newErrors;
-  };
+ 
 
   const handleSubmit = async (e) => {
     const username= formData.username

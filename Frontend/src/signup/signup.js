@@ -19,7 +19,7 @@ export default function Signup() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value.trim()
     });
   };
 

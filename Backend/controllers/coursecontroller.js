@@ -321,12 +321,12 @@ const editpublishedcourse = asynchandler(async (req, res) => {
     course_desc,
     course_cost,
     chapters,
-    courseDescription,
-    teacherid
+    teacherid,
+    courseDescription
   } = req.body;
-
+  
   const teacher = await Teachers.findById(teacherid);
-
+  
   const publishedCourses = await Courses.find({
     _id: { $in: teacher.published_courses },
   });
@@ -334,15 +334,18 @@ const editpublishedcourse = asynchandler(async (req, res) => {
   const draftedCourses = await Drafts.find({
     _id: { $in: teacher.drafted_courses },
   });
-
+  
   // Check if a published course with the same name already exists for the teacher
-  if (publishedCourses.some((course) => course.course_name === course_name)) {
+  if (publishedCourses.some((course) => course.course_name === course_name && course._id.toString() !== course_id)) {
     return res.status(618).json({ message: "Already exists" });
   }
   // Check if a drafted course with the same name already exists for the teacher
-  if (draftedCourses.some((course) => course.course_name === course_name)) {
+  if (draftedCourses.some((course) => course.course_name === course_name && course._id.toString() !== course_id)) {
     return res.status(619).json({ message: "Already exists" });
   }
+  
+  // Proceed with further logic if no conflicts are found
+  
   try {
     // Find the course by ID
     const course = await Courses.findById(course_id);
@@ -381,12 +384,12 @@ const editdraftedcourse = asynchandler(async (req, res) => {
     course_desc,
     course_cost,
     chapters,
-    courseDescription,
-    teacherid
+    teacherid,
+    courseDescription
   } = req.body;
-
+  
   const teacher = await Teachers.findById(teacherid);
-
+  
   const publishedCourses = await Courses.find({
     _id: { $in: teacher.published_courses },
   });
@@ -394,15 +397,18 @@ const editdraftedcourse = asynchandler(async (req, res) => {
   const draftedCourses = await Drafts.find({
     _id: { $in: teacher.drafted_courses },
   });
-
+  
   // Check if a published course with the same name already exists for the teacher
-  if (publishedCourses.some((course) => course.course_name === course_name)) {
+  if (publishedCourses.some((course) => course.course_name === course_name && course._id.toString() !== course_id)) {
     return res.status(618).json({ message: "Already exists" });
   }
   // Check if a drafted course with the same name already exists for the teacher
-  if (draftedCourses.some((course) => course.course_name === course_name)) {
+  if (draftedCourses.some((course) => course.course_name === course_name && course._id.toString() !== course_id)) {
     return res.status(619).json({ message: "Already exists" });
   }
+  
+  // Proceed with further logic if no conflicts are found
+  
   try {
     // Find the course by ID
     const course = await Drafts.findById(course_id);
