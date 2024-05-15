@@ -37,18 +37,14 @@ export default function UI() {
 
   const [publishedCourses, setPublishedCourses] = useState([]);
   const [draftCourses, setDraftCourses] = useState([]);
-  const [courseId, setCourseId] = useState();
   const [activeMenu, setActiveMenu] = useState(1);
   const [bgDashboard, setBgDashboard] = useState("rgba(106, 191, 233, 0.289)");
   const [bgBrowser, setBgBrowser] = useState("white");
   const [textDashboard, setTextDashboard] = useState("rgb(10, 124, 166)");
   const [textBrowser, setTextBrowser] = useState("gray");
   const [scroller, setScroller] = useState(50);
-  const [pendingCourses, setPendingCourses] = useState(0);
-  const [completeCourses, setCompleteCourses] = useState(0);
-  const [progressBars, setProgressBars] = useState({});
+ 
   const [loading1, setLoading1] = useState(true);
-  const [loading2, setLoading2] = useState(true);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [chart, setChart] = useState([]);
   const [max, setMax] = useState(0);
@@ -71,13 +67,11 @@ export default function UI() {
   const [completedFields, setCompletedFields] = useState(0);
   const [dialogText, setDialogText] = useState("Publishing...");
   const [finalDialogText, setFinalDialogText] = useState("");
-  const [stopped, setStopped] = useState(false);
 
   // State for editing course
   const [editingCourse, setEditingCourse] = useState({});
-  const [editDialogText, setEditDialogText] = useState("Saving changes");
-  const [editStopped, setEditStopped] = useState(true);
-
+  const [editingcoursestatus,seteditingcoursestatus]=useState("published")
+  const [editing_course_id,setediting_course_id]=useState("");
   const handleClickOpen = (index) => {
     setDeleteCandidate(chart[index]);
     setOpen(true);
@@ -95,7 +89,7 @@ export default function UI() {
     const url =
       status === "published"
         ? "http://localhost:5000/lms/courses/deletepublishedcourse"
-        : "http://localhost:5000/lms/courses/deletedraftcourse";
+        : "http://localhost:5000/lms/courses/deletedraftedcourse";
 
     const body = JSON.stringify({
       courseid: course_id,
@@ -131,9 +125,7 @@ export default function UI() {
     }
   }
 
-  function handlenavigate(a) {
-    navigate(`/teacher/course/${a}`);
-  }
+ 
 
   async function fetchTeacher(username) {
     const encodedUsername = encodeURIComponent(username);
@@ -153,8 +145,9 @@ export default function UI() {
       let s = 0;
       let localMax = 0;
       let newChart = [];
+      let newChart1=[];
       setPublishedCourses(data["published_courses"]);
-      setDraftCourses(data["draft_courses"]);
+      setDraftCourses(data["drafted_courses"]);
       setTeacherId(data["_id"]);
 
       const courseFetchPromises = data["published_courses"].map(
@@ -194,15 +187,41 @@ export default function UI() {
 
       newChart = await Promise.all(courseFetchPromises);
 
-      const draftCourses = data["draft_courses"].map((courseData) => ({
-        course_name: courseData["course_title"],
-        status: "drafted",
-        cost: courseData["course_cost"],
-        course_id: courseData["_id"],
-        chapters: courseData["chapters"],
-      }));
+      const courseFetchPromises1 = data["drafted_courses"].map(
+        async (courseId) => {
+          const encodedCourseId = encodeURIComponent(courseId);
+          const courseResponse = await fetch(
+            `http://localhost:5000/lms/courses/spdraftcourse?courseid=${encodedCourseId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                username: `${username}`,
+              },
+            }
+          );
+          if (courseResponse.status === 401) {
+            navigate("/unauthorized");
+            return;
+          }
+          const courseData = await courseResponse.json();
+          const enrolled = courseData["enrolled"].length;
+          const chapterList = courseData["chapters"];
+          return {
+            course_name: courseData["course_name"],
+            enrolled: enrolled,
+            revenue: 0,
+            status: "drafted",
+            cost: courseData["course_cost"],
+            course_id: courseData["_id"],
+            chapters: chapterList,
+            tag: courseData["tag"],
+          };
+        }
+      );
 
-      let a = [...newChart, ...draftCourses];
+      newChart1 = await Promise.all(courseFetchPromises1);
+
+      let a = [...newChart, ...newChart1];
 
       setTotalRevenue(s);
       setChart(a);
@@ -264,6 +283,10 @@ export default function UI() {
   }
 
   ///////////////////////////////////////////////////////////////////NEW COURSE/////////////////////////////////////////////////////////////////
+const [errorparam,seterrorparam]=useState(false);
+
+
+
 
   const [addingChapter, setAddingChapter] = useState(false);
   const [newChapterName, setNewChapterName] = useState("");
@@ -272,6 +295,32 @@ export default function UI() {
   const [editCourseTitle, setEditCourseTitle] = useState(false);
   const [editCourseDescription, setEditCourseDescription] = useState(false);
   const [editCourseCost, setEditCourseCost] = useState(false);
+
+
+
+
+  const resetFieldsToOriginalState = () => {
+    setAddingChapter(false);
+    setNewChapterName("");
+    setNewChapterDescription("");
+    setEditingIndex(-1);
+    setEditCourseTitle(false);
+    setEditCourseDescription(false);
+    setEditCourseCost(false);
+    setFinalDialogOpen(false);
+    setWindowIndex(0);
+    setCourseDescription("");
+    setCourseTitle("");
+    setChapters([]);
+    setCompletedFields(0);
+    setCourseCost(0);
+    setImage("");
+    setDialogText("");
+    setPublishDialogOpen(false);
+    
+  };
+
+
 
   const submitCourse = async () => {
     if (completedFields < 5) {
@@ -317,14 +366,7 @@ export default function UI() {
           setFinalDialogOpen(true);
         }, 2000);
         const a = setTimeout(() => {
-          setFinalDialogOpen(false);
-          setWindowIndex(0);
-          setCourseDescription("");
-          setCourseTitle("");
-          setChapters([]);
-          setCompletedFields(0);
-          setCourseCost(0);
-          setImage("");
+        resetFieldsToOriginalState();
         }, 4000);
 
         return () => {
@@ -336,7 +378,99 @@ export default function UI() {
           navigate("/unauthorized");
           return;
         }
+        if(response.status===619)
+          {
+            seterrorparam(true);
+            setDialogText("A course by that name has already been drafted by you.");
+            return ;
+          }
+          if(response.status===618)
+            {
+              seterrorparam(true);
+              setDialogText("A course by that name has already been published by you.");
+              return ;
+            }
         setDialogText("Failed to save changes. Please try again later.");
+        seterrorparam(true);
+        console.error("Failed to add course:", responseData);
+      }
+    } catch (error) {
+      console.error("Failed to send course data:", error);
+    }
+  };
+
+  const publishdraftedcourse = async () => {
+    if (completedFields < 5) {
+      alert("All fields are mandatory");
+      return;
+    }
+    const courseData = {
+      course_name: courseTitle,
+      tag: courseDescription,
+      course_instructor: username,
+      course_cost: Number(courseCost),
+      enrolled: [],
+      teacherid: teacherId,
+      chapters: chapters,
+      course_id:editing_course_id
+    };
+
+    try {
+      setPublishDialogOpen(true);
+      setDialogText("Publishing course....");
+      const response = await fetch(
+        "http://localhost:5000/lms/courses/publishdraftedcourse",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            username: `${username}`,
+          },
+          body: JSON.stringify(courseData),
+        }
+      );
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log("Course published successfully:", responseData);
+        setRefresher((prev) => prev + 1);
+
+        setFinalDialogText(
+          `Your course ${courseTitle} has been published succussfully!`
+        );
+        const b = setTimeout(() => {
+          setPublishDialogOpen(false);
+          setFinalDialogOpen(true);
+        }, 2000);
+        const a = setTimeout(() => {
+          resetFieldsToOriginalState();
+
+        }, 4000);
+
+        return () => {
+          clearTimeout(b);
+          clearTimeout(a);
+        };
+      } else {
+        if (response.status === 401) {
+          navigate("/unauthorized");
+          return;
+        }
+        // if(response.status===619)
+        //   {
+        //     seterrorparam(true);
+        //     setDialogText("A course by that name has already been drafted by you.");
+        //     return ;
+        //   }
+          if(response.status===618)
+            {
+              seterrorparam(true);
+              setDialogText("A course by that name has already been published by you.");
+              return ;
+            }
+        setDialogText("Failed to save changes. Please try again later.");
+        seterrorparam(true);
         console.error("Failed to add course:", responseData);
       }
     } catch (error) {
@@ -350,16 +484,18 @@ export default function UI() {
       return;
     }
     const courseData = {
-      course_title: courseTitle,
+      course_name: courseTitle,
       tag: courseDescription,
+      course_instructor: username,
       course_cost: Number(courseCost),
+      enrolled: [],
+      teacherid: teacherId,
       chapters: chapters,
-      username: username,
     };
 
     try {
       setPublishDialogOpen(true);
-      setDialogText("Drafting your course....");
+      setDialogText("Drafting course....");
       const response = await fetch(
         "http://localhost:5000/lms/courses/addtodraft",
         {
@@ -372,26 +508,22 @@ export default function UI() {
           body: JSON.stringify(courseData),
         }
       );
+      const responseData = await response.json();
 
-      const text = await response.text();
       if (response.ok) {
-        console.log("Draft saved successfully:", text);
+        console.log("Course added successfully:", responseData);
         setRefresher((prev) => prev + 1);
 
-        setFinalDialogText(`Draft saved successfully!`);
+        setFinalDialogText(
+          `Your course ${courseTitle} has been drafted succussfully!`
+        );
         const b = setTimeout(() => {
           setPublishDialogOpen(false);
           setFinalDialogOpen(true);
         }, 2000);
         const a = setTimeout(() => {
-          setFinalDialogOpen(false);
-          setWindowIndex(0);
-          setCourseDescription("");
-          setCourseTitle("");
-          setChapters([]);
-          setCompletedFields(0);
-          setCourseCost(0);
-          setImage("");
+          resetFieldsToOriginalState();
+
         }, 4000);
 
         return () => {
@@ -403,13 +535,28 @@ export default function UI() {
           navigate("/unauthorized");
           return;
         }
+        if(response.status===619)
+          {
+            seterrorparam(true);
+            setDialogText("A course by that name has already been drafted by you.");
+            return ;
+          }
+          if(response.status===618)
+            {
+              seterrorparam(true);
+              setDialogText("A course by that name has already been published by you.");
+              return ;
+            }
         setDialogText("Failed to save changes. Please try again later.");
+        seterrorparam(true);
         console.error("Failed to add course:", responseData);
       }
     } catch (error) {
       console.error("Failed to send course data:", error);
     }
   };
+
+
 
   useEffect(() => {
     const fieldsFilled = [
@@ -660,27 +807,23 @@ export default function UI() {
   };
 
   function handleExit() {
+    resetFieldsToOriginalState();
     setWindowIndex(0);
-    setPublishDialogOpen(false);
-    setWindowIndex(0);
-    setCourseDescription("");
-    setCourseTitle("");
-    setChapters([]);
-    setCompletedFields(0);
-    setCourseCost(0);
-    setImage("");
+    seterrorparam(false);
   }
 
   ////////////////////////////////////////////////////////////////////////////EDIT COURSE////////////////////////////////////////////////////////////////////
-
+  
   function handleEditWindow(course) {
     setEditingCourse(course);
+    setediting_course_id(course["course_id"]);
     setChapters(course["chapters"]);
     setCourseDescription(course["tag"]);
     setCourseCost(course["cost"]);
     setCourseTitle(course["course_name"]);
     setImage("/pics/logo.webp");
     setWindowIndex(2);
+    seteditingcoursestatus(course["status"])
   }
 
   const submitCourseForEdit = async () => {
@@ -696,13 +839,17 @@ export default function UI() {
       course_cost: Number(courseCost),
       chapters: chapters,
       tag: courseDescription,
+      teacherid:teacherId
     };
+    const url=editingCourse["status"] === "published"
+    ? "http://localhost:5000/lms/courses/editpublishedcourse"
+    : "http://localhost:5000/lms/courses/editdraftedcourse";
 
     try {
       setPublishDialogOpen(true);
-      setEditDialogText("Applying changes to your course");
+      setDialogText("Applying changes to your course");
       const response = await fetch(
-        "http://localhost:5000/lms/courses/editpublishedcourse",
+        url,
         {
           method: "POST",
           headers: {
@@ -725,26 +872,33 @@ export default function UI() {
           setFinalDialogOpen(true);
         }, 2000);
         const a = setTimeout(() => {
-          setFinalDialogOpen(false);
-          setWindowIndex(0);
-          setCourseDescription("");
-          setCourseTitle("");
-          setChapters([]);
-          setCompletedFields(0);
-          setCourseCost(0);
-          setImage("");
+          resetFieldsToOriginalState();
+
         }, 4000);
 
         return () => {
           clearTimeout(b);
           clearTimeout(a);
         };
-      } else {
+      }else {
         if (response.status === 401) {
           navigate("/unauthorized");
           return;
         }
-        setEditDialogText("Failed to save changes. Please try again later.");
+        if(response.status===619)
+          {
+            seterrorparam(true);
+            setDialogText("A course by that name has already been drafted by you.");
+            return ;
+          }
+          if(response.status===618)
+            {
+              seterrorparam(true);
+              setDialogText("A course by that name has already been published by you.");
+              return ;
+            }
+        setDialogText("Failed to save changes. Please try again later.");
+        seterrorparam(true);
         console.error("Failed to add course:", responseData);
       }
     } catch (error) {
@@ -756,8 +910,8 @@ export default function UI() {
   const newCourseWindow = (
     <div className="newcourse_parent">
       <Dialog open={publishDialogOpen} sx={{ color: "green" }}>
-        <DialogContent>
-          <DialogContentText
+        <DialogContent
+         
             sx={{
               minHeight: "50px",
               minWidth: "100px",
@@ -773,13 +927,19 @@ export default function UI() {
                 {dialogText}
               </p>
             </div>
-          </DialogContentText>
+        
         </DialogContent>
+        <DialogActions sx={{display:errorparam?'flex':'none'}}>
+          <Button onClick={handleExit}>Exit</Button>
+          <Button onClick={()=>{setDialogText("");setPublishDialogOpen(false);seterrorparam(false)}} autoFocus>
+            Try Again
+          </Button>
+        </DialogActions>
       </Dialog>
 
       <Dialog open={finalDialogOpen} sx={{ color: "green" }}>
-        <DialogContent>
-          <DialogContentText
+        <DialogContent
+         
             sx={{
               minHeight: "90px",
               minWidth: "400px",
@@ -799,9 +959,8 @@ export default function UI() {
               options={defaultOptions}
               height={150}
               width={150}
-              isStopped={stopped}
+              isStopped={true}
             />
-          </DialogContentText>
         </DialogContent>
       </Dialog>
       <div className="leftpanel">
@@ -1092,8 +1251,8 @@ export default function UI() {
   const editCourseWindow = (
     <div className="newcourse_parent">
       <Dialog open={publishDialogOpen} sx={{ color: "green" }}>
-        <DialogContent>
-          <DialogContentText
+        <DialogContent
+        
             sx={{
               minHeight: "50px",
               minWidth: "100px",
@@ -1106,16 +1265,20 @@ export default function UI() {
           >
             <div>
               <p style={{ fontSize: "25px", textAlign: "center" }}>
-                {editDialogText}
+                {dialogText}
               </p>
             </div>
-          </DialogContentText>
         </DialogContent>
+        <DialogActions sx={{display:errorparam?'flex':'none'}}>
+          <Button onClick={handleExit}>Exit</Button>
+          <Button onClick={()=>{setDialogText("");setPublishDialogOpen(false);seterrorparam(false)}} autoFocus>
+            Try Again
+          </Button>
+        </DialogActions>
       </Dialog>
 
       <Dialog open={finalDialogOpen} sx={{ color: "green" }}>
-        <DialogContent>
-          <DialogContentText
+        <DialogContent
             sx={{
               minHeight: "90px",
               minWidth: "400px",
@@ -1135,10 +1298,10 @@ export default function UI() {
               options={defaultOptions}
               height={150}
               width={150}
-              isStopped={stopped}
+              isStopped={true}
             />
-          </DialogContentText>
         </DialogContent>
+        
       </Dialog>
       <div className="leftpanel">
         <div className="newcourse_titlebox">
@@ -1230,6 +1393,14 @@ export default function UI() {
         </div>
         <div className="submitoptions">
           <div className="publishoptionbutton" onClick={submitCourseForEdit}>Save Changes</div>
+          <div
+            className="publishoptionbutton"
+            style={{ position: "absolute", right: "250px" , display:editingcoursestatus==='drafted'?'flex':'none'
+          }}
+            onClick={publishdraftedcourse}
+          >
+            Publish Course
+          </div>
         </div>
       </div>
     </div>

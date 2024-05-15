@@ -24,7 +24,7 @@ const validatetoken=asynchandler(async(req,res,next)=>
             }
         req.user=decoded.user;
         
-        console.log(decoded);
+        // console.log(decoded);
         next();
         }
         
