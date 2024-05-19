@@ -359,7 +359,7 @@ const [errorparam,seterrorparam]=useState(false);
         setRefresher((prev) => prev + 1);
 
         setFinalDialogText(
-          `Your course ${courseTitle} has been published succussfully!`
+          `Your course ${courseTitle} has been published successfully!`
         );
         const b = setTimeout(() => {
           setPublishDialogOpen(false);
@@ -437,7 +437,7 @@ const [errorparam,seterrorparam]=useState(false);
         setRefresher((prev) => prev + 1);
 
         setFinalDialogText(
-          `Your course ${courseTitle} has been published succussfully!`
+          `Your course ${courseTitle} has been published successfully!`
         );
         const b = setTimeout(() => {
           setPublishDialogOpen(false);
@@ -515,7 +515,7 @@ const [errorparam,seterrorparam]=useState(false);
         setRefresher((prev) => prev + 1);
 
         setFinalDialogText(
-          `Your course ${courseTitle} has been drafted succussfully!`
+          `Your course ${courseTitle} has been drafted successfully!`
         );
         const b = setTimeout(() => {
           setPublishDialogOpen(false);
