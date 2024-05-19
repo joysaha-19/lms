@@ -322,7 +322,7 @@ const editpublishedcourse = asynchandler(async (req, res) => {
     course_cost,
     chapters,
     teacherid,
-    courseDescription
+    tag
   } = req.body;
   
   const teacher = await Teachers.findById(teacherid);
@@ -360,7 +360,7 @@ const editpublishedcourse = asynchandler(async (req, res) => {
     if (course_desc) course.course_desc = course_desc;
     if (typeof course_cost === "number") course.course_cost = course_cost;
     if (chapters) course.chapters = chapters;
-    if (courseDescription) course.tag = courseDescription;
+    if (tag) course.tag = tag;
 
     // Save the updated course
     const updatedCourse = await course.save();
@@ -385,7 +385,7 @@ const editdraftedcourse = asynchandler(async (req, res) => {
     course_cost,
     chapters,
     teacherid,
-    courseDescription
+    tag
   } = req.body;
   
   const teacher = await Teachers.findById(teacherid);
@@ -423,7 +423,7 @@ const editdraftedcourse = asynchandler(async (req, res) => {
     if (course_desc) course.course_desc = course_desc;
     if (typeof course_cost === "number") course.course_cost = course_cost;
     if (chapters) course.chapters = chapters;
-    if (courseDescription) course.tag = courseDescription;
+    if (tag) course.tag = tag;
 
     // Save the updated course
     const updatedCourse = await course.save();
