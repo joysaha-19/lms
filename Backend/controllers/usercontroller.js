@@ -52,7 +52,7 @@ const login= asynchandler(async(req,res)=>{
                    },
               },
               
-              process.env.ACC_TOKEN,
+              'joydeep123',
               
               {expiresIn:"2h"}
           );
