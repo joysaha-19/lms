@@ -9,7 +9,7 @@ const validatetoken=asynchandler(async(req,res,next)=>
     if(authheader&&authheader.startsWith("Bearer"))
     {
     token=authheader.split(" ")[1];
-    await jwt.verify(token,process.env.ACC_TOKEN,(err,decoded)=>
+    await jwt.verify(token,'joydeep123',(err,decoded)=>
     { if(token){
         if(err)
         {
