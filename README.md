@@ -7,7 +7,7 @@ The Lesson Management System is an educational platform that allows users to reg
 
 ### Features
 
-- **Registration**: Users can sign up as students or teachers.
+- **Registration**: Users sign up as both students and teachers.
 - **Course Access**: The first lecture of each course is available for free to all registered students, providing a preview of the course content. To access subsequent lectures, students must purchase the course.
 - **Course Management**: Teachers have the ability to add and edit courses within the platform.
 - **Analytics**: Teachers receive updates on enrollment numbers and earnings per course, helping them understand which courses are most popular and profitable.
