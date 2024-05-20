@@ -5,7 +5,7 @@ const errorhandler = require("./middleware/errorhandler");
 const dotenv = require("dotenv").config();
 
 const cors = require('cors');
-const port = process.env.PORT || 4000;
+const port = 5000;
 connectDb();
 const corsOptions = {
   origin: '*',  // Allow all origins
