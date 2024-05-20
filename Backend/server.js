@@ -10,7 +10,7 @@ connectDb();
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "http://localhost:3000"
+    "https://664b8966da79e8fd6fb95f7e--joydeep-lms.netlify.app"
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
