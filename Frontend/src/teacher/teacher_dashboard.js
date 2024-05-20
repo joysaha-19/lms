@@ -88,8 +88,8 @@ export default function UI() {
     const { course_id, status } = deleteCandidate;
     const url =
       status === "published"
-        ? "http://localhost:5000/lms/courses/deletepublishedcourse"
-        : "http://localhost:5000/lms/courses/deletedraftedcourse";
+        ? "http://lms-joydeep.onrender.com/lms/courses/deletepublishedcourse"
+        : "http://lms-joydeep.onrender.com/lms/courses/deletedraftedcourse";
 
     const body = JSON.stringify({
       courseid: course_id,
@@ -129,7 +129,7 @@ export default function UI() {
 
   async function fetchTeacher(username) {
     const encodedUsername = encodeURIComponent(username);
-    const url = `http://localhost:5000/lms/teachers/getteacher?username=${encodedUsername}`;
+    const url = `http://lms-joydeep.onrender.com/lms/teachers/getteacher?username=${encodedUsername}`;
     try {
       const response = await fetch(url, {
         headers: {
@@ -154,7 +154,7 @@ export default function UI() {
         async (courseId) => {
           const encodedCourseId = encodeURIComponent(courseId);
           const courseResponse = await fetch(
-            `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourseId}`,
+            `http://lms-joydeep.onrender.com/lms/courses/spcourse?courseid=${encodedCourseId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -191,7 +191,7 @@ export default function UI() {
         async (courseId) => {
           const encodedCourseId = encodeURIComponent(courseId);
           const courseResponse = await fetch(
-            `http://localhost:5000/lms/courses/spdraftcourse?courseid=${encodedCourseId}`,
+            `http://lms-joydeep.onrender.com/lms/courses/spdraftcourse?courseid=${encodedCourseId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -341,7 +341,7 @@ const [errorparam,seterrorparam]=useState(false);
       setPublishDialogOpen(true);
       setDialogText("Publishing your course....");
       const response = await fetch(
-        "http://localhost:5000/lms/courses/addcourse",
+        "http://lms-joydeep.onrender.com/lms/courses/addcourse",
         {
           method: "POST",
           headers: {
@@ -419,7 +419,7 @@ const [errorparam,seterrorparam]=useState(false);
       setPublishDialogOpen(true);
       setDialogText("Publishing course....");
       const response = await fetch(
-        "http://localhost:5000/lms/courses/publishdraftedcourse",
+        "http://lms-joydeep.onrender.com/lms/courses/publishdraftedcourse",
         {
           method: "POST",
           headers: {
@@ -497,7 +497,7 @@ const [errorparam,seterrorparam]=useState(false);
       setPublishDialogOpen(true);
       setDialogText("Drafting course....");
       const response = await fetch(
-        "http://localhost:5000/lms/courses/addtodraft",
+        "http://lms-joydeep.onrender.com/lms/courses/addtodraft",
         {
           method: "POST",
           headers: {
@@ -842,8 +842,8 @@ const [errorparam,seterrorparam]=useState(false);
       teacherid:teacherId
     };
     const url=editingCourse["status"] === "published"
-    ? "http://localhost:5000/lms/courses/editpublishedcourse"
-    : "http://localhost:5000/lms/courses/editdraftedcourse";
+    ? "http://lms-joydeep.onrender.com/lms/courses/editpublishedcourse"
+    : "http://lms-joydeep.onrender.com/lms/courses/editdraftedcourse";
 
     try {
       setPublishDialogOpen(true);

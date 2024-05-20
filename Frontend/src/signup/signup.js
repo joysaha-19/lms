@@ -54,7 +54,7 @@ export default function Signup() {
     }
 
     try {
-      const response1 = await fetch('http://localhost:5000/lms/users/register', {
+      const response1 = await fetch('http://lms-joydeep.onrender.com/lms/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -69,7 +69,7 @@ export default function Signup() {
       const username=formData.username
       const textResponse1= await response1.text();
 
-      const response2 = await fetch('http://localhost:5000/lms/teachers/register', {
+      const response2 = await fetch('http://lms-joydeep.onrender.com/lms/teachers/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

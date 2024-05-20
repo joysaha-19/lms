@@ -44,8 +44,8 @@ export default function UI() {
     const encodedCourse = encodeURIComponent(courseId);
     const encodedUsername = encodeURIComponent(username);
 
-    const courseUrl = `http://localhost:5000/lms/courses/spcourse?courseid=${encodedCourse}`;
-    const userCoursesUrl = `http://localhost:5000/lms/courses/usercourses?username=${encodedUsername}`;
+    const courseUrl = `http://lms-joydeep.onrender.com/lms/courses/spcourse?courseid=${encodedCourse}`;
+    const userCoursesUrl = `http://lms-joydeep.onrender.com/lms/courses/usercourses?username=${encodedUsername}`;
 
     try {
       const [courseResponse, userCoursesResponse] = await Promise.all([
@@ -149,7 +149,7 @@ export default function UI() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/lms/courses/completechapter",
+        "http://lms-joydeep.onrender.com/lms/courses/completechapter",
         {
           method: "POST",
           headers: {
