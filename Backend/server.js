@@ -8,7 +8,7 @@ const cors = require('cors');
 const port = 5000;
 connectDb();
 const corsOptions = {
-  origin: '*',  // Allow all origins
+  origin: 'http://localhost:3000',  // Allow all origins
   methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],  // Allowed HTTP methods
   allowedHeaders: ['Content-Type', 'X-Auth-Token', 'Origin', 'Authorization','Username','username','authorization']  // Custom headers allowed
 };
