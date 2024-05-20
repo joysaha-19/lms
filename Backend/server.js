@@ -7,12 +7,15 @@ const dotenv = require("dotenv").config();
 const cors = require('cors');
 const port = 5000;
 connectDb();
-app.use(cors());
-// Allow preflight checks for all routes
-app.options('*', (req, res, next) => {
-  console.log('Received OPTIONS request for:', req.path);
-  cors()(req, res, next);
-});
+const corsOptions = {
+  origin: '*',  // Allow all origins
+  methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],  // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'X-Auth-Token', 'Origin', 'Authorization']  // Custom headers allowed
+};
+
+// Apply CORS middleware with the defined options
+app.use(cors(corsOptions));
+
 
 app.use(express.json());
 app.use("/lms/courses", require("./routes/courseroutes"));
