@@ -44,8 +44,8 @@ export default function UI() {
     const encodedCourse = encodeURIComponent(courseId);
     const encodedUsername = encodeURIComponent(username);
 
-    const courseUrl = `http://lms-joydeep.onrender.com/lms/courses/spcourse?courseid=${encodedCourse}`;
-    const userCoursesUrl = `http://lms-joydeep.onrender.com/lms/courses/usercourses?username=${encodedUsername}`;
+    const courseUrl = `https://lms-joydeep.onrender.com/lms/courses/spcourse?courseid=${encodedCourse}`;
+    const userCoursesUrl = `https://lms-joydeep.onrender.com/lms/courses/usercourses?username=${encodedUsername}`;
 
     try {
       const [courseResponse, userCoursesResponse] = await Promise.all([

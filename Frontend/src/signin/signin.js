@@ -51,13 +51,13 @@ const jsonResponse = await response1.json();  // Make sure 'response1' is the re
 const textResponse1 = jsonResponse["message"];
 
 // Access 'accesstoken' correctly if it's part of the JSON response
-const accesstoken = jsonResponse["accesstoken"].toString();
       
       if (!response1.ok) {
         setServerError(textResponse1)
         return;
       }
-     
+      const accesstoken = jsonResponse["accesstoken"].toString();
+
         localStorage.setItem("accesstoken",accesstoken);
         console.log(accesstoken);
         setServerError("Logged in Successfully! Redirecting...");
