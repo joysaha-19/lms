@@ -10,7 +10,7 @@ connectDb();
 const corsOptions = {
   origin: '*',  // Allow all origins
   methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],  // Allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'X-Auth-Token', 'Origin', 'Authorization']  // Custom headers allowed
+  allowedHeaders: ['Content-Type', 'X-Auth-Token', 'Origin', 'Authorization','Username','username','authorization']  // Custom headers allowed
 };
 
 // Apply CORS middleware with the defined options
