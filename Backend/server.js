@@ -29,7 +29,6 @@ app.use((req, res, next) => {
 });
 
 // Apply CORS middleware with the defined options
-app.use(cors(corsOptions));
 
 
 app.use(express.json());
