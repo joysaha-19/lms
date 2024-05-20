@@ -67,7 +67,7 @@ const accesstoken = jsonResponse["accesstoken"].toString();
         },2000)
       // Handle successful registration scenario, e.g., redirect or clear form
     } catch (error) {
-      console.error('Error:', error);
+      console.log('Error:', error);
       setServerError('An error occurred while communicating with the server.');
     }
   };
