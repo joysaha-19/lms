@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/static/css/main.8929b18e.css",
+    "main.js": "/static/js/main.5fc67a4b.js",
+    "static/media/sample_video.mp4": "/static/media/sample_video.8d5fa2658321ed892d2e.mp4",
+    "static/media/bg.jpg": "/static/media/bg.654f05710e48dc51c4fb.jpg",
+    "static/media/architecture.png": "/static/media/architecture.4cd3bc8cfc0c496900f5.png",
+    "static/media/humanities.png": "/static/media/humanities.512574de90076cec62b1.png",
+    "static/media/medical.png": "/static/media/medical.71ea437433c1c567c9ea.png",
+    "static/media/engineering.png": "/static/media/engineering.8baf589910f7ea972e09.png",
+    "static/media/maths.png": "/static/media/maths.a447a8c198e7c1ce6bb5.png",
+    "static/media/biology.png": "/static/media/biology.8f777d155ed376d256ea.png",
+    "static/media/art.png": "/static/media/art.ed66f01940c7851ba910.png",
+    "static/media/sample_assignment.pdf": "/static/media/sample_assignment.41903d70a2770f47c201.pdf",
+    "index.html": "/index.html",
+    "main.8929b18e.css.map": "/static/css/main.8929b18e.css.map",
+    "main.5fc67a4b.js.map": "/static/js/main.5fc67a4b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8929b18e.css",
+    "static/js/main.5fc67a4b.js"
+  ]
+}
