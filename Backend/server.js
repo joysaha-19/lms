@@ -8,6 +8,8 @@ const cors = require('cors');
 const port = 5000;
 connectDb();
 app.use(cors());
+// Allow preflight checks for all routes
+app.options('*', cors()); // This will enable CORS for preflight requests
 
 app.use(express.json());
 app.use("/lms/courses", require("./routes/courseroutes"));
