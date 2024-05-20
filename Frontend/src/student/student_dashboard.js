@@ -55,7 +55,7 @@ export default function UI() {
 
   async function fetchCoursesForUser(username) {
     const encodedUsername = encodeURIComponent(username);
-    const url = `http://lms-joydeep.onrender.com/lms/courses/usercourses?username=${encodedUsername}`;
+    const url = `https://lms-joydeep.onrender.com/lms/courses/usercourses?username=${encodedUsername}`;
     try {
       const response = await fetch(url,{
         headers: {
@@ -141,7 +141,7 @@ export default function UI() {
   }
 
   async function fetchAllCourses() {
-    const url = `http://lms-joydeep.onrender.com/lms/courses/allcourses`;
+    const url = `https://lms-joydeep.onrender.com/lms/courses/allcourses`;
     try {
       const response = await fetch(url,{
         headers: {

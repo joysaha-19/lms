@@ -149,7 +149,7 @@ export default function UI() {
 
     try {
       const response = await fetch(
-        "http://lms-joydeep.onrender.com/lms/courses/completechapter",
+        "https://lms-joydeep.onrender.com/lms/courses/completechapter",
         {
           method: "POST",
           headers: {

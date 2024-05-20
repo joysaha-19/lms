@@ -39,7 +39,7 @@ export default function UI() {
   // const [open,setopen]=useState(false);
   async function fetchCourse(username, courseId) {
     const encodedCourse = encodeURIComponent(courseId);
-    const url = `http://lms-joydeep.onrender.com/lms/courses/spcourse?courseid=${encodedCourse}`;
+    const url = `https://lms-joydeep.onrender.com/lms/courses/spcourse?courseid=${encodedCourse}`;
 
     try {
       const response = await fetch(url,{
@@ -81,7 +81,7 @@ export default function UI() {
     setzindex(10);
     // If all fields are filled, handle the payment process
     setbuttontext('Processing payment...');
-    const url = `http://lms-joydeep.onrender.com/lms/courses/enroll`;
+    const url = `https://lms-joydeep.onrender.com/lms/courses/enroll`;
 
     try {
       const response = await fetch(url, {

@@ -35,7 +35,7 @@ export default function Signup() {
 
     try {
       console.log('Sending request with:', formData);
-const response1 = await fetch('http://lms-joydeep.onrender.com/lms/users/login', {
+const response1 = await fetch('https://lms-joydeep.onrender.com/lms/users/login', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
